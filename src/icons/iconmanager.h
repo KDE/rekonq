@@ -32,7 +32,7 @@
 
 // Qt Includes
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 #include <QString>
 #include <QStringList>
 
@@ -72,7 +72,7 @@ private:
 
     QStringList _engineFaviconHosts;
 
-    static QWeakPointer<IconManager> s_iconManager;
+    static QPointer<IconManager> s_iconManager;
 };
 
 

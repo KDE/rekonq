@@ -48,7 +48,7 @@
 #include <QtConcurrentRun>
 
 
-QWeakPointer<AdBlockManager> AdBlockManager::s_adBlockManager;
+QPointer<AdBlockManager> AdBlockManager::s_adBlockManager;
 
 
 AdBlockManager *AdBlockManager::self()

@@ -36,7 +36,7 @@
 // Qt Includes
 #include <QObject>
 #include <QString>
-#include <QWeakPointer>
+#include <QPointer>
 
 // Forward Declarations
 class TabHistory;
@@ -97,7 +97,7 @@ private:
     bool m_safe;
     bool m_isSessionEnabled;
 
-    static QWeakPointer<SessionManager> s_sessionManager;
+    static QPointer<SessionManager> s_sessionManager;
 };
 
 

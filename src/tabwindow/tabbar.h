@@ -100,7 +100,7 @@ private:
     QSignalMapper *m_animationMapper;
 
     // tab preview
-    QWeakPointer<TabPreviewPopup> m_previewPopup;
+    QPointer<TabPreviewPopup> m_previewPopup;
     int m_currentTabPreviewIndex;
     bool m_isFirstTimeOnTab;
 

@@ -35,7 +35,7 @@
 #include <QGuiApplication>
 
 #include <QUrl>
-#include <QWeakPointer>
+#include <QPointer>
 
 // Forward Declarations
 class RekonqWindow;
@@ -43,7 +43,7 @@ class RekonqWindow;
 class WebTab;
 class WebPage;
 
-typedef QList< QWeakPointer<RekonqWindow> > RekonqWindowList;
+typedef QList< QPointer<RekonqWindow> > RekonqWindowList;
 typedef QList<WebTab *> WebAppList;
 
 

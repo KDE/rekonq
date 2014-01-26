@@ -55,7 +55,7 @@
 #include <QPointer>
 
 
-QWeakPointer<SyncManager> SyncManager::s_syncManager;
+QPointer<SyncManager> SyncManager::s_syncManager;
 
 
 SyncManager *SyncManager::self()

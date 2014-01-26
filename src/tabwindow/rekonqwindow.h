@@ -41,7 +41,7 @@
 
 // Qt Includes
 #include <QSplitter>
-#include <QWeakPointer>
+#include <QPointer>
 
 // Forward Declarations
 class TabBar;
@@ -82,8 +82,8 @@ private:
     
     QSplitter *_splitter;
     
-    QWeakPointer<HistoryPanel> _historyPanel;
-    QWeakPointer<BookmarksPanel> _bookmarksPanel;
+    QPointer<HistoryPanel> _historyPanel;
+    QPointer<BookmarksPanel> _bookmarksPanel;
 };
 
 #endif // REKONQ_WINDOW_H

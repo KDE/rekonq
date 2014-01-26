@@ -40,7 +40,7 @@
 #include <KMenu>
 
 
-QWeakPointer<UserAgentManager> UserAgentManager::s_userAgentManager;
+QPointer<UserAgentManager> UserAgentManager::s_userAgentManager;
 
 
 UserAgentManager *UserAgentManager::self()

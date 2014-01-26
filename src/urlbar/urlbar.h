@@ -37,7 +37,7 @@
 #include <KLineEdit>
 
 // Qt Includes
-#include <QWeakPointer>
+#include <QPointer>
 #include <QToolButton>
 #include <QUrl>
 
@@ -152,7 +152,7 @@ private:
     void updateRightIconPosition(IconButton *, int);
     IconButton *addRightIcon(UrlBar::icon);
 
-    QWeakPointer<CompletionWidget> _box;
+    QPointer<CompletionWidget> _box;
     WebTab *_tab;
 
     IconButton *_icon;

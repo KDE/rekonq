@@ -40,7 +40,7 @@
 
 // Qt Includes
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 // Forward Declarations
 class BookmarkToolBar;
@@ -167,7 +167,7 @@ private:
     KActionCollection *m_actionCollection;
     QList<BookmarkToolBar *> m_bookmarkToolBars;
 
-    static QWeakPointer<BookmarkManager> s_bookmarkManager;
+    static QPointer<BookmarkManager> s_bookmarkManager;
 };
 
 

@@ -131,9 +131,9 @@ private:
 
     int m_progress;
 
-    QWeakPointer<WalletBar> m_walletBar;
-    QWeakPointer<PreviewSelectorBar> m_previewSelectorBar;
-    QWeakPointer<QWebInspector> m_inspector;
+    QPointer<WalletBar> m_walletBar;
+    QPointer<PreviewSelectorBar> m_previewSelectorBar;
+    QPointer<QWebInspector> m_inspector;
 
     KParts::ReadOnlyPart *m_part;
 

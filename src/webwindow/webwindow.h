@@ -166,8 +166,8 @@ private:
     WebTab *_tab;
     UrlBar *_bar;
 
-    QWeakPointer<KToolBar> _mainToolBar;
-    QWeakPointer<BookmarkToolBar> _bookmarksBar;
+    QPointer<KToolBar> _mainToolBar;
+    QPointer<BookmarkToolBar> _bookmarksBar;
 
     FindBar *m_findBar;
 

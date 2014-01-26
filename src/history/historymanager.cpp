@@ -64,7 +64,7 @@
 static const unsigned int HISTORY_VERSION = 25;
 
 
-QWeakPointer<HistoryManager> HistoryManager::s_historyManager;
+QPointer<HistoryManager> HistoryManager::s_historyManager;
 
 
 HistoryManager *HistoryManager::self()

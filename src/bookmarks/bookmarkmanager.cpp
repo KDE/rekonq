@@ -50,7 +50,7 @@
 // ----------------------------------------------------------------------------------------------
 
 
-QWeakPointer<BookmarkManager> BookmarkManager::s_bookmarkManager;
+QPointer<BookmarkManager> BookmarkManager::s_bookmarkManager;
 
 
 BookmarkManager *BookmarkManager::self()

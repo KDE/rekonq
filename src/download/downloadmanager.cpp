@@ -59,7 +59,7 @@
 #include <QDBusInterface>
 
 
-QWeakPointer<DownloadManager> DownloadManager::s_downloadManager;
+QPointer<DownloadManager> DownloadManager::s_downloadManager;
 
 
 DownloadManager *DownloadManager::self()

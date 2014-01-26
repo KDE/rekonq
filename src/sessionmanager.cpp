@@ -140,7 +140,7 @@ bool areTherePinnedTabs(QDomElement & window)
 // -------------------------------------------------------------------------------------------------
 
 
-QWeakPointer<SessionManager> SessionManager::s_sessionManager;
+QPointer<SessionManager> SessionManager::s_sessionManager;
 
 
 SessionManager *SessionManager::self()
@@ -185,7 +185,7 @@ void SessionManager::saveSession()
     QDomElement session = document.createElement("session");
     document.appendChild(session);
 
-    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, wl)
+    Q_FOREACH(const QPointer<RekonqWindow> &w, wl)
     {
         if (w.data()->isPrivateBrowsingMode())
             continue;
@@ -396,7 +396,7 @@ bool SessionManager::saveYourSession(int index)
     QDomElement session = document.createElement("session");
     document.appendChild(session);
 
-    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, wl)
+    Q_FOREACH(const QPointer<RekonqWindow> &w, wl)
     {
         if (w.data()->isPrivateBrowsingMode())
             continue;
@@ -469,7 +469,7 @@ bool SessionManager::restoreYourSession(int index)
         tw->tabWidget()->setCurrentIndex(currentTab);
     }
     
-    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, wList)
+    Q_FOREACH(const QPointer<RekonqWindow> &w, wList)
     {
         if (!w.isNull())
             w.data()->close();

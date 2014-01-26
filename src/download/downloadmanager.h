@@ -94,7 +94,7 @@ private:
 
     bool m_needToSave;
 
-    static QWeakPointer<DownloadManager> s_downloadManager;
+    static QPointer<DownloadManager> s_downloadManager;
 };
 
 #endif // DOWNLOADMANAGER_H

@@ -171,7 +171,7 @@ private:
     HistoryFilterModel *m_historyFilterModel;
     HistoryTreeModel *m_historyTreeModel;
 
-    static QWeakPointer<HistoryManager> s_historyManager;
+    static QPointer<HistoryManager> s_historyManager;
 };
 
 

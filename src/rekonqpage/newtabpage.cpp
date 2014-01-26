@@ -724,7 +724,7 @@ void NewTabPage::downloadsPage(const QString & filter)
 //     m_root.addClass(QL1S("tabs"));
 //
 //     int wins = 0;
-//     Q_FOREACH(const QWeakPointer<MainWindow> &wPointer, rApp->mainWindowList())
+//     Q_FOREACH(const QPointer<MainWindow> &wPointer, rApp->mainWindowList())
 //     {
 //         m_root.appendInside(markup(QL1S("h3")));
 //         m_root.lastChild().setPlainText(i18n("Window"));

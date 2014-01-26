@@ -36,7 +36,7 @@
 
 // Qt Includes
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 
 class REKONQ_TESTS_EXPORT SyncManager : public QObject
@@ -70,9 +70,9 @@ public Q_SLOTS:
     void showSettings();
 
 private:
-    QWeakPointer<SyncHandler> _syncImplementation;
+    QPointer<SyncHandler> _syncImplementation;
 
-    static QWeakPointer<SyncManager> s_syncManager;
+    static QPointer<SyncManager> s_syncManager;
 };
 
 #endif // SYNC_MANAGER_H

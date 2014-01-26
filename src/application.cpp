@@ -95,7 +95,7 @@ Application::~Application()
     saveConfiguration();
 
     // Destroy all windows...
-    Q_FOREACH(QWeakPointer<RekonqWindow> pointer, m_rekonqWindows)
+    Q_FOREACH(QPointer<RekonqWindow> pointer, m_rekonqWindows)
     {
         delete pointer.data();
         pointer.clear();
@@ -380,7 +380,7 @@ RekonqWindow *Application::rekonqWindow(const QString & activityID)
         if (wList.isEmpty())
             return 0;
         
-        Q_FOREACH(const QWeakPointer<RekonqWindow> &pointer, wList)
+        Q_FOREACH(const QPointer<RekonqWindow> &pointer, wList)
         {
             if (KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
                 return pointer.data();
@@ -483,7 +483,7 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
                 && m_rekonqWindows.at(0) 
                 && m_rekonqWindows.at(0).data() != window)
             {
-                int index = m_rekonqWindows.indexOf(QWeakPointer<RekonqWindow>(window));
+                int index = m_rekonqWindows.indexOf(QPointer<RekonqWindow>(window));
                 Q_ASSERT(index != -1);
                 m_rekonqWindows.prepend(m_rekonqWindows.takeAt(index));
             }
@@ -630,7 +630,7 @@ void Application::updateConfiguration()
     
     // ============== Tabs ==================
     bool b = ReKonfig::closeTabSelectPrevious();
-    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, m_rekonqWindows)
+    Q_FOREACH(const QPointer<RekonqWindow> &w, m_rekonqWindows)
     {
         if (b)
             w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);

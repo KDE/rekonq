@@ -44,7 +44,7 @@
 #include <QUrl>
 
 
-QWeakPointer<IconManager> IconManager::s_iconManager;
+QPointer<IconManager> IconManager::s_iconManager;
 
 
 IconManager *IconManager::self()

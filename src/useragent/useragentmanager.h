@@ -30,7 +30,7 @@
 
 // Qt Includes
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 // Forward Declarations
 class WebWindow;
@@ -62,9 +62,9 @@ private Q_SLOTS:
 
 private:
     KAction *m_uaSettingsAction;
-    QWeakPointer<WebWindow> m_uaTab;
+    QPointer<WebWindow> m_uaTab;
 
-    static QWeakPointer<UserAgentManager> s_userAgentManager;
+    static QPointer<UserAgentManager> s_userAgentManager;
 };
 
 #endif  // USER_AGENT_MANAGER_H

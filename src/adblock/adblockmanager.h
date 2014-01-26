@@ -208,7 +208,7 @@ private:
     KSharedConfig::Ptr _adblockConfig;
     QFuture<void> _settingsLoaded;
 
-    static QWeakPointer<AdBlockManager> s_adBlockManager;
+    static QPointer<AdBlockManager> s_adBlockManager;
 };
 
 #endif
