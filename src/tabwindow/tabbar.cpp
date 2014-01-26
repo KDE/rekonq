@@ -68,7 +68,7 @@ static inline QByteArray highlightPropertyName(int index)
 
 
 TabBar::TabBar(QWidget *parent)
-    : KTabBar(parent)
+    : QTabBar(parent)
     , m_tabHighlightEffect(new TabHighlightEffect(this))
     , m_animationMapper(new QSignalMapper(this))
 {
@@ -365,7 +365,7 @@ void TabBar::tabInserted(int index)
         w->moveTab(index, availableIndex);
     }
 
-    KTabBar::tabInserted(index);
+    QTabBar::tabInserted(index);
 }
 
 
@@ -374,13 +374,13 @@ void TabBar::tabRemoved(int index)
     hideTabPreview();
     removeAnimation(index);
 
-    KTabBar::tabRemoved(index);
+    QTabBar::tabRemoved(index);
 }
 
 
 void TabBar::mouseMoveEvent(QMouseEvent *event)
 {
-    KTabBar::mouseMoveEvent(event);
+    QTabBar::mouseMoveEvent(event);
 
     if (count() == 1)
     {
@@ -421,7 +421,7 @@ void TabBar::leaveEvent(QEvent *event)
     hideTabPreview();
     m_isFirstTimeOnTab = true;
 
-    KTabBar::leaveEvent(event);
+    QTabBar::leaveEvent(event);
 }
 
 
@@ -433,7 +433,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::MidButton)
         return;
 
-    KTabBar::mousePressEvent(event);
+    QTabBar::mousePressEvent(event);
 }
 
 
@@ -468,13 +468,14 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
             w->setCurrentIndex(pinnedTabs - 1);
         }
     }
-    KTabBar::mouseReleaseEvent(event);
+
+    QTabBar::mouseReleaseEvent(event);
 }
 
 
 void TabBar::tabLayoutChange()
 {
-    KTabBar::tabLayoutChange();
+    QTabBar::tabLayoutChange();
     emit tabLayoutChanged();
 }
 

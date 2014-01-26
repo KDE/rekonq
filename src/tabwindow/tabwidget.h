@@ -32,8 +32,10 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KTabWidget>
 #include <KActionCollection>
+
+// Qt Includes
+#include <QTabWidget>
 
 // Forward Declarations
 class QUrl;
@@ -51,7 +53,7 @@ class RekonqWindow;
 // --------------------------------------------------------------------------------------
 
 
-class TabWidget : public KTabWidget
+class TabWidget : public QTabWidget
 {
     Q_OBJECT
 

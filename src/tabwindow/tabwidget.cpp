@@ -74,7 +74,7 @@
 
 
 TabWidget::TabWidget(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
-    : KTabWidget(parent)
+    : QTabWidget(parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
     , _isPrivateBrowsing(PrivateBrowsingMode)
@@ -95,7 +95,7 @@ TabWidget::TabWidget(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
 
 
 TabWidget::TabWidget(WebPage *pg, QWidget *parent)
-    : KTabWidget(parent)
+    : QTabWidget(parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
     , _isPrivateBrowsing(false)
@@ -888,7 +888,7 @@ void TabWidget::loadFavorite(const int index)
 int TabWidget::addTab(QWidget *page, const QString &label)
 {
     setUpdatesEnabled(false);
-    int i = KTabWidget::addTab(page, label);
+    int i = QTabWidget::addTab(page, label);
     setUpdatesEnabled(true);
 
     return i;
@@ -898,7 +898,7 @@ int TabWidget::addTab(QWidget *page, const QString &label)
 int TabWidget::addTab(QWidget *page, const QIcon &icon, const QString &label)
 {
     setUpdatesEnabled(false);
-    int i = KTabWidget::addTab(page, icon, label);
+    int i = QTabWidget::addTab(page, icon, label);
     setUpdatesEnabled(true);
 
     return i;
@@ -911,7 +911,7 @@ int TabWidget::insertTab(int index, QWidget *page, const QString &label)
         index = -1;
 
     setUpdatesEnabled(false);
-    int i = KTabWidget::insertTab(index, page, label);
+    int i = QTabWidget::insertTab(index, page, label);
     setUpdatesEnabled(true);
 
     return i;
@@ -924,7 +924,7 @@ int TabWidget::insertTab(int index, QWidget *page, const QIcon &icon, const QStr
         index = -1;
 
     setUpdatesEnabled(false);
-    int i = KTabWidget::insertTab(index, page, icon, label);
+    int i = QTabWidget::insertTab(index, page, icon, label);
     setUpdatesEnabled(true);
 
     return i;

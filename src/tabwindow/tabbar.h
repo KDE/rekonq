@@ -32,8 +32,8 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KTabBar>
+// Qt Includes
+#include <QTabBar>
 
 #include <QPropertyAnimation>
 
@@ -44,7 +44,7 @@ class TabHighlightEffect;
 class QSignalMapper;
 
 
-class TabBar : public KTabBar
+class TabBar : public QTabBar
 {
     Q_OBJECT
 

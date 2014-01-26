@@ -9,7 +9,7 @@
 <include>QtWebKit</include>
 <include>QDateTime</include>
 <include>QUrl</include>
-<include>KGlobalSettings</include>
+<include>QStandardPaths</include>
 
 <kcfgfile name="rekonqrc" />
 
@@ -89,7 +89,7 @@
         <default>http://www.kde.org/</default>
     </entry>
     <entry name="downloadPath" type="Url">
-        <default code="true">QUrl(KGlobalSettings::downloadPath())</default>
+        <default code="true">QUrl(QStandardPaths::standardLocation(QStandardPaths::DownloadLocation).at(0))</default>
     </entry>
     <entry name="askDownloadPath" type="Bool">
         <default>false</default>
