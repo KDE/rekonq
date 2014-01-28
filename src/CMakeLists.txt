@@ -266,7 +266,7 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             KF5::Parts
                             KF5::KIO
                             KF5::Service
-                            kF5::WebKit
+                            KF5::WebKit
 )
 
 # # Nepomuk optional target link libraries

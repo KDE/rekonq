@@ -57,12 +57,13 @@
 
 // KDE Includes
 // #include <KDialog>
+#include <KAction>
 #include <KProcess>
 // #include <KPushButton>
 // #include <KStandardDirs>
-// #include <KWindowSystem>
-// #include <KWindowInfo>
-// #include <KStartupInfo>
+#include <KWindowSystem>
+#include <KWindowInfo>
+#include <KStartupInfo>
 
 #include <KMessageBox>
 
@@ -70,16 +71,17 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDir>
+#include <QIcon>
 #include <QTimer>
 
 
-Application::Application()
-    : QApplication()
+Application::Application(int &argc, char **argv)
+    : QApplication(argc, argv)
 {
     // updating rekonq configuration
     updateConfiguration();
 
-    setWindowIcon(KIcon("rekonq"));
+    setWindowIcon( QIcon::fromTheme("rekonq") );
 
     // just create History Manager...
     HistoryManager::self();

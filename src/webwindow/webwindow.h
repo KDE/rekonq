@@ -171,7 +171,7 @@ private:
 
     FindBar *m_findBar;
 
-    KAction *m_loadStopReloadAction;
+    QAction *m_loadStopReloadAction;
 
     KMenu *m_historyBackMenu;
     KMenu *m_historyForwardMenu;

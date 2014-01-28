@@ -60,7 +60,7 @@ class Application : public QApplication
     Q_OBJECT
 
 public:
-    Application();
+    Application(int &argc, char **argv);
     ~Application();
 
     int newInstance();
