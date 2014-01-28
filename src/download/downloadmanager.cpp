@@ -32,7 +32,6 @@
 #include "rekonq.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <KToolInvocation>
 #include <KFileDialog>
 #include <krecentdirs.h>
@@ -46,6 +45,7 @@
 
 // Qt Includes
 #include <QApplication>
+#include <QStandardPaths>
 #include <QDataStream>
 #include <QDateTime>
 #include <QFile>
@@ -88,7 +88,7 @@ DownloadManager::~DownloadManager()
     if (!m_needToSave)
         return;
 
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QString downloadFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/downloads");
     QFile downloadFile(downloadFilePath);
 
     if (!downloadFile.open(QFile::WriteOnly))
@@ -111,7 +111,7 @@ DownloadManager::~DownloadManager()
 
 void DownloadManager::init()
 {
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QString downloadFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/downloads");
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::ReadOnly))
     {
@@ -138,7 +138,7 @@ DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
 {
     KIO::CopyJob *cJob = qobject_cast<KIO::CopyJob *>(job);
 
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QString downloadFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/downloads");
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
     {
@@ -160,7 +160,7 @@ DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
 bool DownloadManager::clearDownloadsHistory()
 {
     m_downloadList.clear();
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QString downloadFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/downloads");
     QFile downloadFile(downloadFilePath);
     return downloadFile.remove();
 }
@@ -198,7 +198,7 @@ bool DownloadManager::downloadResource(const QUrl &srcUrl, const KIO::MetaData &
                                        QWidget *parent, bool forceDirRequest, const QString &suggestedName, bool registerDownload)
 {
     // manage downloads with KGet if found
-    if (ReKonfig::kgetDownload() && !KStandardDirs::findExe("kget").isNull())
+    if (ReKonfig::kgetDownload() && !QStandardPaths::findExecutable("kget").isNull())
     {
         //KGet integration:
         if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))

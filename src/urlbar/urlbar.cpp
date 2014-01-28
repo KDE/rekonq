@@ -56,7 +56,6 @@
 
 // KDE Includes
 #include <KCompletionBox>
-#include <KStandardDirs>
 #include <KColorScheme>
 #include <KMenu>
 #include <KIcon>
@@ -66,6 +65,8 @@
 #include <KAction>
 
 // Qt Includes
+#include <QStandardPaths>
+
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPalette>
@@ -420,7 +421,7 @@ void UrlBar::updateRightIcons()
     connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageStarred(QPoint)));
 
     // show KGet downloads??
-    if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
+    if (!QStandardPaths::findExecutable("kget").isNull() && ReKonfig::kgetList())
     {
         IconButton *bt = addRightIcon(UrlBar::KGet);
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(downloadAllContentsWithKGet()));

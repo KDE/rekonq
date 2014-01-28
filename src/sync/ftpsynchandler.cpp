@@ -31,10 +31,12 @@
 #include "rekonq.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <klocalizedstring.h>
 
 #include <KIO/Job>
+
+// Qt Includes
+#include <QStandardPaths>
 
 
 FTPSyncHandler::FTPSyncHandler(QObject *parent)
@@ -63,7 +65,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remoteBookmarksUrl.setPort(ReKonfig::syncPort());
         _remoteBookmarksUrl.setPath(ReKonfig::syncPath() + QL1S("/bookmarks.xml"));
 
-        const QString bookmarksFilePath = KStandardDirs::locateLocal("data", QL1S("konqueror/bookmarks.xml"));
+        const QString bookmarksFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/konqueror/bookmarks.xml"));
         _localBookmarksUrl = QUrl(bookmarksFilePath);
 
         KIO::StatJob *job = KIO::stat(_remoteBookmarksUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
@@ -81,7 +83,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remoteHistoryUrl.setPort(ReKonfig::syncPort());
         _remoteHistoryUrl.setPath(ReKonfig::syncPath() + QL1S("/history"));
 
-        const QString historyFilePath = KStandardDirs::locateLocal("appdata", "history");
+        const QString historyFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/history");
         _localHistoryUrl = QUrl(historyFilePath);
 
         KIO::StatJob *job = KIO::stat(_remoteHistoryUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
@@ -99,7 +101,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remotePasswordsUrl.setPort(ReKonfig::syncPort());
         _remotePasswordsUrl.setPath(ReKonfig::syncPath() + QL1S("/kdewallet.kwl"));
 
-        const QString passwordsFilePath = KStandardDirs::locateLocal("data", QL1S("kwallet/kdewallet.kwl"));
+        const QString passwordsFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/kwallet/kdewallet.kwl");
         _localPasswordsUrl = QUrl(passwordsFilePath);
 
         KIO::StatJob *job = KIO::stat(_remotePasswordsUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);

@@ -60,7 +60,6 @@
 #include <KAction>
 #include <KProcess>
 // #include <KPushButton>
-// #include <KStandardDirs>
 #include <KWindowSystem>
 #include <KWindowInfo>
 #include <KStartupInfo>
@@ -68,8 +67,11 @@
 #include <KMessageBox>
 
 // Qt Includes
+#include <QStandardPaths>
+
 #include <QDBusInterface>
 #include <QDBusReply>
+
 #include <QDir>
 #include <QIcon>
 #include <QTimer>
@@ -607,8 +609,7 @@ void Application::updateConfiguration()
     defaultSettings->setAttribute(QWebSettings::LocalStorageEnabled, ReKonfig::localStorageEnabled());
     if (ReKonfig::localStorageEnabled())
     {
-        QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
-        path.remove("rekonq");
+        QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1S("/WebkitLocalStorage/");
         QWebSettings::setOfflineStoragePath(path);
         QWebSettings::setOfflineStorageDefaultQuota(ReKonfig::offlineWebApplicationCacheQuota() * 1024);
     }
@@ -766,8 +767,8 @@ void Application::clearPrivateData()
 
         if (clearWidget.clearCachedPages->isChecked())
         {
-            KProcess::startDetached(KStandardDirs::findExe("kio_http_cache_cleaner"),
-                                    QStringList(QL1S("--clear-all")));
+            KProcess::startDetached(QStandardPaths::findExecutable("kio_http_cache_cleaner"),
+                                     QStringList(QL1S("--clear-all")));
         }
 
         if (clearWidget.clearWebIcons->isChecked())
@@ -777,8 +778,7 @@ void Application::clearPrivateData()
 
         if (clearWidget.homePageThumbs->isChecked())
         {
-            QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rekonq"), true);
-            path.remove("rekonq");
+            QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1S("/thumbs/");
             QDir cacheDir(path);
             QStringList fileList = cacheDir.entryList();
             Q_FOREACH(const QString & str, fileList)
@@ -841,7 +841,7 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
         ReKonfig::setCreateMenuAppShortcut(wAppWidget.kcfg_createMenuAppShortcut->isChecked());
 
         IconManager::self()->saveDesktopIconForUrl(u);
-        QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + h + QL1S("_WEBAPPICON.png");
+        QString iconPath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1S("/favicons/") + h + QL1S("_WEBAPPICON.png");
 
         if (!wAppWidget.nameLineEdit->text().isEmpty())
             webAppTitle = wAppWidget.nameLineEdit->text();
@@ -883,7 +883,7 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
 
         if (ReKonfig::createMenuAppShortcut())
         {
-            QString appMenuDir = KStandardDirs::locateLocal("xdgdata-apps", QString());
+            QString appMenuDir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
             QFile wAppFile(appMenuDir + QL1C('/') + webAppTitle + QL1S(".desktop"));
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))

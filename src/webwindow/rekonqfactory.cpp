@@ -30,17 +30,20 @@
 #include "maintoolbar.h"
 #include "rekonqmenu.h"
 
+// KDE Includes
 #include <KActionCollection>
 #include <KCmdLineArgs>
 #include <KMenu>
 #include <KHelpMenu>
-#include <KStandardDirs>
 #include <KToolBar>
 
+// Qt Includes
 #include <QFile>
-#include <QMenuBar>
+#include <QStandardPaths>
 #include <QString>
+
 #include <QWidget>
+#include <QMenuBar>
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -96,7 +99,7 @@ QAction *actionByName(const QString &name)
 QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 {
     QDomDocument document("rekonqui.rc");
-    QString xmlFilePath = KStandardDirs::locate("data", "rekonq/rekonqui.rc");
+    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "/rekonq/rekonqui.rc");
 
     if (!readDocument(document, xmlFilePath))
         return 0;
@@ -227,7 +230,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 void RekonqFactory::updateWidget(QWidget *widg, const QString &name)
 {
     QDomDocument document("rekonqui.rc");
-    QString xmlFilePath = KStandardDirs::locate("data", "rekonq/rekonqui.rc");
+    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "/rekonq/rekonqui.rc");
 
     if (!readDocument(document, xmlFilePath))
         return;

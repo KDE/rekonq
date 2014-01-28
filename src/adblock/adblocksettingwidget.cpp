@@ -32,11 +32,12 @@
 
 // KDE Includes
 #include <KSharedConfig>
-#include <KStandardDirs>
 #include <KIcon>
 
 // Qt Includes
 #include <QString>
+#include <QStandardPaths>
+
 #include <QWhatsThis>
 #include <QListWidgetItem>
 
@@ -169,7 +170,7 @@ void AdBlockSettingWidget::load()
     // ------------------------------------------------------------------------------
 
     // local filters
-    const QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    const QString localRulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_local");
 
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::ReadOnly | QFile::Text))
@@ -214,7 +215,7 @@ void AdBlockSettingWidget::save()
     }
 
     // local filters
-    const QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    const QString localRulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_local");
 
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::WriteOnly | QFile::Text))

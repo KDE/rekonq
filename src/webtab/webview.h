@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-//#include <KWebView>
+#include <KWebView>
 
 // Qt Includes
 #include <QTime>

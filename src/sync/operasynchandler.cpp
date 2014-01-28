@@ -35,11 +35,10 @@
 #include "bookmarkmanager.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <klocalizedstring.h>
 #include <kbookmarkmanager.h>
 
-
+// Qt Includes
 #include <QList>
 #include <QWebPage>
 #include <QWebFrame>

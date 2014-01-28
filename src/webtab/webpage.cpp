@@ -54,7 +54,6 @@
 
 // KDE Includes
 #include <KTemporaryFile>
-#include <KStandardDirs>
 #include <KJobUiDelegate>
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -74,8 +73,11 @@
 #include <solid/networking.h>
 
 // Qt Includes
+#include <QStandardPaths>
+
 #include <QTextDocument>
 #include <QFileInfo>
+
 #include <QNetworkReply>
 
 
@@ -681,7 +683,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 QString WebPage::errorPage(QNetworkReply *reply)
 {
     // display "not found" page
-    QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");
+    QString notfoundFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "rekonq/htmls/rekonqinfo.html");
     QFile file(notfoundFilePath);
 
     bool isOpened = file.open(QIODevice::ReadOnly);

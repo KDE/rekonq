@@ -99,7 +99,7 @@ void GeneralWidget::setHomeToCurrentPage()
 
 void GeneralWidget::checkKGetPresence()
 {
-    if (KStandardDirs::findExe("kget").isNull())
+    if (QStandardPaths::findExecutable("kget").isNull())
     {
         kcfg_kgetDownload->setDisabled(true);
         kcfg_kgetList->setDisabled(true);

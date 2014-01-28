@@ -41,10 +41,10 @@
 
 // KDE Includes
 #include <KActionCollection>
-#include <KStandardDirs>
 
 // Qt Includes
-#include <QtCore/QFile>
+#include <QFile>
+#include <QStandardPaths>
 
 
 // ----------------------------------------------------------------------------------------------
@@ -73,13 +73,13 @@ BookmarkManager::BookmarkManager(QObject *parent)
     , m_actionCollection(new KActionCollection(this))
 {
     m_manager = KBookmarkManager::userBookmarksManager();
-    const QString bookmarksFile = KStandardDirs::locateLocal("data", QString::fromLatin1("konqueror/bookmarks.xml"));
+    const QString bookmarksFile = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation), QL1S("/konqueror/bookmarks.xml");
 
     if (!QFile::exists(bookmarksFile))
     {
         qDebug() << "copying of defaultbookmarks.xbel ...";
 
-        QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
+        QString bookmarksDefaultPath = QStandardDirs::locate(QStandardPaths::DataLocation , "/defaultbookmarks.xbel");
         KBookmarkManager *tempManager = KBookmarkManager::managerForExternalFile(bookmarksDefaultPath);
 
         copyBookmarkGroup(tempManager->root(), rootGroup());

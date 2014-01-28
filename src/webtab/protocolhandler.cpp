@@ -48,15 +48,18 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KProcess>
-#include <KStandardDirs>
 #include <KToolInvocation>
 #include <KProtocolInfo>
 #include <KRun>
 
 // Qt Includes
-#include <QNetworkRequest>
-#include <QWebFrame>
+#include <QStandardPaths>
+
 #include <QTextDocument>
+
+#include <QNetworkRequest>
+
+#include <QWebFrame>
 
 
 static bool fileItemListLessThan(const KFileItem &s1, const KFileItem &s2)
@@ -321,7 +324,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     QUrl rootUrl = _url;
 
     // display "rekonq info" page
-    QString infoFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");
+    QString infoFilePath =  QStandardPaths::locate(QStandardPaths::GenericDataLocation, "rekonq/htmls/rekonqinfo.html");
     QFile file(infoFilePath);
 
     bool isOpened = file.open(QIODevice::ReadOnly);

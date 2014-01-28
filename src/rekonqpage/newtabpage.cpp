@@ -57,9 +57,9 @@
 #include <KLocale>
 #include <KMimeType>
 #include <KRun>
-#include <KStandardDirs>
 
 // Qt Includes
+#include <QStandardPaths>
 #include <QFile>
 #include <QAction>
 #include <QWebFrame>
@@ -71,7 +71,7 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     , m_root(frame->documentElement())
     , m_showFullHistory(false)
 {
-    QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
+    QString htmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("rekonq/htmls/home.html"));
     QString dataPath = QL1S("file://") + htmlFilePath;
     dataPath.remove(QL1S("/htmls/home.html"));
 
@@ -933,7 +933,7 @@ void NewTabPage::createBookmarkGroup(const KBookmark &bookmark, QWebElement pare
 
 void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement parent)
 {
-    QString cacheDir = QL1S("file://") + KStandardDirs::locateLocal("cache" , "" , true);
+    QString cacheDir = QL1S("file://") + QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     QString icon; 
     
     if (bookmark.isGroup())
@@ -1022,7 +1022,7 @@ void NewTabPage::initJS()
     includes += QL1S("<script src=\"$DEFAULT_PATH/htmls/jquery-1.7.2.min.js\" type=\"text/javascript\"></script>");
     includes += QL1S("<script src=\"$DEFAULT_PATH/htmls/jquery-ui-1.8.20.custom.min.js\" type=\"text/javascript\"></script>");
 
-    QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
+    QString htmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "rekonq/htmls/home.html");
     QString dataPath = QL1S("file://") + htmlFilePath;
     dataPath.remove(QL1S("/htmls/home.html"));
 

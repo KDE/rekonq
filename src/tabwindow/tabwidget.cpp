@@ -52,7 +52,6 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
-#include <KStandardDirs>
 #include <KToggleFullScreenAction>
 
 #include <KBookmark>
@@ -62,6 +61,7 @@
 #include <KWindowSystem>
 
 // Qt Includes
+#include <QStandardPaths>
 #include <QDesktopWidget>
 #include <QLabel>
 #include <QMovie>
@@ -542,7 +542,7 @@ void TabWidget::tabLoadStarted()
 
         if (!label->movie())
         {
-            static QString loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
+            static QString loadingGitPath = QStandardPaths::locate(QStandardPaths::DataLocation , "/pics/loading.gif");
 
             QMovie *movie = new QMovie(loadingGitPath, QByteArray(), label);
             movie->setSpeed(50);

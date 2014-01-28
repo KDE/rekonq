@@ -33,11 +33,9 @@
 
 #include "knetworkaccessmanager.h"
 
-// KDE Includes
-#include <KStandardDirs>
-
 // Qt Includes
 #include <QFile>
+#include <QStandardPaths>
 #include <QTimer>
 #include <QWebFrame>
 #include <QWebElement>
@@ -72,7 +70,7 @@ void WebIcon::saveIcon(bool b)
         return;
     }
 
-    QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
+    QString faviconsDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1C('/') + QL1S("favicons/");
     QString faviconPath = faviconsDir + m_url.host();
 
     // dest url

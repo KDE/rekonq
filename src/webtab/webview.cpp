@@ -51,7 +51,6 @@
 #include <KLocalizedString>
 #include <KMenu>
 #include <KStandardAction>
-#include <KStandardDirs>
 #include <KToolInvocation>
 
 #include <sonnet/speller.h>
@@ -61,6 +60,7 @@
 // Qt Includes
 #include <QFile>
 #include <QTimer>
+#include <QStandardPaths>
 
 #include <QApplication>
 #include <QBitmap>
@@ -97,7 +97,7 @@ WebView::WebView(QWidget* parent, bool isPrivateBrowsing)
     , m_verticalAutoScrollSpeed(0)
     , m_horizontalAutoScrollSpeed(0)
     , m_isViewAutoScrolling(false)
-    , m_autoScrollIndicator(QPixmap(KStandardDirs::locate("appdata" , "pics/autoscroll.png")))
+    , m_autoScrollIndicator(QPixmap(QStandardDirs::locate(QStandardPaths::DataLocation , "pics/autoscroll.png")))
     , m_smoothScrollTimer(new QTimer(this))
     , m_dy(0)
     , m_smoothScrollSteps(0)
@@ -374,7 +374,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if (webwin)
             menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::Save)));
 
-        if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
+        if (!QStandardPaths::findExecutable("kget").isNull() && ReKonfig::kgetList())
         {
             a = new KAction(KIcon("kget"), i18n("List All Links"), &menu);
             connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));

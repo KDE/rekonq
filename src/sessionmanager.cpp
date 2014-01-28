@@ -43,9 +43,9 @@
 // KDE Includes
 #include <KDialog>
 #include <KPushButton>
-#include <KStandardDirs>
 
 // Qt Includes
+#include <QStandardPaths>
 #include <QFile>
 #include <QDomDocument>
 #include <QPointer>
@@ -161,7 +161,7 @@ SessionManager::SessionManager(QObject *parent)
     , m_safe(true)
     , m_isSessionEnabled(false)
 {
-    m_sessionFilePath = KStandardDirs::locateLocal("appdata" , "session");
+    m_sessionFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/session");
 }
 
 
@@ -381,7 +381,7 @@ bool SessionManager::saveYourSession(int index)
 {
     qDebug() << "SAVING YOUR OWN SESSION...";
     
-    const QString & sessionPath = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    const QString & sessionPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/usersessions/");
     const QString & sessionName = QL1S("ses") + QString::number(index);
     
     QFile sessionFile(sessionPath + sessionName);
@@ -447,7 +447,7 @@ bool SessionManager::saveYourSession(int index)
     
 bool SessionManager::restoreYourSession(int index)
 {
-    const QString & sessionPath = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    const QString & sessionPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/usersessions/");
     const QString & sessionName = QL1S("ses") + QString::number(index);
     
     QDomDocument document("session");

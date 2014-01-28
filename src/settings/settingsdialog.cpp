@@ -44,13 +44,13 @@
 
 // KDE Includes
 #include <KConfig>
-#include <KStandardDirs>
 #include <KPageWidgetItem>
 #include <KCModuleInfo>
 #include <KCModuleProxy>
 
 // Qt Includes
-#include <QtGui/QWidget>
+#include <QWidget>
+#include <QStandardPaths>
 
 
 class Private
@@ -98,7 +98,7 @@ Private::Private(SettingsDialog *parent)
     webkitWidg = new WebKitWidget(parent);
     webkitWidg->layout()->setMargin(0);
     pageItem = parent->addPage(webkitWidg, i18n("WebKit"));
-    QString webkitIconPath = KStandardDirs::locate("appdata", "pics/webkit-icon.png");
+    QString webkitIconPath = StandardDirs::locate(QStandardPaths::DataLocation, "/pics/webkit-icon.png");
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 

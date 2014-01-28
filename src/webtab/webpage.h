@@ -42,7 +42,7 @@
 #include "websslinfo.h"
 
 // KDE Includes
-//#include <KWebPage>
+#include <KWebPage>
 
 
 class WebPage : public KWebPage

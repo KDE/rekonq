@@ -35,10 +35,10 @@
 #include "syncmanager.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <KIcon>
 
 // Qt Includes
+#include <QStandardPaths>
 #include <QMovie>
 
 
@@ -92,7 +92,7 @@ void SyncCheckWidget::initializePage()
         return;
     }
 
-    QString loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
+    QString loadingGitPath = QStandardDirs::locate(QStandardPaths::DataLocation , "pics/loading.mng");
 
     // Now, load syncManager settings...
     SyncManager::self()->loadSettings();

@@ -37,14 +37,16 @@
 
 // KDE Includes
 #include <KIO/FileCopyJob>
-#include <KStandardDirs>
 
 // Qt Includes
 #include <QUrl>
 #include <QTimer>
+#include <QStandardPaths>
+
 #include <QWebElement>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+
 #include <QtConcurrentRun>
 
 
@@ -96,10 +98,10 @@ bool AdBlockManager::isHidingElements()
 void AdBlockManager::loadSettings()
 {
     // first, check this...
-    const QString adblockFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrc"));
+    const QString adblockFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrc");
     if (!QFile::exists(adblockFilePath))
     {
-        const QString generalAdblockFilePath = KStandardDirs::locate("appdata" , QL1S("adblockrc"));
+        const QString generalAdblockFilePath = QStandardDirs::locate(QStandardPaths::DataLocation, QL1S("adblockrc"));
         QFile adblockFile(generalAdblockFilePath);
         const bool copied = adblockFile.copy(adblockFilePath);
         if (!copied)
@@ -163,13 +165,13 @@ void AdBlockManager::loadSettings()
         }
         else
         {
-            QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+            QString rulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_") + n;
             loadRules(rulesFilePath);
         }
     }
 
     // load local rules
-    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    QString localRulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_local"));
     loadRules(localRulesFilePath);
 
     _isAdblockEnabled = true;
@@ -308,7 +310,7 @@ void AdBlockManager::updateSubscription(int i)
     const QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
     QUrl subUrl = QUrl(fUrl);
 
-    QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+    QString rulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_") + n;
     QUrl destUrl = QUrl(rulesFilePath);
 
     KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
@@ -338,7 +340,7 @@ bool AdBlockManager::subscriptionFileExists(int i)
 {
     const QString n = QString::number(i + 1);
 
-    const QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+    const QString rulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_") + n;
     return QFile::exists(rulesFilePath);
 }
 
@@ -368,7 +370,7 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
     _settingsLoaded.waitForFinished();
 
     // save rule in local filters
-    const QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    const QString localRulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_local");
 
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::WriteOnly | QFile::Append))

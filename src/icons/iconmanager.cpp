@@ -36,12 +36,13 @@
 
 #include <KIcon>
 #include <KFileItem>
-#include <KStandardDirs>
 
 // Qt Includes
 #include <QDir>
-#include <QWebSettings>
+#include <QStandardPaths>
 #include <QUrl>
+
+#include <QWebSettings>
 
 
 QPointer<IconManager> IconManager::s_iconManager;
@@ -63,8 +64,8 @@ IconManager *IconManager::self()
 IconManager::IconManager(QObject *parent)
     : QObject(parent)
 {
-    _faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
-    _tempIconsDir = KStandardDirs::locateLocal("tmp", "favicons/", true);
+    _faviconsDir = QStandardDirs::writableLocation(QStandardPaths::CacheLocation) + QL1C('/') + QL1S("favicons/");
+    _tempIconsDir = QStandardDirs::writableLocation(QStandardPaths::TempLocation) + QL1C('/') + QL1S("favicons/");
     
     // Use webkit icon database path
     QWebSettings::setIconDatabasePath(_faviconsDir);

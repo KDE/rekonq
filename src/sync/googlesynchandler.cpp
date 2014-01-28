@@ -35,7 +35,6 @@
 #include "bookmarkmanager.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <KLocalizedString>
 #include <KBookmarkManager>
 

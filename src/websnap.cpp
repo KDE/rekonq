@@ -28,12 +28,10 @@
 // Self Includes
 #include "websnap.h"
 
-// KDE Includes
-#include <KStandardDirs>
-
 // Qt Includes
 #include <QSize>
 #include <QFile>
+#include <QStandardPaths>
 
 #include <QCryptographicHash>
 
@@ -137,7 +135,7 @@ QString WebSnap::imagePathFromUrl(const QUrl &url)
 
     QByteArray hashedName = QCryptographicHash::hash(name, QCryptographicHash::Md5).toHex();
 
-    return KStandardDirs::locateLocal("cache", QString("thumbs/") + hashedName + ".png", true);
+    return QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1C('/') + QString("thumbs/") + hashedName + QL1S(".png");
 }
 
 

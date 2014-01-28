@@ -38,7 +38,6 @@
 #include "iconmanager.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <KLocale>
 #include <KIcon>
 
