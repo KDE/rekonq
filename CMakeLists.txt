@@ -52,14 +52,14 @@ INCLUDE (KDEFrameworkCompilerSettings)
     
 SET (QT_MIN_VERSION "5.2.0")
 
-FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Gui Widgets Network Script WebKit)
+FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Gui Widgets Network Script WebKitWidgets)
 
 # ==================================================================================
 # KDE Frameworks
 
 SET (KF5_MIN_VERSION "5.0.0")
 
-FIND_PACKAGE (KF5 CONFIG REQUIRED COMPONENTS
+FIND_PACKAGE (KF5 CONFIG REQUIRED
     Init
     WidgetsAddons
     KCMUtils

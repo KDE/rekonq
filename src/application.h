@@ -32,7 +32,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QGuiApplication>
+#include <QApplication>
 
 #include <QUrl>
 #include <QPointer>
@@ -55,7 +55,7 @@ typedef QList<WebTab *> WebAppList;
 /**
   * Rekonq Application class
   */
-class Application : public QGuiApplication
+class Application : public QApplication
 {
     Q_OBJECT
 

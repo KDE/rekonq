@@ -42,7 +42,7 @@ class QString;
 class QCheckBox;
 
 
-class REKONQ_TESTS_EXPORT FindBar : public QWidget
+class FindBar : public QWidget
 {
     Q_OBJECT
 

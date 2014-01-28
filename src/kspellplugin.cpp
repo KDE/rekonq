@@ -28,9 +28,6 @@
 // Self Includes
 #include "kspellplugin.h"
 
-// KDE Includes
-#include <KDebug>
-
 // Qt Includes
 #include <QTextBoundaryFinder>
 

@@ -36,7 +36,7 @@
 #include <QWebElement>
 
 
-class REKONQ_TESTS_EXPORT ThumbUpdater : public QObject
+class ThumbUpdater : public QObject
 {
     Q_OBJECT
 

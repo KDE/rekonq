@@ -53,7 +53,7 @@ class KJob;
 class QActionGroup;
 
 
-class REKONQ_TESTS_EXPORT ListItem : public QWidget
+class ListItem : public QWidget
 {
     Q_OBJECT
 
@@ -90,7 +90,7 @@ protected:
 // -------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT TypeIconLabel : public QLabel
+class TypeIconLabel : public QLabel
 {
     Q_OBJECT
 
@@ -105,7 +105,7 @@ private:
 // -------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT TextLabel : public QLabel
+class TextLabel : public QLabel
 {
     Q_OBJECT
 
@@ -120,7 +120,7 @@ public:
 // -------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT EngineBar : public KToolBar
+class EngineBar : public KToolBar
 {
     Q_OBJECT
 
@@ -145,7 +145,7 @@ private:
 // -------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT SearchListItem : public ListItem
+class SearchListItem : public ListItem
 {
     Q_OBJECT
 
@@ -171,7 +171,7 @@ private:
 // -------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT PreviewListItem : public ListItem
+class PreviewListItem : public ListItem
 {
     Q_OBJECT
 
@@ -183,7 +183,7 @@ public:
 // -------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT BrowseListItem : public ListItem
+class BrowseListItem : public ListItem
 {
     Q_OBJECT
 
@@ -195,7 +195,7 @@ public:
 //-------------------------------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT ListItemFactory
+class ListItemFactory
 {
 public:
     static ListItem *create(const UrlSuggestionItem &item, const QString &text, QWidget *parent);

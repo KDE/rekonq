@@ -38,7 +38,7 @@
 class QUrl;
 
 
-class REKONQ_TESTS_EXPORT PanelTreeView : public QTreeView
+class PanelTreeView : public QTreeView
 {
     Q_OBJECT
 

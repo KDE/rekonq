@@ -42,7 +42,7 @@
  * If a url matches the filter it'll be shown,
  * even if it's parent doesn't match it.
  */
-class REKONQ_TESTS_EXPORT UrlFilterProxyModel : public QSortFilterProxyModel
+class UrlFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 

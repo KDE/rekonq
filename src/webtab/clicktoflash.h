@@ -40,7 +40,7 @@
 class QWebElement;
 
 
-class REKONQ_TESTS_EXPORT ClickToFlash : public QWidget
+class ClickToFlash : public QWidget
 {
     Q_OBJECT
 

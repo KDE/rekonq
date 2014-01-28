@@ -37,13 +37,14 @@
 // #include <kdemacros.h>
 
 /* Classes from the rekonq application, which are exported only for unit tests */
-#ifndef REKONQ_TESTS_EXPORT
+// Does this exist yet?
+//#ifndef REKONQ_TESTS_EXPORT
 /* We are building this library */
-#define REKONQ_TESTS_EXPORT KDE_EXPORT
-#else
+//#define REKONQ_TESTS_EXPORT KDE_EXPORT
+//#else
 /* We are using this library */
-#define REKONQ_TESTS_EXPORT KDE_IMPORT
-#endif
+//#define REKONQ_TESTS_EXPORT KDE_IMPORT
+//#endif
 
 
 // ----------------------------------------------------------------------------------------------------

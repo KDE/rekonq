@@ -39,7 +39,7 @@
 #include <QString>
 
 
-class REKONQ_TESTS_EXPORT WalletBar : public KMessageWidget
+class WalletBar : public KMessageWidget
 {
     Q_OBJECT
 

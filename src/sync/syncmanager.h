@@ -39,7 +39,7 @@
 #include <QPointer>
 
 
-class REKONQ_TESTS_EXPORT SyncManager : public QObject
+class SyncManager : public QObject
 {
     Q_OBJECT
 

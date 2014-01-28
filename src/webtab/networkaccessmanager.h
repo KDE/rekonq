@@ -42,7 +42,7 @@
 class QWebFrame;
 
 
-class REKONQ_TESTS_EXPORT NetworkAccessManager : public KIO::Integration::AccessManager
+class NetworkAccessManager : public KIO::Integration::AccessManager
 {
     Q_OBJECT
 

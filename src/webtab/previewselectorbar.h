@@ -39,7 +39,7 @@
 class QAction;
 
 
-class REKONQ_TESTS_EXPORT PreviewSelectorBar : public KMessageWidget
+class PreviewSelectorBar : public KMessageWidget
 {
     Q_OBJECT
 

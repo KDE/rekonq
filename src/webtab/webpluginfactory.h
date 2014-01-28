@@ -36,7 +36,7 @@
 #include <KWebPluginFactory>
 
 
-class REKONQ_TESTS_EXPORT WebPluginFactory : public KWebPluginFactory
+class WebPluginFactory : public KWebPluginFactory
 {
     Q_OBJECT
 

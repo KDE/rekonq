@@ -56,15 +56,13 @@
 #include "ui_cleardata.h"
 
 // KDE Includes
-#include <KCmdLineArgs>
-
-#include <KDialog>
+// #include <KDialog>
 #include <KProcess>
-#include <KPushButton>
-#include <KStandardDirs>
-#include <KWindowSystem>
-#include <KWindowInfo>
-#include <KStartupInfo>
+// #include <KPushButton>
+// #include <KStandardDirs>
+// #include <KWindowSystem>
+// #include <KWindowInfo>
+// #include <KStartupInfo>
 
 #include <KMessageBox>
 
@@ -76,7 +74,7 @@
 
 
 Application::Application()
-    : QGuiApplication()
+    : QApplication()
 {
     // updating rekonq configuration
     updateConfiguration();

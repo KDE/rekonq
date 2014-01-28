@@ -48,7 +48,7 @@ class RekonqWindow;
   * Session Management: Needs clean up :)
   *
   */
-class REKONQ_TESTS_EXPORT SessionManager : public QObject
+class SessionManager : public QObject
 {
     Q_OBJECT
 

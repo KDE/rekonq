@@ -42,7 +42,7 @@
 /**
  * This class allows to manage bookmarks as actions.
  */
-class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject, public KBookmarkOwner
+class BookmarkOwner : public QObject, public KBookmarkOwner
 {
     Q_OBJECT
 

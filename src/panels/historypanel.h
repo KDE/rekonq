@@ -36,7 +36,7 @@
 #include "urlpanel.h"
 
 
-class REKONQ_TESTS_EXPORT HistoryPanel : public UrlPanel
+class HistoryPanel : public UrlPanel
 {
     Q_OBJECT
 

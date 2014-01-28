@@ -45,7 +45,7 @@ class QWidget;
  * Inspired by Dolphin solution.
  *
  */
-class REKONQ_TESTS_EXPORT RekonqMenu : public KMenu
+class RekonqMenu : public KMenu
 {
     Q_OBJECT
 

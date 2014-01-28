@@ -35,7 +35,7 @@
 #include <QUrl>
 
 
-class REKONQ_TESTS_EXPORT WebIcon : public QObject
+class WebIcon : public QObject
 {
     Q_OBJECT
 

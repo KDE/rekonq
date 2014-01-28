@@ -44,7 +44,7 @@ class QNetworkRequest;
 class QWebFrame;
 
 
-class REKONQ_TESTS_EXPORT ProtocolHandler : public QObject
+class ProtocolHandler : public QObject
 {
     Q_OBJECT
 

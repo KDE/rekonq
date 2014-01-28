@@ -43,7 +43,7 @@ class KBookmark;
 class QWebFrame;
 
 
-class REKONQ_TESTS_EXPORT NewTabPage : public QObject
+class NewTabPage : public QObject
 {
     Q_OBJECT
 

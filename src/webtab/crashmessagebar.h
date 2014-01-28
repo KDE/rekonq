@@ -35,7 +35,7 @@
 #include <KMessageWidget>
 
 
-class REKONQ_TESTS_EXPORT CrashMessageBar : public KMessageWidget
+class CrashMessageBar : public KMessageWidget
 {
     Q_OBJECT
 

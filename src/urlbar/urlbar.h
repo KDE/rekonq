@@ -70,7 +70,7 @@ typedef QList<IconButton *> IconButtonPointerList;
 // ------------------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT UrlBar : public KLineEdit
+class UrlBar : public KLineEdit
 {
     Q_OBJECT
 

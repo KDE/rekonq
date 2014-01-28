@@ -41,7 +41,7 @@ class KIcon;
 class QWebFrame;
 
 
-class REKONQ_TESTS_EXPORT IconManager : public QObject
+class IconManager : public QObject
 {
     Q_OBJECT
 

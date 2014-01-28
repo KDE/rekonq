@@ -30,7 +30,6 @@
 #include <QSet>
 #include <QString>
 
-#include <KDebug>
 
 class AdBlockHostMatcher
 {

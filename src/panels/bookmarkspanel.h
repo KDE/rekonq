@@ -43,7 +43,7 @@ class KBookmark;
 class QModelIndex;
 
 
-class REKONQ_TESTS_EXPORT BookmarksPanel : public UrlPanel
+class BookmarksPanel : public UrlPanel
 {
     Q_OBJECT
 

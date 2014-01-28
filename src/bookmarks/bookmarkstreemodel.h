@@ -64,7 +64,7 @@ private:
 // -------------------------------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT BookmarksTreeModel : public QAbstractItemModel
+class BookmarksTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 

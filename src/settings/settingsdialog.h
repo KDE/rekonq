@@ -40,7 +40,7 @@ class QWidget;
 class Private;
 
 
-class REKONQ_TESTS_EXPORT SettingsDialog : public KConfigDialog
+class SettingsDialog : public KConfigDialog
 {
     Q_OBJECT
 

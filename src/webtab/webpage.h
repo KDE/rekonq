@@ -42,10 +42,10 @@
 #include "websslinfo.h"
 
 // KDE Includes
-#include <KWebPage>
+//#include <KWebPage>
 
 
-class REKONQ_TESTS_EXPORT WebPage : public KWebPage
+class WebPage : public KWebPage
 {
     Q_OBJECT
 

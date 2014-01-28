@@ -47,7 +47,7 @@
 class QUrl;
 
 
-class REKONQ_TESTS_EXPORT DownloadManager : public QObject
+class DownloadManager : public QObject
 {
     Q_OBJECT
 

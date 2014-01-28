@@ -37,7 +37,7 @@
 #include <QProcess>
 
 
-class REKONQ_TESTS_EXPORT SearchEngineBar : public KMessageWidget
+class SearchEngineBar : public KMessageWidget
 {
     Q_OBJECT
 

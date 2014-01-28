@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KWebView>
+//#include <KWebView>
 
 // Qt Includes
 #include <QTime>
@@ -49,7 +49,7 @@ class QLabel;
 class QTimer;
 
 
-class REKONQ_TESTS_EXPORT WebView : public KWebView
+class WebView : public KWebView
 {
     Q_OBJECT
 

@@ -37,11 +37,10 @@
 
 // Forward Declarations
 class PanelTreeView;
-
 class QAbstractItemModel;
 
 
-class REKONQ_TESTS_EXPORT UrlPanel : public QDockWidget
+class UrlPanel : public QDockWidget
 {
     Q_OBJECT
 

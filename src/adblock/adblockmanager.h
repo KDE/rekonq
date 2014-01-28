@@ -147,7 +147,7 @@ class QWebFrame;
 typedef QList<AdBlockRule> AdBlockRuleList;
 
 
-class REKONQ_TESTS_EXPORT AdBlockManager : public QObject
+class AdBlockManager : public QObject
 {
     Q_OBJECT
 

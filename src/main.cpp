@@ -34,10 +34,7 @@
 #include "urlresolver.h"
 
 // KDE Includes
-#include <KDE/KAboutData>
-#include <KDE/KUniqueApplication>
-#include <KDE/KCmdLineArgs>
-#include <KDebug>
+#include <KAboutData>
 
 // Qt Includes
 #include <QDir>
@@ -196,34 +193,34 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "");
 
 
-    // Initialize command line args
-    KCmdLineArgs::init(argc, argv, &about);
-
-    // Define the command line options using KCmdLineOptions
-    KCmdLineOptions options;
-
-    // adding options
-    options.add("incognito" , ki18n("Open in incognito mode"));
-    options.add("webapp" , ki18n("Open URL as web app (in a simple window)"));
-    options.add("+[URL]" , ki18n("Location to open"));
-
-    // Register the supported options
-    KCmdLineArgs::addCmdLineOptions(options);
+//     // Initialize command line args
+//     KCmdLineArgs::init(argc, argv, &about);
+// 
+//     // Define the command line options using KCmdLineOptions
+//     KCmdLineOptions options;
+// 
+//     // adding options
+//     options.add("incognito" , ki18n("Open in incognito mode"));
+//     options.add("webapp" , ki18n("Open URL as web app (in a simple window)"));
+//     options.add("+[URL]" , ki18n("Location to open"));
+// 
+//     // Register the supported options
+//     KCmdLineArgs::addCmdLineOptions(options);
 
     if (!Application::start())
     {
-        kWarning() << "rekonq is already running!";
+        qWarning() << "rekonq is already running!";
         return 0;
     }
 
-#if defined(Q_WS_X11)
-    // On X11, the raster engine gives better performance than native.
-    QApplication::setGraphicsSystem(QLatin1String("raster"));
-#endif
+// #if defined(Q_WS_X11)
+//     // On X11, the raster engine gives better performance than native.
+//     QApplication::setGraphicsSystem(QLatin1String("raster"));
+// #endif
+// 
+//     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
 
-    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
-
-    Application app;
+    Application app(argc, argv);
 
     // set application data
     QCoreApplication::setApplicationName(QLatin1String("rekonq"));

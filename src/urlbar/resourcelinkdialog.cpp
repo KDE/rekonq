@@ -48,7 +48,6 @@
 
 // KDE Includes
 #include <KLocale>
-#include <KDebug>
 #include <KAction>
 #include <KIcon>
 

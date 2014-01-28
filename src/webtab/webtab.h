@@ -52,7 +52,7 @@ class WebPage;
 class WebWindow;
 
 
-class REKONQ_TESTS_EXPORT WebTab : public QWidget
+class WebTab : public QWidget
 {
     Q_OBJECT
 

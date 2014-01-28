@@ -35,7 +35,7 @@
 #include <QNetworkAccessManager>
 
 
-class REKONQ_TESTS_EXPORT KNetworkAccessManager : public QNetworkAccessManager
+class KNetworkAccessManager : public QNetworkAccessManager
 {
     Q_OBJECT
 

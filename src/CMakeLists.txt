@@ -243,7 +243,7 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             Qt5::Widgets
                             Qt5::Network
                             Qt5::Script
-                            Qt5::WebKit
+                            Qt5::WebKitWidgets
                             # ---------------------------------------
                             KF5::Init
                             KF5::WidgetsAddons
