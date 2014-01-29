@@ -59,7 +59,6 @@
 #include <KFileDialog>
 #include <KJobUiDelegate>
 #include <KMimeTypeTrader>
-#include <KTemporaryFile>
 #include <KToolBar>
 #include <KToggleFullScreenAction>
 #include <KShortcutsDialog>
@@ -75,6 +74,7 @@
 #include <QWebHistory>
 #include <QVBoxLayout>
 #include <QUrl>
+#include <QTemporaryFile>
 
 
 WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
@@ -823,7 +823,7 @@ void WebWindow::viewPageSource()
 {
     QString code = _tab->page()->mainFrame()->toHtml();
 
-    KTemporaryFile tmpFile;
+    QTemporaryFile tmpFile;
     tmpFile.setAutoRemove(false);
     if (!tmpFile.open())
         return;

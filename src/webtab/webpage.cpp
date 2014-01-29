@@ -53,7 +53,6 @@
 #include "webwindow.h"
 
 // KDE Includes
-#include <KTemporaryFile>
 #include <KJobUiDelegate>
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -75,6 +74,7 @@
 // Qt Includes
 #include <QStandardPaths>
 
+#include <QTemporaryFile>
 #include <QTextDocument>
 #include <QFileInfo>
 
@@ -532,7 +532,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     {
         qDebug() << "POST OPERATION: downloading file...";
         QFileInfo finfo(_suggestedFileName.isEmpty() ? _loadingUrl.fileName() : _suggestedFileName);
-        KTemporaryFile tempFile;
+        QTemporaryFile tempFile;
         tempFile.setSuffix(QL1C('.') + finfo.suffix());
         tempFile.setAutoRemove(false);
         tempFile.open();
