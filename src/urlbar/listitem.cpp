@@ -40,11 +40,11 @@
 #include "searchengine.h"
 
 // KDE Includes
-#include <KAction>
 #include <kio/jobclasses.h>
 #include <kio/scheduler.h>
 
 // Qt Includes
+#include <QAction>
 #include <QApplication>
 #include <QActionGroup>
 #include <QHBoxLayout>
@@ -393,12 +393,12 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 }
 
 
-KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine)
+QAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine)
 {
     QUrl u = engine->property("Query").toUrl();
     QUrl url = QUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
 
-    KAction *a = new KAction(IconManager::self()->engineFavicon(url), engine->name(), this);
+    QAction *a = new QAction(IconManager::self()->engineFavicon(url), engine->name(), this);
     a->setCheckable(true);
     if (engine->desktopEntryName() == selectedEngine->desktopEntryName())
     {
@@ -412,7 +412,7 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
 
 void EngineBar::changeSearchEngine()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     if (!a)
         return;
     emit searchEngineChanged(KService::serviceByDesktopPath(a->data().toString()));

@@ -46,7 +46,6 @@
 class BookmarkToolBar;
 class BookmarkOwner;
 
-class KAction;
 class KActionCollection;
 class KBookmarkGroup;
 class KBookmarkManager;

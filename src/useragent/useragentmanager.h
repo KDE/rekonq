@@ -35,8 +35,9 @@
 // Forward Declarations
 class WebWindow;
 
-class KAction;
 class KMenu;
+
+class QAction;
 
 
 class UserAgentManager : public QObject
@@ -61,7 +62,7 @@ private Q_SLOTS:
     void setUserAgent();
 
 private:
-    KAction *m_uaSettingsAction;
+    QAction *m_uaSettingsAction;
     QPointer<WebWindow> m_uaTab;
 
     static QPointer<UserAgentManager> s_userAgentManager;

@@ -57,7 +57,6 @@
 
 // KDE Includes
 // #include <KDialog>
-#include <KAction>
 #include <KProcess>
 // #include <KPushButton>
 #include <KWindowSystem>
@@ -67,14 +66,15 @@
 #include <KMessageBox>
 
 // Qt Includes
+#include <QAction>
+#include <QIcon>
 #include <QStandardPaths>
+
+#include <QDir>
+#include <QTimer>
 
 #include <QDBusInterface>
 #include <QDBusReply>
-
-#include <QDir>
-#include <QIcon>
-#include <QTimer>
 
 
 Application::Application(int &argc, char **argv)

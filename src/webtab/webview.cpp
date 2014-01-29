@@ -46,7 +46,6 @@
 #include "webwindow.h"
 
 // KDE Includes
-#include <KAction>
 #include <KActionMenu>
 #include <KLocalizedString>
 #include <KMenu>
@@ -61,6 +60,7 @@
 #include <QFile>
 #include <QTimer>
 #include <QStandardPaths>
+#include <QAction>
 
 #include <QApplication>
 #include <QBitmap>
@@ -304,7 +304,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     
     KMenu menu(this);
 
-    KAction *sendByMailAction = new KAction(&menu);
+    QAction *sendByMailAction = new QAction(&menu);
     sendByMailAction->setIcon(QIcon::fromTheme("mail-send"));
     connect(sendByMailAction, SIGNAL(triggered(bool)), this, SLOT(sendByMail()));
 
@@ -357,10 +357,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
 
         // Frame
-        KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), &menu);
+        QActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), &menu);
         frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
 
-        a = new KAction(QIcon::fromTheme("document-print-frame"), i18n("Print Frame"), &menu);
+        a = new QAction(QIcon::fromTheme("document-print-frame"), i18n("Print Frame"), &menu);
         connect(a, SIGNAL(triggered()), m_parentTab, SLOT(printFrame()));
         frameMenu->addAction(a);
 
@@ -376,7 +376,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         if (!QStandardPaths::findExecutable("kget").isNull() && ReKonfig::kgetList())
         {
-            a = new KAction(QIcon::fromTheme("kget"), i18n("List All Links"), &menu);
+            a = new QAction(QIcon::fromTheme("kget"), i18n("List All Links"), &menu);
             connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
             menu.addAction(a);
         }
@@ -395,19 +395,19 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(m_contextMenuHitResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
-        a = new KAction(QIcon::fromTheme("tab-new"), i18n("Open in New &Tab"), &menu);
+        a = new QAction(QIcon::fromTheme("tab-new"), i18n("Open in New &Tab"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
         menu.addAction(a);
 
-        a = new KAction(QIcon::fromTheme("window-new"), i18n("Open in New &Window"), &menu);
+        a = new QAction(QIcon::fromTheme("window-new"), i18n("Open in New &Window"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
         if (!m_parentTab->isWebApp())
         {
-            a = new KAction(QIcon::fromTheme("view-media-artist"), i18n("Open in Private &Window"), &menu);
+            a = new QAction(QIcon::fromTheme("view-media-artist"), i18n("Open in Private &Window"), &menu);
             a->setData(m_contextMenuHitResult.linkUrl());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInPrivateWindow()));
             menu.addAction(a);
@@ -415,7 +415,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         if (m_isExternalLinkHovered)
         {
-            a = new KAction(QIcon::fromTheme("view-close"), i18n("Open &Here"), this);
+            a = new QAction(QIcon::fromTheme("view-close"), i18n("Open &Here"), this);
             a->setData(m_contextMenuHitResult.linkUrl());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkHere()));
             menu.addAction(a);
@@ -442,25 +442,25 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        a = new KAction(QIcon::fromTheme("view-preview"), i18n("&View Image"), &menu);
+        a = new QAction(QIcon::fromTheme("view-preview"), i18n("&View Image"), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
                 this, SLOT(viewImage(Qt::MouseButtons,Qt::KeyboardModifiers)));
         menu.addAction(a);
 
-        a = new KAction(QIcon::fromTheme("document-save"), i18n("Save image as..."), &menu);
+        a = new QAction(QIcon::fromTheme("document-save"), i18n("Save image as..."), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(saveImage()));
         menu.addAction(a);
 
-        a = new KAction(QIcon::fromTheme("view-media-visualization"), i18n("&Copy Image Location"), &menu);
+        a = new QAction(QIcon::fromTheme("view-media-visualization"), i18n("&Copy Image Location"), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
 
         if (AdBlockManager::self()->isEnabled())
         {
-            a = new KAction(QIcon::fromTheme("preferences-web-browser-adblock"), i18n("Block image"), &menu);
+            a = new QAction(QIcon::fromTheme("preferences-web-browser-adblock"), i18n("Block image"), &menu);
             a->setData(m_contextMenuHitResult.imageUrl());
             connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(blockImage()));
             menu.addAction(a);
@@ -507,14 +507,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 }
 
                 // open selected text url in a new tab
-                QAction * const openInNewTabAction = new KAction(QIcon::fromTheme("tab-new"),
+                QAction * const openInNewTabAction = new QAction(QIcon::fromTheme("tab-new"),
                         i18n("Open '%1' in New Tab", truncatedUrl), &menu);
                 openInNewTabAction->setData( QUrl::fromUserInput(selectedText()) );
                 connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
                 menu.addAction(openInNewTabAction);
                 
                 // open selected text url in a new window
-                QAction * const openInNewWindowAction = new KAction(QIcon::fromTheme("window-new"),
+                QAction * const openInNewWindowAction = new QAction(QIcon::fromTheme("window-new"),
                         i18n("Open '%1' in New Window", truncatedUrl), &menu);
                 openInNewWindowAction->setData( QUrl::fromUserInput(selectedText()) );
                 connect(openInNewWindowAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
@@ -527,7 +527,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         KService::Ptr defaultEngine = SearchEngine::defaultEngine();
         if (defaultEngine) // check if a default engine is set
         {
-            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1",
+            a = new QAction(i18nc("Search selected text with the default search engine", "Search with %1",
                                   defaultEngine->name()), &menu);
             a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
             a->setData(defaultEngine->entryPath());
@@ -540,7 +540,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
         {
-            a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), &menu);
+            a = new QAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), &menu);
             a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(engine, "")));
             a->setData(engine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
@@ -549,7 +549,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         if (webwin)
         {
-            a = new KAction(QIcon::fromTheme("edit-find"), i18n("On Current Page"), &menu);
+            a = new QAction(QIcon::fromTheme("edit-find"), i18n("On Current Page"), &menu);
             connect(a, SIGNAL(triggered()), webwin, SLOT(findSelectedText()));
             searchMenu->addAction(a);
         }
@@ -566,7 +566,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {      
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         
-        a = new KAction(QIcon::fromTheme("bookmark-new"), i18n("&Bookmark link"), &menu);
+        a = new QAction(QIcon::fromTheme("bookmark-new"), i18n("&Bookmark link"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
         menu.addAction(a);
@@ -596,7 +596,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     
     if (webwin && window()->isFullScreen())
     {
-        a = new KAction(QIcon::fromTheme("view-fullscreen"), i18n("Exit FullScreen Mode"), &menu);
+        a = new QAction(QIcon::fromTheme("view-fullscreen"), i18n("Exit FullScreen Mode"), &menu);
         a->setCheckable(true);
         a->setChecked(true);
         connect(a, SIGNAL(triggered(bool)), webwin, SIGNAL(setFullScreen(bool)));
@@ -765,7 +765,7 @@ void WebView::paintEvent(QPaintEvent* event)
 
 void WebView::search()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     KService::Ptr engine = KService::serviceByDesktopPath(a->data().toString());
     QUrl urlSearch = QUrl(SearchEngine::buildQuery(engine, selectedText()));
 
@@ -775,7 +775,7 @@ void WebView::search()
 
 void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl url(a->data().toUrl());
 
     if (modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
@@ -791,7 +791,7 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
 
 void WebView::slotCopyImageLocation()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl imageUrl(a->data().toUrl());
 #ifndef QT_NO_MIMECLIPBOARD
     // Set it in both the mouse selection and in the clipboard
@@ -809,7 +809,7 @@ void WebView::slotCopyImageLocation()
 
 void WebView::openLinkHere()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl url(a->data().toUrl());
 
     emit loadUrl(url, Rekonq::CurrentTab);
@@ -818,7 +818,7 @@ void WebView::openLinkHere()
 
 void WebView::openLinkInNewWindow()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl url(a->data().toUrl());
 
     emit loadUrl(url, Rekonq::NewWindow);
@@ -827,7 +827,7 @@ void WebView::openLinkInNewWindow()
 
 void WebView::openLinkInNewTab()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl url(a->data().toUrl());
 
     if (m_parentTab->isWebApp())
@@ -839,7 +839,7 @@ void WebView::openLinkInNewTab()
 
 void WebView::openLinkInPrivateWindow()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl url(a->data().toUrl());
 
     emit loadUrl(url, Rekonq::NewPrivateWindow);
@@ -848,7 +848,7 @@ void WebView::openLinkInPrivateWindow()
 
 void WebView::bookmarkLink()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl url(a->data().toUrl());
 
     BookmarkManager::self()->rootGroup().addBookmark(url.url(), url);
@@ -1403,7 +1403,7 @@ void WebView::accessKeyShortcut()
 
 void WebView::sendByMail()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QString url = a->data().toString();
 
     KToolInvocation::invokeMailer("", "", "", "", url);
@@ -1556,7 +1556,7 @@ WebTab *WebView::parentTab()
 
 void WebView::saveImage()
 {
-    KAction *a = qobject_cast<KAction*>(sender());
+    QAction *a = qobject_cast<QAction*>(sender());
     QUrl imageUrl(a->data().toUrl());
 
     DownloadManager::self()->downloadResource(imageUrl,

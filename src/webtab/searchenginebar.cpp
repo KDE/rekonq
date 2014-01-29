@@ -35,10 +35,10 @@
 
 // KDE Includes
 #include <KIconLoader>
-#include <KAction>
 #include <KLocalizedString>
 
 // Qt Includes
+#include <QAction>
 #include <QIcon>
 
 
@@ -61,11 +61,11 @@ SearchEngineBar::SearchEngineBar(QWidget *parent)
 
     setText(i18n("You do not have a default search engine set. Without it, rekonq will not show proper URL suggestions."));
 
-    KAction *acceptAction = new KAction(i18n("Set it"), this);
+    QAction *acceptAction = new QAction(i18n("Set it"), this);
     connect(acceptAction, SIGNAL(triggered(bool)), this, SIGNAL(accepted()));
     addAction(acceptAction);
 
-    KAction *rejectAction = new KAction(i18n("Ignore"), this);
+    QAction *rejectAction = new QAction(i18n("Ignore"), this);
     connect(rejectAction, SIGNAL(triggered(bool)), this, SIGNAL(rejected()));
     addAction(rejectAction);
 }

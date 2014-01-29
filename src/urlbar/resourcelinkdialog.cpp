@@ -31,6 +31,7 @@
 #include "newresourcedialog.h"
 
 // Qt Includes
+#include <QAction>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QComboBox>
@@ -49,7 +50,6 @@
 
 // KDE Includes
 #include <KLocale>
-#include <KAction>
 
 
 // Nepomuk Includes
@@ -76,7 +76,7 @@ public:
     KLineEdit *m_searchBox;
     QListView *m_resourceView;
     QListView *m_linkedResources;
-    KAction *m_removeResourceAction;
+    QAction *m_removeResourceAction;
     QComboBox *m_resourceSelect;
     QLabel *m_resourceLabel;
     QLabel *m_linkedResourceLabel;
@@ -223,7 +223,7 @@ void Nepomuk2::ResourceLinkDialog::unlinkResourceSlot()
 
 void Nepomuk2::ResourceLinkDialog::showContextMenu(const QPoint &pos)
 {
-    d->m_removeResourceAction = new KAction(this);
+    d->m_removeResourceAction = new QAction(this);
     d->m_removeResourceAction->setText(i18n("&Unlink"));
     d->m_removeResourceAction->setIcon(QIcon::fromTheme("edit-delete"));
     connect(d->m_removeResourceAction, SIGNAL(triggered(bool)), this, SLOT(unlinkResourceSlot()));

@@ -46,10 +46,10 @@
 // Forward Declarations
 class UrlSuggestionItem;
 
-class KAction;
 class KIcon;
 class KJob;
 
+class QAction;
 class QActionGroup;
 
 
@@ -136,7 +136,7 @@ private Q_SLOTS:
     void changeSearchEngine();
 
 private:
-    KAction *newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine);
+    QAction *newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine);
     QActionGroup *m_engineGroup;
     
 };

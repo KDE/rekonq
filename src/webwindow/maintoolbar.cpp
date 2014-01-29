@@ -24,15 +24,18 @@
 * ============================================================ */
 
 
+// Self Includes
 #include "maintoolbar.h"
 
-
+// Local Includes
 #include "webwindow.h"
 
-#include <KAction>
+// KDE Includes
 #include <KActionCollection>
 #include <KMenu>
 
+// Qt Includes
+#include <QAction>
 #include <QPoint>
 
 

@@ -61,11 +61,10 @@
 #include <KIconLoader>
 #include <KMessageBox>
 #include <KStandardAction>
-#include <KAction>
 
 // Qt Includes
+#include <QAction>
 #include <QStandardPaths>
-
 #include <QIcon>
 #include <QPainter>
 #include <QPaintEvent>
@@ -464,7 +463,7 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     const bool clipboardFilled = !rApp->clipboard()->text().isEmpty();
 
     // Cut
-    KAction *a = KStandardAction::cut(this, SLOT(cut()), &menu);
+    QAction *a = KStandardAction::cut(this, SLOT(cut()), &menu);
     a->setEnabled(hasSelectedText());
     menu.addAction(a);
 
@@ -482,19 +481,19 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     const QString clipboardText = rApp->clipboard()->text();
     if (isValidURL(clipboardText) || clipboardText.isEmpty())
     {
-        a = new KAction(i18n("Paste && Go"), &menu);
+        a = new QAction(i18n("Paste && Go"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndGo()));
     }
     else
     {
-        a = new KAction(i18n("Paste && Search"), &menu);
+        a = new QAction(i18n("Paste && Search"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndSearch()));
     }
     a->setEnabled(clipboardFilled);
     menu.addAction(a);
 
     // Delete
-    a = new KAction(QIcon::fromTheme("edit-delete"), i18n("Delete"), &menu);
+    a = new QAction(QIcon::fromTheme("edit-delete"), i18n("Delete"), &menu);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(delSlot()));
     a->setEnabled(hasSelectedText());
     menu.addAction(a);
@@ -817,17 +816,17 @@ void UrlBar::showSSLInfo(QPoint pos)
 void UrlBar::manageStarred(QPoint pos)
 {
     KMenu menu;
-    KAction *a;
+    QAction *a;
 
     // Bookmarks
     if (BookmarkManager::self()->bookmarkForUrl(_tab->url()).isNull())
     {
-        a = new KAction(QIcon(QIcon::fromTheme("bookmarks").pixmap(32, 32, QIcon::Disabled)), i18n("Add Bookmark"), &menu);
+        a = new QAction(QIcon(QIcon::fromTheme("bookmarks").pixmap(32, 32, QIcon::Disabled)), i18n("Add Bookmark"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(manageBookmarks()));
     }
     else
     {
-        a = new KAction(QIcon::fromTheme("bookmarks"), i18n("Edit Bookmark"), &menu);
+        a = new QAction(QIcon::fromTheme("bookmarks"), i18n("Edit Bookmark"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(manageBookmarks()));        
     }
     menu.addAction(a);
@@ -835,12 +834,12 @@ void UrlBar::manageStarred(QPoint pos)
     // Favorites
     if (ReKonfig::previewUrls().contains(_tab->url().url()))
     {
-        a = new KAction(QIcon::fromTheme("emblem-favorite"), i18n("Remove from Favorites"), &menu);
+        a = new QAction(QIcon::fromTheme("emblem-favorite"), i18n("Remove from Favorites"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(removeFromFavorites()));        
     }
     else
     {
-        a = new KAction(QIcon(QIcon::fromTheme("emblem-favorite").pixmap(32, 32, QIcon::Disabled)), i18n("Add to Favorites"), &menu);
+        a = new QAction(QIcon(QIcon::fromTheme("emblem-favorite").pixmap(32, 32, QIcon::Disabled)), i18n("Add to Favorites"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(addToFavorites()));
     }
     menu.addAction(a);

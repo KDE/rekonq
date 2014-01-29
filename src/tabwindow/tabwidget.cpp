@@ -47,8 +47,6 @@
 #include "sessionmanager.h"
 
 // KDE Includes
-#include <KAction>
-#include <KApplication>
 #include <KConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
@@ -71,6 +69,8 @@
 #include <QWebHistory>
 #include <QWebSettings>
 #include <QUrl>
+#include <QAction>
+#include <QApplication>
 
 
 TabWidget::TabWidget(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
@@ -143,29 +143,29 @@ void TabWidget::init()
     // ============================== Tab Window Actions ====================================
     _ac->addAssociatedWidget(this);
 
-    KAction* a;
+    QAction* a;
 
-    a = new KAction(QIcon::fromTheme("tab-new"), i18n("New &Tab"), this);
+    a = new QAction(QIcon::fromTheme("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
     actionCollection()->addAction(QL1S("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(newTab()));
 
-    a = new KAction(QIcon::fromTheme("tab-new"), i18n("Open Last Closed Tab"), this);
+    a = new QAction(QIcon::fromTheme("tab-new"), i18n("Open Last Closed Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
     actionCollection()->addAction(QL1S("open_last_closed_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(restoreLastClosedTab()));
 
-    a = new KAction(QIcon::fromTheme("tab-close"), i18n("&Close Tab"), this);
+    a = new QAction(QIcon::fromTheme("tab-close"), i18n("&Close Tab"), this);
     a->setShortcuts(KStandardShortcut::close());
     actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
 
-    a = new KAction(i18n("Show Next Tab"), this);
+    a = new QAction(i18n("Show Next Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext());
     actionCollection()->addAction(QL1S("show_next_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(nextTab()));
 
-    a = new KAction(i18n("Show Previous Tab"), this);
+    a = new QAction(i18n("Show Previous Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QL1S("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(previousTab()));
@@ -175,7 +175,7 @@ void TabWidget::init()
     fullScreenShortcut.setAlternate(Qt::Key_F11);
     a->setShortcut(fullScreenShortcut);
 
-    a = new KAction(QIcon::fromTheme("bookmarks"), i18n("Bookmark all tabs"), this);
+    a = new QAction(QIcon::fromTheme("bookmarks"), i18n("Bookmark all tabs"), this);
     actionCollection()->addAction(QL1S("bookmark_all_tabs"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkAllTabs()));
 
@@ -195,14 +195,14 @@ void TabWidget::init()
     connect(this, SIGNAL(actionsReady()), rw, SLOT(registerWindow()));
 
     // setup bookmarks panel action
-    a = new KAction(QIcon::fromTheme("bookmarks-organize"), i18n("Bookmarks Panel"), this);
+    a = new QAction(QIcon::fromTheme("bookmarks-organize"), i18n("Bookmarks Panel"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     actionCollection()->addAction(QL1S("show_bookmarks_panel"), a);
     a->setCheckable(true);
     connect(a, SIGNAL(triggered(bool)), rw, SLOT(showBookmarksPanel(bool)));
 
     // setup history panel action
-    a = new KAction(QIcon::fromTheme("view-history"), i18n("History Panel"), this);
+    a = new QAction(QIcon::fromTheme("view-history"), i18n("History Panel"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QL1S("show_history_panel"), a);
     a->setCheckable(true);
@@ -213,7 +213,7 @@ void TabWidget::init()
     QSignalMapper *tabSignalMapper = new QSignalMapper(this);
     for (int i = 0; i < 9; i++)
     {
-        a = new KAction(i18n("Switch to Tab %1", i+1), this);
+        a = new QAction(i18n("Switch to Tab %1", i+1), this);
         a->setShortcut(KShortcut(QString("Alt+%1").arg(i+1)));
         actionCollection()->addAction(QL1S(QString("switch_tab_" + QString::number(i+1)).toAscii()), a);
         connect(a, SIGNAL(triggered(bool)), tabSignalMapper, SLOT(map()));
@@ -225,7 +225,7 @@ void TabWidget::init()
     QSignalMapper *favoritesSignalMapper = new QSignalMapper(this);
     for (int i = 1; i <= 9; ++i)
     {
-        a = new KAction(i18n("Switch to Favorite Page %1", i), this);
+        a = new QAction(i18n("Switch to Favorite Page %1", i), this);
         a->setShortcut(KShortcut(QString("Ctrl+%1").arg(i)));
         actionCollection()->addAction(QL1S(QString("switch_favorite_" + QString::number(i)).toAscii()), a);
         connect(a, SIGNAL(triggered(bool)), favoritesSignalMapper, SLOT(map()));

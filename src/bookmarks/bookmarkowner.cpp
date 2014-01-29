@@ -65,7 +65,7 @@ BookmarkOwner::BookmarkOwner(KBookmarkManager *manager, QObject *parent)
 }
 
 
-KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAction &bmAction)
+QAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAction &bmAction)
 {
     switch (bmAction)
     {
@@ -406,7 +406,7 @@ void BookmarkOwner::unsetToolBarFolder()
 }
 
 
-KAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
+QAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
                                      const QString &help, const char *slot,
                                      const KBookmark &bookmark)
 {
@@ -421,7 +421,7 @@ KAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
 
 
 CustomBookmarkAction::CustomBookmarkAction(const KBookmark &bookmark, const QIcon &icon, const QString &text, QObject *parent)
-    : KAction(icon, text, parent)
+    : QAction(icon, text, parent)
     , m_bookmark(bookmark)
 {
     connect(this, SIGNAL(triggered()), this, SLOT(onActionTriggered()));

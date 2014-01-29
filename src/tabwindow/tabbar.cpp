@@ -43,12 +43,12 @@
 
 // KDE Includes
 #include <KAcceleratorManager>
-#include <KAction>
 #include <KColorScheme>
 #include <KLocalizedString>
 #include <KMenu>
 
 // Qt Includes
+#include <QAction>
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QSignalMapper>
@@ -133,7 +133,7 @@ QSize TabBar::tabSizeHint(int index) const
 
 void TabBar::cloneTab()
 {
-    KAction *a = qobject_cast<KAction *>(sender());
+    QAction *a = qobject_cast<QAction *>(sender());
     if (a)
     {
         int index = a->data().toInt();
@@ -144,7 +144,7 @@ void TabBar::cloneTab()
 
 void TabBar::closeTab()
 {
-    KAction *a = qobject_cast<KAction *>(sender());
+    QAction *a = qobject_cast<QAction *>(sender());
     if (a)
     {
         int index = a->data().toInt();
@@ -155,7 +155,7 @@ void TabBar::closeTab()
 
 void TabBar::closeOtherTabs()
 {
-    KAction *a = qobject_cast<KAction *>(sender());
+    QAction *a = qobject_cast<QAction *>(sender());
     if (a)
     {
         int index = a->data().toInt();
@@ -166,7 +166,7 @@ void TabBar::closeOtherTabs()
 
 void TabBar::reloadTab()
 {
-    KAction *a = qobject_cast<KAction *>(sender());
+    QAction *a = qobject_cast<QAction *>(sender());
     if (a)
     {
         int index = a->data().toInt();
@@ -177,7 +177,7 @@ void TabBar::reloadTab()
 
 void TabBar::detachTab()
 {
-    KAction *a = qobject_cast<KAction *>(sender());
+    QAction *a = qobject_cast<QAction *>(sender());
     if (a)
     {
         int index = a->data().toInt();
@@ -199,23 +199,23 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
 
     menu.addSeparator();    // ----------------------------------------------------------------
 
-    a = new KAction(QIcon::fromTheme("tab-duplicate"), i18n("Clone"), this);
+    a = new QAction(QIcon::fromTheme("tab-duplicate"), i18n("Clone"), this);
     a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(cloneTab()));
     menu.addAction(a);
 
-    a = new KAction(QIcon::fromTheme("view-refresh"), i18n("Reload"), this);
+    a = new QAction(QIcon::fromTheme("view-refresh"), i18n("Reload"), this);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(reloadTab()));
     a->setData(tabIndex);
     menu.addAction(a);
 
-    a = new KAction(QIcon::fromTheme("view-refresh"), i18n("Reload All"), this);
+    a = new QAction(QIcon::fromTheme("view-refresh"), i18n("Reload All"), this);
     connect(a, SIGNAL(triggered(bool)), w, SLOT(reloadAllTabs()));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new KAction(QIcon::fromTheme("tab-detach"), i18n("Detach"), this);
+        a = new QAction(QIcon::fromTheme("tab-detach"), i18n("Detach"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(detachTab()));
         a->setData(tabIndex);
         menu.addAction(a);
@@ -223,28 +223,28 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
 
     if (tabData(tabIndex).toBool())
     {
-        a = new KAction(i18n("Unpin Tab"), this);
+        a = new QAction(i18n("Unpin Tab"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(unpinTab()));
         a->setData(tabIndex);
         menu.addAction(a);
     }
     else
     {
-        a = new KAction(i18n("Pin Tab"), this);
+        a = new QAction(i18n("Pin Tab"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(pinTab()));
         a->setData(tabIndex);
         menu.addAction(a);
     }
     menu.addSeparator();    // ----------------------------------------------------------------
 
-    a = new KAction(QIcon::fromTheme("tab-close"), i18n("&Close"), this);
+    a = new QAction(QIcon::fromTheme("tab-close"), i18n("&Close"), this);
     a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new KAction(QIcon::fromTheme("tab-close-other"), i18n("Close &Other Tabs"), this);
+        a = new QAction(QIcon::fromTheme("tab-close-other"), i18n("Close &Other Tabs"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(closeOtherTabs()));
         a->setData(tabIndex);
         menu.addAction(a);
@@ -536,7 +536,7 @@ void TabBar::hideTabPreview()
 
 void TabBar::pinTab()
 {
-    KAction *a = qobject_cast<KAction *>(sender());
+    QAction *a = qobject_cast<QAction *>(sender());
     if (!a)
         return;
 
@@ -582,7 +582,7 @@ void TabBar::pinTab()
 
 void TabBar::unpinTab()
 {
-    KAction *a = qobject_cast<KAction *>(sender());
+    QAction *a = qobject_cast<QAction *>(sender());
     if (!a)
         return;
 

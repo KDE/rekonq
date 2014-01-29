@@ -35,8 +35,10 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KAction>
 #include <KBookmarkOwner>
+
+// Qt Includes
+#include <QAction>
 
 
 /**
@@ -72,7 +74,7 @@ public:
     /**
      * @return A new action for the given bookmark.
      */
-    KAction* createAction(const KBookmark &bookmark, const BookmarkAction &bmAction);
+    QAction* createAction(const KBookmark &bookmark, const BookmarkAction &bmAction);
 
     // @{
     /**
@@ -95,6 +97,7 @@ public:
     virtual void openBookmark(const KBookmark &bookmark,
                               Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
+    
     virtual void openFolderinTabs(const KBookmarkGroup &bkGoup);
     // @}
 
@@ -110,9 +113,11 @@ public Q_SLOTS:
 
     void copyLink(const KBookmark &bookmark);
     void editBookmark(KBookmark bookmark);
+    
 #ifdef HAVE_NEPOMUK
     void fancyBookmark(KBookmark bookmark);
 #endif
+    
     bool deleteBookmark(const KBookmark &bookmark);
     void setToolBarFolder(KBookmark bookmark = KBookmark());
     void unsetToolBarFolder();
@@ -125,7 +130,7 @@ Q_SIGNALS:
     void openUrl(const QUrl &, const Rekonq::OpenType &);
 
 private:
-    KAction* createAction(const QString &text, const QString &icon,
+    QAction* createAction(const QString &text, const QString &icon,
                           const QString &help, const char *slot,
                           const KBookmark &bookmark);
 
@@ -136,7 +141,7 @@ private:
 // -----------------------------------------------------------------------------------------------
 
 
-class CustomBookmarkAction : public KAction
+class CustomBookmarkAction : public QAction
 {
     Q_OBJECT
 
