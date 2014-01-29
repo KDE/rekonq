@@ -56,12 +56,10 @@
 #include <KJobUiDelegate>
 #include <KLocalizedString>
 #include <KMessageBox>
-#include <KMimeTypeTrader>
 #include <KService>
 #include <KWebWallet>
 #include <KProtocolInfo>
 #include <KRun>
-#include <KMimeType>
 #include <KProtocolManager>
 
 #include <KIO/Job>
@@ -73,8 +71,9 @@
 
 // Qt Includes
 #include <QStandardPaths>
-
+#include <QMimeType>
 #include <QTemporaryFile>
+
 #include <QTextDocument>
 #include <QFileInfo>
 
@@ -367,9 +366,11 @@ static bool shouldEmbed(const QString &_mimeType)
     KSharedConfig::Ptr config = KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals);
     QMap<QString, QString> m_embedMap = config->entryMap("EmbedSettings");
 
-    KMimeType::Ptr mime = KMimeType::mimeType(_mimeType, KMimeType::ResolveAliases);
-    if (!mime) {
-        kWarning() << "Unknown mimetype" << _mimeType;
+    QMimeDatabase db;
+    QMimeType mime = db.mimeTypeForName(_mimeType);
+    if (!mime.isValid()) 
+    {
+        qWarning() << "Unknown mimetype" << _mimeType;
         return false; // unknown mimetype!
     }
     const QString mimeType = mime->name();
@@ -377,31 +378,36 @@ static bool shouldEmbed(const QString &_mimeType)
     // First check in user's settings whether to embed or not
     // 1 - in the filetypesrc config file (written by the configuration module)
     QMap<QString, QString>::const_iterator it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeType );
-    if ( it != m_embedMap.constEnd() ) {
+    if ( it != m_embedMap.constEnd() ) 
+    {
         qDebug() << mimeType << it.value();
         return it.value() == QLatin1String("true");
     }
+    
     // 2 - in the configuration for the group if nothing was found in the mimetype
     if (alwaysEmbedMimeTypeGroup(mimeType))
         return true; //always embed mimetype inode/*, Browser/* and Konqueror/*
     const QString mimeTypeGroup = mimeType.left(mimeType.indexOf('/'));
     it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeTypeGroup );
-    if ( it != m_embedMap.constEnd() ) {
+    if ( it != m_embedMap.constEnd() ) 
+    {
         qDebug() << mimeType << "group setting:" << it.value();
         return it.value() == QLatin1String("true");
     }
+    
     // 2 bis - configuration for group of parent mimetype, if different
-    if (mimeType[0].isLower()) {
+    if (mimeType[0].isLower()) 
+    {
         QStringList parents;
         parents.append(mimeType);
-        while (!parents.isEmpty()) {
+        while (!parents.isEmpty()) 
+        {
             const QString parent = parents.takeFirst();
-            if (alwaysEmbedMimeTypeGroup(parent)) {
+            if (alwaysEmbedMimeTypeGroup(parent)) 
                 return true;
-            }
-            KMimeType::Ptr mime = KMimeType::mimeType(parent);
-            Q_ASSERT(mime); // how could the -parent- be null?
-            if (mime)
+            
+            QMimeType mime = db.mimeTypeForName(parent);
+            if (mime.isValid())
                 parents += mime->parentMimeTypes();
         }
     }
@@ -412,6 +418,7 @@ static bool shouldEmbed(const QString &_mimeType)
     const bool hasLocalProtocolRedirect = !KProtocolManager::protocolForArchiveMimetype(mimeType).isEmpty();
     if (mimeTypeGroup == "image" || mimeTypeGroup == "multipart" || hasLocalProtocolRedirect)
         return true;
+    
     return false;
 }
 

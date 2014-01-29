@@ -55,11 +55,11 @@
 #include <KBookmarkManager>
 #include <KIconLoader>
 #include <KLocale>
-#include <KMimeType>
 #include <KRun>
 
 // Qt Includes
 #include <QStandardPaths>
+#include <QMimeType>
 #include <QFile>
 #include <QAction>
 #include <QWebFrame>
@@ -645,7 +645,7 @@ void NewTabPage::downloadsPage(const QString & filter)
         QString file = dir + QL1C('/') + fName;
 
         KIconLoader *loader = KIconLoader::global();
-        QString iconPath = QL1S("file://") + loader->iconPath(KMimeType::iconNameForUrl(u), KIconLoader::Desktop);
+        QString iconPath = QL1S("file://") + loader->iconPath(KIO::iconNameForUrl(u), KIconLoader::Desktop);
 
         div.appendInside(markup(QL1S("img")));
         div.lastChild().setAttribute(QL1S("src"), iconPath);

@@ -35,7 +35,6 @@
 // KDE Includes
 #include <KIconLoader>
 #include <KJob>
-#include <KMimeType>
 #include <QUrl>
 
 
@@ -98,7 +97,7 @@ QString DownloadItem::destinationUrlString() const
 QString DownloadItem::icon() const
 {
     KIconLoader *loader = KIconLoader::global();
-    QString iconForMimeType = KMimeType::iconNameForUrl(destUrl());
+    QString iconForMimeType = KIO::iconNameForUrl(destUrl());
     return (QL1S("file://") + loader->iconPath(iconForMimeType, KIconLoader::Desktop));
 }
 
