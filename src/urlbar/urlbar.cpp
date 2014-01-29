@@ -58,7 +58,6 @@
 #include <KCompletionBox>
 #include <KColorScheme>
 #include <KMenu>
-#include <KIcon>
 #include <KIconLoader>
 #include <KMessageBox>
 #include <KStandardAction>
@@ -67,6 +66,7 @@
 // Qt Includes
 #include <QStandardPaths>
 
+#include <QIcon>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPalette>
@@ -124,7 +124,7 @@ UrlBar::UrlBar(QWidget *parent)
     setLayoutDirection(Qt::LeftToRight);
 
     // set initial icon
-    _icon->setIcon(KIcon("arrow-right"));
+    _icon->setIcon(QIcon::fromTheme("arrow-right"));
 
     // initial style
     setStyleSheet(QString("UrlBar { padding: 2px 0 2px %1px; height: %1px } ").arg(_icon->sizeHint().width()));
@@ -315,7 +315,7 @@ void UrlBar::keyReleaseEvent(QKeyEvent *event)
     if (trimmedText.isEmpty())
     {
         disconnect(_icon);
-        _icon->setIcon(KIcon("arrow-right"));
+        _icon->setIcon(QIcon::fromTheme("arrow-right"));
         return KLineEdit::keyReleaseEvent(event);
     }
     
@@ -391,7 +391,7 @@ void UrlBar::dropEvent(QDropEvent *event)
 
 void UrlBar::loadStarted()
 {
-    _icon->setIcon(KIcon("text-html"));
+    _icon->setIcon(QIcon::fromTheme("text-html"));
     clearRightIcons();
 }
 
@@ -494,7 +494,7 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     menu.addAction(a);
 
     // Delete
-    a = new KAction(KIcon("edit-delete"), i18n("Delete"), &menu);
+    a = new KAction(QIcon::fromTheme("edit-delete"), i18n("Delete"), &menu);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(delSlot()));
     a->setEnabled(hasSelectedText());
     menu.addAction(a);
@@ -538,30 +538,30 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     switch (ic)
     {
     case UrlBar::KGet:
-        rightIcon->setIcon(KIcon("download"));
+        rightIcon->setIcon(QIcon::fromTheme("download"));
         rightIcon->setToolTip(i18n("List all links with KGet"));
         break;
     case UrlBar::RSS:
-        rightIcon->setIcon(KIcon("application-rss+xml"));
+        rightIcon->setIcon(QIcon::fromTheme("application-rss+xml"));
         rightIcon->setToolTip(i18n("List all available RSS feeds"));
         break;
     case UrlBar::BK:
         if (BookmarkManager::self()->bookmarkForUrl(_tab->url()).isNull() && 
             !ReKonfig::previewUrls().contains(_tab->url().url()))
         {
-            rightIcon->setIcon(KIcon("bookmarks").pixmap(32, 32, QIcon::Disabled));
+            rightIcon->setIcon(QIcon::fromTheme("bookmarks").pixmap(32, 32, QIcon::Disabled));
         }
         else
         {
-            rightIcon->setIcon(KIcon("bookmarks"));
+            rightIcon->setIcon(QIcon::fromTheme("bookmarks"));
         }
         break;
     case UrlBar::SearchEngine:
     {
-        KIcon wsIcon("edit-web-search");
+        QIcon wsIcon = QIcon::fromTheme("edit-web-search");
         if (wsIcon.isNull())
         {
-            wsIcon = KIcon("preferences-web-browser-shortcuts");
+            wsIcon = QIcon::fromTheme("preferences-web-browser-shortcuts");
         }
         rightIcon->setIcon(wsIcon);
         rightIcon->setToolTip(i18n("Add search engine"));
@@ -572,12 +572,12 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         QStringList hosts = ReKonfig::whiteReferer();
         if (!hosts.contains(_tab->url().host()))
         {
-            rightIcon->setIcon(KIcon("preferences-web-browser-adblock"));
+            rightIcon->setIcon(QIcon::fromTheme("preferences-web-browser-adblock"));
             rightIcon->setToolTip(i18n("AdBlock is enabled on this site"));
         }
         else
         {
-            rightIcon->setIcon(KIcon("preferences-web-browser-adblock").pixmap(32, 32, QIcon::Disabled));
+            rightIcon->setIcon(QIcon::fromTheme("preferences-web-browser-adblock").pixmap(32, 32, QIcon::Disabled));
             rightIcon->setToolTip(i18n("AdBlock is not enabled on this site"));
         }
         break;
@@ -627,7 +627,7 @@ void UrlBar::detectTypedString(const QString &typed)
 {
     if (typed.count() == 1)
     {
-        _icon->setIcon(KIcon("arrow-right"));
+        _icon->setIcon(QIcon::fromTheme("arrow-right"));
         QTimer::singleShot(0, this, SLOT(suggest()));
         return;
     }
@@ -655,7 +655,7 @@ void UrlBar::refreshFavicon()
     
     if (_tab->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
-        _icon->setIcon(KIcon("view-media-artist"));
+        _icon->setIcon(QIcon::fromTheme("view-media-artist"));
         return;
     }
     
@@ -663,11 +663,11 @@ void UrlBar::refreshFavicon()
     {
         if (_tab->page()->hasSslValid())
         {
-            _icon->setIcon(KIcon("security-high"));
+            _icon->setIcon(QIcon::fromTheme("security-high"));
         }
         else
         {
-            _icon->setIcon(KIcon("security-low"));
+            _icon->setIcon(QIcon::fromTheme("security-low"));
         }
         
         connect(_icon, SIGNAL(clicked(QPoint)), this, SLOT(showSSLInfo(QPoint)), Qt::UniqueConnection);
@@ -676,11 +676,11 @@ void UrlBar::refreshFavicon()
 
     if (scheme == QL1S("rekonq"))
     {
-        _icon->setIcon(KIcon("arrow-right"));
+        _icon->setIcon(QIcon::fromTheme("arrow-right"));
         return;
     }
 
-    _icon->setIcon(KIcon("text-html"));
+    _icon->setIcon(QIcon::fromTheme("text-html"));
 }
 
 
@@ -822,12 +822,12 @@ void UrlBar::manageStarred(QPoint pos)
     // Bookmarks
     if (BookmarkManager::self()->bookmarkForUrl(_tab->url()).isNull())
     {
-        a = new KAction(KIcon(KIcon("bookmarks").pixmap(32, 32, QIcon::Disabled)), i18n("Add Bookmark"), &menu);
+        a = new KAction(QIcon(QIcon::fromTheme("bookmarks").pixmap(32, 32, QIcon::Disabled)), i18n("Add Bookmark"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(manageBookmarks()));
     }
     else
     {
-        a = new KAction(KIcon("bookmarks"), i18n("Edit Bookmark"), &menu);
+        a = new KAction(QIcon::fromTheme("bookmarks"), i18n("Edit Bookmark"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(manageBookmarks()));        
     }
     menu.addAction(a);
@@ -835,12 +835,12 @@ void UrlBar::manageStarred(QPoint pos)
     // Favorites
     if (ReKonfig::previewUrls().contains(_tab->url().url()))
     {
-        a = new KAction(KIcon("emblem-favorite"), i18n("Remove from Favorites"), &menu);
+        a = new KAction(QIcon::fromTheme("emblem-favorite"), i18n("Remove from Favorites"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(removeFromFavorites()));        
     }
     else
     {
-        a = new KAction(KIcon(KIcon("emblem-favorite").pixmap(32, 32, QIcon::Disabled)), i18n("Add to Favorites"), &menu);
+        a = new KAction(QIcon(QIcon::fromTheme("emblem-favorite").pixmap(32, 32, QIcon::Disabled)), i18n("Add to Favorites"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(addToFavorites()));
     }
     menu.addAction(a);

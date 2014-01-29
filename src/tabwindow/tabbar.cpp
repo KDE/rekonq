@@ -199,23 +199,23 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
 
     menu.addSeparator();    // ----------------------------------------------------------------
 
-    a = new KAction(KIcon("tab-duplicate"), i18n("Clone"), this);
+    a = new KAction(QIcon::fromTheme("tab-duplicate"), i18n("Clone"), this);
     a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(cloneTab()));
     menu.addAction(a);
 
-    a = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
+    a = new KAction(QIcon::fromTheme("view-refresh"), i18n("Reload"), this);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(reloadTab()));
     a->setData(tabIndex);
     menu.addAction(a);
 
-    a = new KAction(KIcon("view-refresh"), i18n("Reload All"), this);
+    a = new KAction(QIcon::fromTheme("view-refresh"), i18n("Reload All"), this);
     connect(a, SIGNAL(triggered(bool)), w, SLOT(reloadAllTabs()));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new KAction(KIcon("tab-detach"), i18n("Detach"), this);
+        a = new KAction(QIcon::fromTheme("tab-detach"), i18n("Detach"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(detachTab()));
         a->setData(tabIndex);
         menu.addAction(a);
@@ -237,14 +237,14 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
     }
     menu.addSeparator();    // ----------------------------------------------------------------
 
-    a = new KAction(KIcon("tab-close"), i18n("&Close"), this);
+    a = new KAction(QIcon::fromTheme("tab-close"), i18n("&Close"), this);
     a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new KAction(KIcon("tab-close-other"), i18n("Close &Other Tabs"), this);
+        a = new KAction(QIcon::fromTheme("tab-close-other"), i18n("Close &Other Tabs"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(closeOtherTabs()));
         a->setData(tabIndex);
         menu.addAction(a);
@@ -573,7 +573,7 @@ void TabBar::pinTab()
     setTabButton(index, QTabBar::LeftSide, 0);
     setTabButton(index, QTabBar::LeftSide, label);
 
-    KIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
+    QIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
     label->setPixmap(ic.pixmap(16, 16));
 
     SessionManager::self()->saveSession();
@@ -620,7 +620,7 @@ void TabBar::unpinTab()
     setTabButton(index, QTabBar::LeftSide, 0);
     setTabButton(index, QTabBar::LeftSide, label);
 
-    KIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
+    QIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
     label->setPixmap(ic.pixmap(16, 16));
 
     SessionManager::self()->saveSession();

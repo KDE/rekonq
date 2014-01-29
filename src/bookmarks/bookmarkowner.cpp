@@ -410,7 +410,7 @@ KAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
                                      const QString &help, const char *slot,
                                      const KBookmark &bookmark)
 {
-    CustomBookmarkAction *act = new CustomBookmarkAction(bookmark, KIcon(icon), text, this);
+    CustomBookmarkAction *act = new CustomBookmarkAction(bookmark, QIcon::fromTheme(icon), text, this);
     act->setHelpText(help);
     connect(act, SIGNAL(triggered(KBookmark)), this, slot);
     return act;
@@ -420,7 +420,7 @@ KAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
 // -------------------------------------------------------------------------------------------------
 
 
-CustomBookmarkAction::CustomBookmarkAction(const KBookmark &bookmark, const KIcon &icon, const QString &text, QObject *parent)
+CustomBookmarkAction::CustomBookmarkAction(const KBookmark &bookmark, const QIcon &icon, const QString &text, QObject *parent)
     : KAction(icon, text, parent)
     , m_bookmark(bookmark)
 {

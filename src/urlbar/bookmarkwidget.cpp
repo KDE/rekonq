@@ -36,7 +36,6 @@
 // KDE Includes
 #include <KComboBox>
 #include <KLocalizedString>
-#include <KIcon>
 #include <KLineEdit>
 #include <KRatingWidget>
 
@@ -49,6 +48,7 @@
 #include <QTextCursor>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QIcon>
 
 #ifdef HAVE_NEPOMUK
 // Local Nepomuk Includes
@@ -237,13 +237,13 @@ void BookmarkWidget::setupFolderComboBox()
 
     if (toolBarRoot.address() == root.address())
     {
-        m_folder->addItem(KIcon("bookmark-toolbar"),
+        m_folder->addItem(QIcon::fromTheme("bookmark-toolbar"),
                           i18n("Bookmark Toolbar"),
                           toolBarRoot.address());
     }
     else
     {
-        m_folder->addItem(KIcon("bookmark-toolbar"),
+        m_folder->addItem(QIcon::fromTheme("bookmark-toolbar"),
                           toolBarRoot.text(),
                           toolBarRoot.address());
     }

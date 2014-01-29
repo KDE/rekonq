@@ -198,7 +198,7 @@ void WebWindow::setupActions()
     a->setDefaultWidget(_bar);
     actionCollection()->addAction(QL1S("url_bar"), a);
 
-    a = new KAction(KIcon("edit-clear-locationbar-rtl"), i18n("Clear Urlbar"), this);
+    a = new KAction(QIcon::fromTheme("edit-clear-locationbar-rtl"), i18n("Clear Urlbar"), this);
     connect(a, SIGNAL(triggered()), _bar, SLOT(clearUrlbar()));
     actionCollection()->addAction(QL1S("clear_url_bar"), a);
 
@@ -209,7 +209,7 @@ void WebWindow::setupActions()
     urlbarFocused();
 
     // new window action
-    a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
+    a = new KAction(QIcon::fromTheme("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
     actionCollection()->addAction(QL1S("new_window"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openNewWindow()));
@@ -237,12 +237,12 @@ void WebWindow::setupActions()
     actionCollection()->addAction(QL1S("edit_paste"), qa);
     
     // Configure Main Toolbar
-    a = new KAction(KIcon("configure-toolbars"), i18n("Configure Main ToolBar"), this);
+    a = new KAction(QIcon::fromTheme("configure-toolbars"), i18n("Configure Main ToolBar"), this);
     actionCollection()->addAction(QL1S("configure_main_toolbar"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(showToolbarEditor()));
 
     // Bookmark Toolbar
-    a = new KAction(KIcon("bookmark-toolbar"), i18n("Bookmarks Toolbar"), this);
+    a = new KAction(QIcon::fromTheme("bookmark-toolbar"), i18n("Bookmarks Toolbar"), this);
     a->setCheckable(true);
     a->setChecked(ReKonfig::showBookmarksToolbar());
     actionCollection()->addAction(QL1S("show_bookmarks_toolbar"), a);
@@ -253,19 +253,19 @@ void WebWindow::setupActions()
     connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     // Open Downloads page
-    a = new KAction(KIcon("download"), i18n("Downloads page"), this);
+    a = new KAction(QIcon::fromTheme("download"), i18n("Downloads page"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_J));
     actionCollection()->addAction(QL1S("open_downloads_page"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openDownloadsPage()));
 
     // Open History page
-    a = new KAction(KIcon("view-history"), i18n("History page"), this);
+    a = new KAction(QIcon::fromTheme("view-history"), i18n("History page"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QL1S("open_history_page"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openHistoryPage()));
 
     // Open Bookmarks page
-    a = new KAction(KIcon("bookmarks"), i18n("Bookmarks page"), this);
+    a = new KAction(QIcon::fromTheme("bookmarks"), i18n("Bookmarks page"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     actionCollection()->addAction(QL1S("open_bookmarks_page"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openBookmarksPage()));
@@ -285,7 +285,7 @@ void WebWindow::setupActions()
     reloadShortcut.setAlternate(Qt::CTRL + Qt::Key_R);
     a->setShortcut(reloadShortcut);
 
-    a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
+    a = new KAction(QIcon::fromTheme("process-stop"), i18n("&Stop"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
     actionCollection()->addAction(QL1S("stop"), a);
     connect(a, SIGNAL(triggered(bool)), _tab->view(), SLOT(stop()));
@@ -299,23 +299,23 @@ void WebWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openLocation()));
 
      // User sessions management
-    a = new KAction(KIcon("view-choose"), i18n("&Manage Sessions"), this);
+    a = new KAction(QIcon::fromTheme("view-choose"), i18n("&Manage Sessions"), this);
     actionCollection()->addAction(QL1S("session_manage"), a);
     connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(manageSessions()));
 
     // ===== Tools Actions =================================
     a = new KAction(i18n("View Page S&ource"), this);
-    a->setIcon(KIcon("application-xhtml+xml"));
+    a->setIcon(QIcon::fromTheme("application-xhtml+xml"));
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_U));
     actionCollection()->addAction(QL1S("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
-    a = new KAction(KIcon("view-media-artist"), i18n("New Private Window"), this);
+    a = new KAction(QIcon::fromTheme("view-media-artist"), i18n("New Private Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
     connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newPrivateBrowsingWindow()));
     actionCollection()->addAction(QL1S("private_browsing"), a);
 
-    a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
+    a = new KAction(QIcon::fromTheme("edit-clear"), i18n("Clear Private Data..."), this);
     a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Delete);
     actionCollection()->addAction(QL1S("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), rApp, SLOT(clearPrivateData()));
@@ -336,42 +336,42 @@ void WebWindow::setupActions()
     
     // Bookmark Menu
     KActionMenu *bmMenu = BookmarkManager::self()->bookmarkActionMenu(this);
-    bmMenu->setIcon(KIcon("bookmarks"));
+    bmMenu->setIcon(QIcon::fromTheme("bookmarks"));
     bmMenu->setDelayed(false);
     bmMenu->setShortcutConfigurable(true);
     bmMenu->setShortcut(KShortcut(Qt::ALT + Qt::Key_B));
     actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
 
     // User Agent
-    a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
+    a = new KAction(QIcon::fromTheme("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     actionCollection()->addAction(QL1S("useragent"), a);
     KMenu *uaMenu = new KMenu(this);
     a->setMenu(uaMenu);
     connect(uaMenu, SIGNAL(aboutToShow()), this, SLOT(populateUserAgentMenu()));
 
     // Editable Page
-    a = new KAction(KIcon("document-edit"), i18n("Set Editable"), this);
+    a = new KAction(QIcon::fromTheme("document-edit"), i18n("Set Editable"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QL1S("set_editable"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(setEditable(bool)));
 
     // Adblock
-    a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Ad Block"), this);
+    a = new KAction(QIcon::fromTheme("preferences-web-browser-adblock"), i18n("Ad Block"), this);
     actionCollection()->addAction(QL1S("adblock"), a);
     connect(a, SIGNAL(triggered(bool)), AdBlockManager::self(), SLOT(showSettings()));
 
     // Web Applications
-    a = new KAction(KIcon("applications-internet"), i18n("Create application shortcut"), this);
+    a = new KAction(QIcon::fromTheme("applications-internet"), i18n("Create application shortcut"), this);
     actionCollection()->addAction(QL1S("webapp_shortcut"), a);
     connect(a, SIGNAL(triggered(bool)), rApp, SLOT(createWebAppShortcut()));
 
     // Sync action
-    a = new KAction(KIcon("tools-wizard"), i18n("Sync"), this); // FIXME sync icon!!
+    a = new KAction(QIcon::fromTheme("tools-wizard"), i18n("Sync"), this); // FIXME sync icon!!
     actionCollection()->addAction(QL1S("sync"), a);
     connect(a, SIGNAL(triggered(bool)), SyncManager::self(), SLOT(showSettings()));
 
     // web inspector
-    a = new KAction(KIcon("layer-visible-on"), i18n("&Inspect"), this);
+    a = new KAction(QIcon::fromTheme("layer-visible-on"), i18n("&Inspect"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QL1S("web_inspector"), a);
     connect(a, SIGNAL(triggered(bool)), _tab, SLOT(toggleInspector(bool)));
@@ -382,7 +382,7 @@ void WebWindow::setupActions()
 
 void WebWindow::setupTools()
 {
-    KActionMenu *toolsAction = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
+    KActionMenu *toolsAction = new KActionMenu(QIcon::fromTheme("configure"), i18n("&Tools"), this);
     toolsAction->setDelayed(false);
     toolsAction->setShortcutConfigurable(true);
     toolsAction->setShortcut(KShortcut(Qt::ALT + Qt::Key_T));
@@ -430,7 +430,7 @@ void WebWindow::webLoadStarted()
 {
     emit loadStarted();
 
-    m_loadStopReloadAction->setIcon(KIcon("process-stop"));
+    m_loadStopReloadAction->setIcon(QIcon::fromTheme("process-stop"));
     m_loadStopReloadAction->setToolTip(i18n("Stop loading the current page"));
     m_loadStopReloadAction->setText(i18n("Stop"));
     connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _tab->view(), SLOT(stop()));
@@ -449,7 +449,7 @@ void WebWindow::webLoadFinished(bool b)
     }
     else
     {
-        m_loadStopReloadAction->setIcon(KIcon("view-refresh"));
+        m_loadStopReloadAction->setIcon(QIcon::fromTheme("view-refresh"));
         m_loadStopReloadAction->setToolTip(i18n("Reload the current page"));
         m_loadStopReloadAction->setText(i18n("Reload"));
         connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _tab->view(), SLOT(reload()));
@@ -461,7 +461,7 @@ void WebWindow::webLoadFinished(bool b)
 
 void WebWindow::urlbarFocused()
 {
-    m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
+    m_loadStopReloadAction->setIcon(QIcon::fromTheme("go-jump-locationbar"));
     m_loadStopReloadAction->setToolTip(i18n("Go"));
     m_loadStopReloadAction->setText(i18n("Go"));
     connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _bar, SLOT(loadTypedUrl()));
@@ -486,7 +486,7 @@ void WebWindow::aboutToShowBackMenu()
         QWebHistoryItem item = history->currentItem();
         KAction *action = new KAction(this);
         action->setData(listCount + offset++);
-        KIcon icon = IconManager::self()->iconForUrl(item.url());
+        QIcon icon = IconManager::self()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
@@ -497,7 +497,7 @@ void WebWindow::aboutToShowBackMenu()
         QWebHistoryItem item = historyList.at(i);
         KAction *action = new KAction(this);
         action->setData(i + offset);
-        KIcon icon = IconManager::self()->iconForUrl(item.url());
+        QIcon icon = IconManager::self()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
@@ -524,7 +524,7 @@ void WebWindow::aboutToShowForwardMenu()
         QWebHistoryItem item = history->currentItem();
         KAction *action = new KAction(this);
         action->setData(listCount + offset++);
-        KIcon icon = IconManager::self()->iconForUrl(item.url());
+        QIcon icon = IconManager::self()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyForwardMenu->addAction(action);
@@ -535,7 +535,7 @@ void WebWindow::aboutToShowForwardMenu()
         QWebHistoryItem item = historyList.at(i - 1);
         KAction *action = new KAction(this);
         action->setData(pivot + i + offset);
-        KIcon icon = IconManager::self()->iconForUrl(item.url());
+        QIcon icon = IconManager::self()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyForwardMenu->addAction(action);

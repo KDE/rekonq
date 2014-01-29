@@ -60,24 +60,24 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Gui Widgets Network Scri
 SET (KF5_MIN_VERSION "5.0.0")
 
 FIND_PACKAGE (KF5 CONFIG REQUIRED
-    Init
-    WidgetsAddons
-    KCMUtils
-    CoreAddons 
-    Solid  
-    GlobalAccel
-    Config 
-    Auth 
-    Wallet 
-    DBusAddons 
-    I18n 
-    GuiAddons 
+    Auth
+    Bookmarks
+    Config
     ConfigWidgets
+    CoreAddons
+    DBusAddons
+    GlobalAccel
+    GuiAddons
+    I18n
+    Init
     JobWidgets
-    TextWidgets 
+    KCMUtils
+    Solid
+    TextWidgets
+    Wallet
+    WidgetsAddons
     XmlGui
-    Bookmarks 
-    Declarative 
+    # -------------------------
     Parts
     KIO
     Service

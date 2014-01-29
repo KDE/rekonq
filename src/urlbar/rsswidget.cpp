@@ -69,7 +69,7 @@ RSSWidget::RSSWidget(const QMap< QUrl, QString > &map, QWidget *parent)
     m_agregators = new KComboBox(this);
     m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    m_agregators->addItem(KIcon("akregator"), QString("Akregator"));
+    m_agregators->addItem(QIcon::fromTheme("akregator"), QString("Akregator"));
 //     m_agregators->addItem(IconManager::self()->iconForUrl(QUrl("http://google.com/reader")), i18n("Google Reader"));
 
     layout->addRow(agregator, m_agregators);
@@ -91,7 +91,7 @@ RSSWidget::RSSWidget(const QMap< QUrl, QString > &map, QWidget *parent)
     // Buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, Qt::Horizontal, this);
 
-    QPushButton *addFeed = new QPushButton(KIcon("list-add"), i18n("Add Feed"), buttonBox);
+    QPushButton *addFeed = new QPushButton(QIcon::fromTheme("list-add"), i18n("Add Feed"), buttonBox);
     buttonBox->addButton(addFeed, QDialogButtonBox::AcceptRole);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));

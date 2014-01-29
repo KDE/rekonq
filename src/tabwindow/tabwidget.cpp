@@ -145,17 +145,17 @@ void TabWidget::init()
 
     KAction* a;
 
-    a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
+    a = new KAction(QIcon::fromTheme("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
     actionCollection()->addAction(QL1S("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(newTab()));
 
-    a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
+    a = new KAction(QIcon::fromTheme("tab-new"), i18n("Open Last Closed Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
     actionCollection()->addAction(QL1S("open_last_closed_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(restoreLastClosedTab()));
 
-    a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
+    a = new KAction(QIcon::fromTheme("tab-close"), i18n("&Close Tab"), this);
     a->setShortcuts(KStandardShortcut::close());
     actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
@@ -175,7 +175,7 @@ void TabWidget::init()
     fullScreenShortcut.setAlternate(Qt::Key_F11);
     a->setShortcut(fullScreenShortcut);
 
-    a = new KAction(KIcon("bookmarks"), i18n("Bookmark all tabs"), this);
+    a = new KAction(QIcon::fromTheme("bookmarks"), i18n("Bookmark all tabs"), this);
     actionCollection()->addAction(QL1S("bookmark_all_tabs"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkAllTabs()));
 
@@ -195,14 +195,14 @@ void TabWidget::init()
     connect(this, SIGNAL(actionsReady()), rw, SLOT(registerWindow()));
 
     // setup bookmarks panel action
-    a = new KAction(KIcon("bookmarks-organize"), i18n("Bookmarks Panel"), this);
+    a = new KAction(QIcon::fromTheme("bookmarks-organize"), i18n("Bookmarks Panel"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     actionCollection()->addAction(QL1S("show_bookmarks_panel"), a);
     a->setCheckable(true);
     connect(a, SIGNAL(triggered(bool)), rw, SLOT(showBookmarksPanel(bool)));
 
     // setup history panel action
-    a = new KAction(KIcon("view-history"), i18n("History Panel"), this);
+    a = new KAction(QIcon::fromTheme("view-history"), i18n("History Panel"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QL1S("show_history_panel"), a);
     a->setCheckable(true);
@@ -520,7 +520,7 @@ void TabWidget::tabIconChanged()
         tabBar()->setTabButton(index, QTabBar::LeftSide, label);
     }
 
-    KIcon ic = IconManager::self()->iconForUrl(tab->url());
+    QIcon ic = IconManager::self()->iconForUrl(tab->url());
     label->setPixmap(ic.pixmap(16, 16));
 }
 
@@ -595,7 +595,7 @@ void TabWidget::tabLoadFinished(bool ok)
 
     label->setMovie(0);
 
-    KIcon ic = IconManager::self()->iconForUrl(tab->url());
+    QIcon ic = IconManager::self()->iconForUrl(tab->url());
     label->setPixmap(ic.pixmap(16, 16));
 
     if (!tabBar()->tabData(index).toBool())

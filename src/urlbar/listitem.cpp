@@ -40,7 +40,6 @@
 #include "searchengine.h"
 
 // KDE Includes
-#include <KIcon>
 #include <KAction>
 #include <kio/jobclasses.h>
 #include <kio/scheduler.h>
@@ -58,6 +57,7 @@
 #include <QFile>
 #include <QTextDocument>
 #include <QBitArray>
+#include <QIcon>
 
 
 ListItem::ListItem(const UrlSuggestionItem &item, QWidget *parent)
@@ -182,7 +182,7 @@ QLabel *TypeIconLabel::getIcon(QString icon)
 {
     QLabel *iconLabel = new QLabel(this);
     iconLabel->setFixedSize(16, 16);
-    QPixmap pixmap = KIcon(icon).pixmap(16);
+    QPixmap pixmap = QIcon::fromTheme(icon).pixmap(16);
     iconLabel->setPixmap(pixmap);
     return iconLabel;
 }

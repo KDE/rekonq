@@ -245,24 +245,24 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             Qt5::Script
                             Qt5::WebKitWidgets
                             # ---------------------------------------
-                            KF5::Init
-                            KF5::WidgetsAddons
-                            KF5::KCMUtils
-                            KF5::CoreAddons
-                            KF5::Solid
-                            KF5::GlobalAccel
-                            KF5::Config
                             KF5::Auth
-                            KF5::Wallet
-                            KF5::DBusAddons
-                            KF5::I18n
-                            KF5::GuiAddons
-                            KF5::ConfigWidgets
-                            KF5::JobWidgets
-                            KF5::TextWidgets
-                            KF5::XmlGui
                             KF5::Bookmarks
-                            KF5::Declarative
+                            KF5::Config
+                            KF5::ConfigWidgets
+                            KF5::CoreAddons
+                            KF5::DBusAddons
+                            KF5::GlobalAccel
+                            KF5::GuiAddons
+                            KF5::I18n
+                            KF5::Init
+                            KF5::JobWidgets
+                            KF5::KCMUtils
+                            KF5::Solid
+                            KF5::TextWidgets
+                            KF5::Wallet
+                            KF5::WidgetsAddons
+                            KF5::XmlGui
+                            # ---------------------------------------
                             KF5::Parts
                             KF5::KIO
                             KF5::Service

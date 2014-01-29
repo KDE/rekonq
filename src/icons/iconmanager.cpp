@@ -34,13 +34,13 @@
 // KDE Includes
 #include <KIO/Job>
 
-#include <KIcon>
 #include <KFileItem>
 
 // Qt Includes
 #include <QDir>
 #include <QStandardPaths>
 #include <QUrl>
+#include <QIcon>
 
 #include <QWebSettings>
 
@@ -72,43 +72,43 @@ IconManager::IconManager(QObject *parent)
 }
 
 
-KIcon IconManager::iconForUrl(const QUrl &url)
+QIcon IconManager::iconForUrl(const QUrl &url)
 {
     // first things first.. avoid infinite loop at startup
     if (url.isEmpty() || (rApp->rekonqWindowList().isEmpty() && rApp->webAppList().isEmpty()))
-        return KIcon("text-html");
+        return QIcon::fromTheme("text-html");
 
     QByteArray encodedUrl = url.toEncoded();
     // rekonq icons..
     if (encodedUrl == QByteArray("rekonq:home"))
-        return KIcon("go-home");
+        return QIcon::fromTheme("go-home");
     if (encodedUrl == QByteArray("rekonq:closedtabs"))
-        return KIcon("tab-close");
+        return QIcon::fromTheme("tab-close");
     if (encodedUrl == QByteArray("rekonq:history"))
-        return KIcon("view-history");
+        return QIcon::fromTheme("view-history");
     if (encodedUrl == QByteArray("rekonq:bookmarks"))
-        return KIcon("bookmarks");
+        return QIcon::fromTheme("bookmarks");
     if (encodedUrl == QByteArray("rekonq:favorites"))
-        return KIcon("emblem-favorite");
+        return QIcon::fromTheme("emblem-favorite");
     if (encodedUrl == QByteArray("rekonq:downloads"))
-        return KIcon("download");
+        return QIcon::fromTheme("download");
     if (encodedUrl == QByteArray("rekonq:tabs"))
-        return KIcon("tab-duplicate");
+        return QIcon::fromTheme("tab-duplicate");
 
     // TODO: return other mimetype icons
     if (url.isLocalFile())
     {
         KFileItem item(KFileItem::Unknown, KFileItem::Unknown, url);
         QString iconName = item.iconName();
-        return KIcon(iconName);
+        return QIcon::fromTheme(iconName);
     }
 
     QIcon icon = QWebSettings::iconForUrl(url);
     if (!icon.isNull())
-        return KIcon(icon);
+        return QIcon::fromTheme(icon);
 
     // Not found icon. Return default one.
-    return KIcon("text-html");
+    return QIcon::fromTheme("text-html");
 }
 
 
@@ -128,7 +128,7 @@ void IconManager::clearIconCache()
 
 void IconManager::saveDesktopIconForUrl(const QUrl &u)
 {
-    KIcon icon = iconForUrl(u);
+    QIcon icon = iconForUrl(u);
     QString destPath = _faviconsDir + u.host() + QL1S("_WEBAPPICON.png");
 
     QPixmap pix = icon.pixmap(16, 16);
@@ -140,7 +140,7 @@ void IconManager::saveDesktopIconForUrl(const QUrl &u)
 
 
 // NOTE: this function is builded "around" the iconForurl one. It basically returns the same things
-// with an important difference: this one returns paths while the other one returns KIcons
+// with an important difference: this one returns paths while the other one returns QIcons
 QString IconManager::iconPathForUrl(const QUrl &url)
 {
     // first things first.. avoid infinite loop at startup
@@ -207,13 +207,13 @@ QString IconManager::iconPathForUrl(const QUrl &url)
 }
 
 
-KIcon IconManager::engineFavicon(const QUrl &url)
+QIcon IconManager::engineFavicon(const QUrl &url)
 {
     QString h = url.host();
     if (QFile::exists(_faviconsDir + h + QL1S(".png")))
     {
         _engineFaviconHosts.removeAll(h);
-        return KIcon(QIcon(_faviconsDir + h + QL1S(".png")));
+        return QIcon(_faviconsDir + h + QL1S(".png"));
     }
 
     // if engine favicon is NOT found, download it
@@ -225,5 +225,5 @@ KIcon IconManager::engineFavicon(const QUrl &url)
     }
 
     qDebug() << "NO ENGINE FAVICON";
-    return KIcon("text-html");
+    return QIcon::fromTheme("text-html");
 }

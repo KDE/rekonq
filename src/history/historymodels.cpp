@@ -39,7 +39,6 @@
 
 // KDE Includes
 #include <KLocale>
-#include <KIcon>
 
 // Qt Includes
 #include <QList>
@@ -50,6 +49,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QBuffer>
+#include <QIcon>
 
 #include <QClipboard>
 #include <QFileInfo>
@@ -462,7 +462,7 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
-        return KIcon("view-history");
+        return QIcon::fromTheme("view-history");
 
     if (role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
     {

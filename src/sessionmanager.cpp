@@ -487,7 +487,7 @@ void SessionManager::manageSessions()
     dialog->setCaption(i18nc("@title:window", "Manage Session"));
     dialog->setButtons(KDialog::Ok | KDialog::Close);
 
-    dialog->button(KDialog::Ok)->setIcon(KIcon("system-run"));
+    dialog->button(KDialog::Ok)->setIcon(QIcon::fromTheme("system-run"));
     dialog->button(KDialog::Ok)->setText(i18n("Load"));
 
     SessionWidget widg;

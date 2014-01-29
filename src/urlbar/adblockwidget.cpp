@@ -32,7 +32,6 @@
 
 // KDE Includes
 #include <KDialogButtonBox>
-#include <KIcon>
 #include <KLocalizedString>
 #include <KStandardGuiItem>
 
@@ -41,6 +40,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QIcon>
 
 
 AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)

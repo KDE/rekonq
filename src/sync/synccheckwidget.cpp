@@ -34,12 +34,10 @@
 #include "syncassistant.h"
 #include "syncmanager.h"
 
-// KDE Includes
-#include <KIcon>
-
 // Qt Includes
 #include <QStandardPaths>
 #include <QMovie>
+#include <QIcon>
 
 
 SyncCheckWidget::SyncCheckWidget(QWidget *parent)

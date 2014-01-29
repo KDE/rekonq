@@ -60,7 +60,7 @@ UserAgentManager::UserAgentManager(QObject *parent)
     : QObject(parent)
     , m_uaSettingsAction(0)
 {
-    m_uaSettingsAction = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
+    m_uaSettingsAction = new KAction(QIcon::fromTheme("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     connect(m_uaSettingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettings()));
 }
 

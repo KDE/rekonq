@@ -45,11 +45,12 @@
 #include <QItemSelectionModel>
 #include <QMenu>
 #include <QListWidget>
+#include <QIcon>
 
 // KDE Includes
 #include <KLocale>
 #include <KAction>
-#include <KIcon>
+
 
 // Nepomuk Includes
 #include <Nepomuk2/Query/Term>
@@ -134,11 +135,11 @@ Nepomuk2::ResourceLinkDialog::ResourceLinkDialog(Nepomuk2::Resource &nfoResource
     QStringList rlist;
     rlist << i18n("Any resource") << i18n("Persons") << i18n("Projects") << i18n("Tasks") << i18n("Places") << i18n("Notes");
     d->m_resourceSelect->addItems(rlist);
-    d->m_resourceSelect->setItemIcon(1, KIcon("user-identity"));
-    d->m_resourceSelect->setItemIcon(2, KIcon("project-development"));
-    d->m_resourceSelect->setItemIcon(3, KIcon("view-pim-tasks"));
-    d->m_resourceSelect->setItemIcon(4, KIcon("user-location"));
-    d->m_resourceSelect->setItemIcon(5, KIcon("knotes"));
+    d->m_resourceSelect->setItemIcon(1, QIcon::fromTheme("user-identity"));
+    d->m_resourceSelect->setItemIcon(2, QIcon::fromTheme("project-development"));
+    d->m_resourceSelect->setItemIcon(3, QIcon::fromTheme("view-pim-tasks"));
+    d->m_resourceSelect->setItemIcon(4, QIcon::fromTheme("user-location"));
+    d->m_resourceSelect->setItemIcon(5, QIcon::fromTheme("knotes"));
     connect(d->m_resourceSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(resourceSelectedSlot(int)));
 
     d->m_resourceLabel = new QLabel(i18n("Matching resources:"), mainWidget());
@@ -224,7 +225,7 @@ void Nepomuk2::ResourceLinkDialog::showContextMenu(const QPoint &pos)
 {
     d->m_removeResourceAction = new KAction(this);
     d->m_removeResourceAction->setText(i18n("&Unlink"));
-    d->m_removeResourceAction->setIcon(KIcon("edit-delete"));
+    d->m_removeResourceAction->setIcon(QIcon::fromTheme("edit-delete"));
     connect(d->m_removeResourceAction, SIGNAL(triggered(bool)), this, SLOT(unlinkResourceSlot()));
 
     QMenu myMenu;

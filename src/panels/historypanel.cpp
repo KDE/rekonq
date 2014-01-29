@@ -67,27 +67,27 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
     KMenu menu;
     KAction* action;
 
-    action = new KAction(KIcon("tab-new"), i18n("Open"), this);
+    action = new KAction(QIcon::fromTheme("tab-new"), i18n("Open"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInCurrentTab()));
     menu.addAction(action);
 
-    action = new KAction(KIcon("tab-new"), i18n("Open in New Tab"), this);
+    action = new KAction(QIcon::fromTheme("tab-new"), i18n("Open in New Tab"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInNewTab()));
     menu.addAction(action);
 
-    action = new KAction(KIcon("window-new"), i18n("Open in New Window"), this);
+    action = new KAction(QIcon::fromTheme("window-new"), i18n("Open in New Window"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInNewWindow()));
     menu.addAction(action);
 
-    action = new KAction(KIcon("edit-copy"), i18n("Copy Link Address"), this);
+    action = new KAction(QIcon::fromTheme("edit-copy"), i18n("Copy Link Address"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(copyToClipboard()));
     menu.addAction(action);
 
-    action = new KAction(KIcon("edit-clear"), i18n("Remove Entry"), this);
+    action = new KAction(QIcon::fromTheme("edit-clear"), i18n("Remove Entry"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(deleteEntry()));
     menu.addAction(action);
 
-    action = new KAction(KIcon("edit-clear"), i18n("Remove all occurrences"), this);
+    action = new KAction(QIcon::fromTheme("edit-clear"), i18n("Remove all occurrences"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(forgetSite()));
     menu.addAction(action);
 
@@ -100,11 +100,11 @@ void HistoryPanel::contextMenuGroup(const QPoint &pos)
     KMenu menu;
     KAction* action;
 
-    action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
+    action = new KAction(QIcon::fromTheme("tab-new"), i18n("Open Folder in Tabs"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(openAll()));
     menu.addAction(action);
 
-    action = new KAction(KIcon("edit-clear"), i18n("Remove Folder"), this);
+    action = new KAction(QIcon::fromTheme("edit-clear"), i18n("Remove Folder"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(deleteGroup()));
     menu.addAction(action);
 

@@ -35,10 +35,10 @@
 // KDE Includes
 #include <KBookmarkManager>
 #include <KLocalizedString>
-#include <KIcon>
 
 // Qt Includes
-#include <QtCore/QMimeData>
+#include <QMimeData>
+#include <QIcon>
 
 
 BtmItem::BtmItem(const KBookmark &bm)
@@ -66,11 +66,11 @@ QVariant BtmItem::data(int role) const
     {
         // NOTE
         // this should be:
-        // return KIcon(m_kbm.icon());
+        // return QIcon::fromTheme(m_kbm.icon());
         // but I cannot let it work :(
         // I really cannot understand how let this work properly...
         if (m_kbm.isGroup() || m_kbm.isSeparator())
-            return KIcon(m_kbm.icon());
+            return QIcon::fromTheme(m_kbm.icon());
         else
             return IconManager::self()->iconForUrl(QUrl(m_kbm.url()));
     }
@@ -260,7 +260,7 @@ QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
         if (role == Qt::DisplayRole)
             return i18n("Bookmarks");
         if (role == Qt::DecorationRole)
-            return KIcon("bookmarks");
+            return QIcon::fromTheme("bookmarks");
     }
     else
     {

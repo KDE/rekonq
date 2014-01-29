@@ -85,7 +85,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     if (cert.isNull())
     {
         label->setText(i18n("Warning: this site is not carrying a certificate."));
-        imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));
+        imageLabel->setPixmap(QIcon::fromTheme("security-low").pixmap(c_dim));
         layout->addWidget(label, rows++, 1);
     }
     else
@@ -95,7 +95,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
             label->setText(i18n("The certificate for this site is valid and has been verified by:\n%1.",
                                 Qt::escape(cert.issuerInfo(QSslCertificate::CommonName))));
 
-            imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-high").pixmap(c_dim));
         }
         else
         {
@@ -108,7 +108,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
 
             label->setText(i18n("The certificate for this site is not valid, for the following reasons:\n%1.", c));
             label->setTextFormat(Qt::RichText);
-            imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-low").pixmap(c_dim));
         }
 
         layout->addWidget(label, rows++, 1);
@@ -140,7 +140,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         label->setText(i18n("Your connection to %1 is not encrypted.\n", m_url.host()));
         layout->addWidget(label, rows++ , 1);
 
-        imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));
+        imageLabel->setPixmap(QIcon::fromTheme("security-low").pixmap(c_dim));
     }
     else
     {
@@ -154,32 +154,32 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         if (vers == QL1S("SSLv3"))
         {
             sslVersion = QL1S("SSL 3.0");
-            imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-high").pixmap(c_dim));
         }
         else if (vers == QL1S("SSLv2"))
         {
             sslVersion = QL1S("SSL 2.0");
-            imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-low").pixmap(c_dim));
         }
         else if (vers == QL1S("TLSv1"))
         {
             sslVersion = QL1S("TLS 1.0");
-            imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-high").pixmap(c_dim));
         }
         else if (vers == QL1S("TLSv1.1"))
         {
             sslVersion = QL1S("TLS 1.1");
-            imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-high").pixmap(c_dim));
         }
         else if (vers == QL1S("TLSv1.2"))
         {
             sslVersion = QL1S("TLS 1.2");
-            imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-high").pixmap(c_dim));
         }
         else
         {
             sslVersion = i18n("Unknown");
-            imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));
+            imageLabel->setPixmap(QIcon::fromTheme("security-low").pixmap(c_dim));
         }
 
         label = new QLabel(this);
@@ -222,7 +222,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
                              HistoryItem() :
                              hList.first() ;
 
-    imageLabel->setPixmap(KIcon("dialog-information").pixmap(c_dim));
+    imageLabel->setPixmap(QIcon::fromTheme("dialog-information").pixmap(c_dim));
     if (firstVisit.visitCount == 1)
     {
         label->setText(i18n("It is your first time visiting this site."));

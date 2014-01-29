@@ -34,10 +34,12 @@
 #include "searchengine.h"
 
 // KDE Includes
-#include <KIcon>
 #include <KIconLoader>
 #include <KAction>
 #include <KLocalizedString>
+
+// Qt Includes
+#include <QIcon>
 
 
 SearchEngineBar::SearchEngineBar(QWidget *parent)

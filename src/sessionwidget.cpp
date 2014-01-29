@@ -35,10 +35,8 @@
 #include "application.h"
 #include "rekonqwindow.h"
 
-// KDE Includes
-#include <KIcon>
-
 // Qt Includes
+#include <QIcon>
 #include <QListWidgetItem>
 
 
@@ -56,10 +54,10 @@ SessionWidget::SessionWidget(QWidget *parent)
         listWidget->addItem(item);
     }
     
-    saveButton->setIcon(KIcon("document-save"));
+    saveButton->setIcon(QIcon::fromTheme("document-save"));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveSession()));
         
-    deleteButton->setIcon(KIcon("edit-delete"));
+    deleteButton->setIcon(QIcon::fromTheme("edit-delete"));
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteSession()));
     
     connect(listWidget, SIGNAL(currentRowChanged(int)), this, SLOT(updateButtons(int)));

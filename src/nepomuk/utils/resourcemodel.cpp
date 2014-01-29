@@ -95,7 +95,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         case Qt::DecorationRole: {
             QString iconName = res.genericIcon();
             if( !iconName.isEmpty() ) {
-                return KIcon( iconName );
+                return QIconi::fromTheme( iconName );
             }
             else {
                 QIcon icon = Types::Class(res.type()).icon();

@@ -29,12 +29,12 @@
 #include "crashmessagebar.h"
 
 // KDE Includes
-#include <KIcon>
 #include <KIconLoader>
 #include <KLocalizedString>
 
 // Qt Includes
 #include <QAction>
+#include <QIcon>
 
 
 CrashMessageBar::CrashMessageBar(const QString &message, QWidget *parent)

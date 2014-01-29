@@ -54,11 +54,8 @@
 
 // Qt Includes
 #include <QStandardPaths>
-
 #include <QTextDocument>
-
 #include <QNetworkRequest>
-
 #include <QWebFrame>
 
 

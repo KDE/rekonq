@@ -32,11 +32,11 @@
 
 // KDE Includes
 #include <KSharedConfig>
-#include <KIcon>
 
 // Qt Includes
 #include <QString>
 #include <QStandardPaths>
+#include <QIcon>
 
 #include <QWhatsThis>
 #include <QListWidgetItem>
@@ -56,10 +56,10 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
 
     searchLine->setListWidget(manualFiltersListWidget);
 
-    insertButton->setIcon(KIcon("list-add"));
+    insertButton->setIcon(QIcon::fromTheme("list-add"));
     connect(insertButton, SIGNAL(clicked()), this, SLOT(insertRule()));
 
-    removeButton->setIcon(KIcon("list-remove"));
+    removeButton->setIcon(QIcon::fromTheme("list-remove"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeRule()));
 
     load();

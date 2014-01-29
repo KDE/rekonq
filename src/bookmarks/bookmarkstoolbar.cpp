@@ -498,7 +498,7 @@ void BookmarkToolBar::startDrag()
 
         if (bookmark.isGroup())
         {
-            drag->setPixmap(KIcon(bookmark.icon()).pixmap(24, 24));
+            drag->setPixmap(QIcon::fromTheme(bookmark.icon()).pixmap(24, 24));
         }
         else
         {

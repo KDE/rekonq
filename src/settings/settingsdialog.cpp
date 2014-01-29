@@ -80,48 +80,48 @@ Private::Private(SettingsDialog *parent)
     generalWidg = new GeneralWidget(parent);
     generalWidg->layout()->setMargin(0);
     pageItem = parent->addPage(generalWidg, i18n("General"));
-    pageItem->setIcon(KIcon("rekonq"));
+    pageItem->setIcon(QIcon::fromTheme("rekonq"));
 
     // -- 2
     tabsWidg = new TabsWidget(parent);
     tabsWidg->layout()->setMargin(0);
     pageItem = parent->addPage(tabsWidg, i18n("Tabs"));
-    pageItem->setIcon(KIcon("tab-duplicate"));
+    pageItem->setIcon(QIcon::fromTheme("tab-duplicate"));
 
     // -- 3
     appearanceWidg = new AppearanceWidget(parent);
     appearanceWidg->layout()->setMargin(0);
     pageItem = parent->addPage(appearanceWidg, i18n("Appearance"));
-    pageItem->setIcon(KIcon("preferences-desktop-font"));
+    pageItem->setIcon(QIcon::fromTheme("preferences-desktop-font"));
 
     // -- 4
     webkitWidg = new WebKitWidget(parent);
     webkitWidg->layout()->setMargin(0);
     pageItem = parent->addPage(webkitWidg, i18n("WebKit"));
     QString webkitIconPath = StandardDirs::locate(QStandardPaths::DataLocation, "/pics/webkit-icon.png");
-    KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
+    QIcon webkitIcon = QIcon(webkitIconPath);
     pageItem->setIcon(webkitIcon);
 
     // -- 5
     privacyWidg = new PrivacyWidget(parent);
     privacyWidg->layout()->setMargin(0);
     pageItem = parent->addPage(privacyWidg, i18n("Privacy"));
-    pageItem->setIcon(KIcon("view-media-artist"));
+    pageItem->setIcon(QIcon::fromTheme("view-media-artist"));
 
     // -- 6
     advancedWidg = new AdvancedWidget(parent);
     advancedWidg->layout()->setMargin(0);
     pageItem = parent->addPage(advancedWidg, i18n("Advanced"));
-    pageItem->setIcon(KIcon("applications-system"));
+    pageItem->setIcon(QIcon::fromTheme("applications-system"));
 
     // -- 7
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
     pageItem = parent->addPage(ebrowsingModule, i18n("Search Engines"));
-    KIcon wsIcon("edit-web-search");
+    QIcon wsIcon = QIcon::fromTheme("edit-web-search");
     if (wsIcon.isNull())
     {
-        wsIcon = KIcon("preferences-web-browser-shortcuts");
+        wsIcon = QIcon::fromTheme("preferences-web-browser-shortcuts");
     }
     pageItem->setIcon(wsIcon);
 

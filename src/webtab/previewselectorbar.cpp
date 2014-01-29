@@ -37,11 +37,11 @@
 #include "websnap.h"
 
 // KDE Includes
-#include <KIcon>
 #include <KLocalizedString>
 
 // Qt Includes
 #include <QAction>
+#include <QIcon>
 
 
 PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
@@ -59,7 +59,7 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
 
     setText(i18n("Please open up the webpage you want to add as favorite"));
 
-    m_insertAction = new QAction(KIcon("insert-image"), i18n("Set to This Page"), this);
+    m_insertAction = new QAction(QIcon::fromTheme("insert-image"), i18n("Set to This Page"), this);
     connect(m_insertAction, SIGNAL(triggered(bool)), this, SLOT(clicked()));
     addAction(m_insertAction);
 }

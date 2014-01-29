@@ -642,7 +642,7 @@ void Application::updateConfiguration()
     // FIXME What about this?
 //     ReKonfig::useFavicon()
 //     ? rekonqWindow()->changeWindowIcon(rekonqWindow()->mainView()->currentIndex())
-//     : rekonqWindow()->setWindowIcon(KIcon("rekonq"))
+//     : rekonqWindow()->setWindowIcon(QIcon::fromTheme("rekonq"))
 //     ;
 //
     // hovering unfocused tabs options
@@ -692,7 +692,7 @@ void Application::queryQuit()
                          i18n("Do you want to close the window or the whole application?"),
                          i18n("Application/Window closing..."),
                          KGuiItem(i18n("C&lose Current Window"),
-                                  KIcon("window-close")),
+                                  QIcon::fromTheme("window-close")),
                          KStandardGuiItem::quit(),
                          KStandardGuiItem::cancel(),
                          "confirmClosingMultipleWindows"
@@ -723,7 +723,7 @@ void Application::clearPrivateData()
     dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
-    dialog->button(KDialog::Ok)->setIcon(KIcon("edit-clear"));
+    dialog->button(KDialog::Ok)->setIcon(QIcon::fromTheme("edit-clear"));
     dialog->button(KDialog::Ok)->setText(i18n("Clear"));
 
     Ui::ClearDataWidget clearWidget;

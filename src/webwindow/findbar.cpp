@@ -35,7 +35,6 @@
 
 // KDE Includes
 #include <KApplication>
-#include <KIcon>
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KPushButton>
@@ -48,6 +47,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QWebFrame>
+#include <QIcon>
 
 
 FindBar::FindBar(QWidget *parent)
@@ -64,7 +64,7 @@ FindBar::FindBar(QWidget *parent)
     // hide button
     QToolButton *hideButton = new QToolButton(this);
     hideButton->setAutoRaise(true);
-    hideButton->setIcon(KIcon("dialog-close"));
+    hideButton->setIcon(QIcon::fromTheme("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
@@ -83,8 +83,8 @@ FindBar::FindBar(QWidget *parent)
     layout->addWidget(m_lineEdit);
 
     // buttons
-    KPushButton *findNext = new KPushButton(KIcon("go-down"), i18n("&Next"), this);
-    KPushButton *findPrev = new KPushButton(KIcon("go-up"), i18n("&Previous"), this);
+    KPushButton *findNext = new KPushButton(QIcon::fromTheme("go-down"), i18n("&Next"), this);
+    KPushButton *findPrev = new KPushButton(QIcon::fromTheme("go-up"), i18n("&Previous"), this);
     connect(findNext, SIGNAL(clicked()), this, SLOT(findNext()));
     connect(findPrev, SIGNAL(clicked()), this, SLOT(findPrevious()));
     layout->addWidget(findNext);

@@ -31,11 +31,11 @@
 #include "rekonq.h"
 
 // KDE Includes
-#include <KIcon>
 #include <KLocalizedString>
 
 // Qt Includes
 #include <QAction>
+#include <QIcon>
 
 
 WalletBar::WalletBar(QWidget *parent)
@@ -49,15 +49,15 @@ WalletBar::WalletBar(QWidget *parent)
 
     setCloseButtonVisible(false);
 
-    QAction *rememberAction = new QAction(KIcon("document-save"), i18n("Remember"), this);
+    QAction *rememberAction = new QAction(QIcon::fromTheme("document-save"), i18n("Remember"), this);
     connect(rememberAction, SIGNAL(triggered(bool)), this, SLOT(rememberData()));
     addAction(rememberAction);
 
-    QAction *neverHereAction = new QAction(KIcon("process-stop"), i18n("Never for This Site"), this);
+    QAction *neverHereAction = new QAction(QIcon::fromTheme("process-stop"), i18n("Never for This Site"), this);
     connect(neverHereAction, SIGNAL(triggered(bool)), this, SLOT(neverRememberData()));
     addAction(neverHereAction);
 
-    QAction *notNowAction = new QAction(KIcon("dialog-cancel"), i18n("Not Now"), this);
+    QAction *notNowAction = new QAction(QIcon::fromTheme("dialog-cancel"), i18n("Not Now"), this);
     connect(notNowAction, SIGNAL(triggered(bool)), this, SLOT(notNowRememberData()));
     addAction(notNowAction);
 }

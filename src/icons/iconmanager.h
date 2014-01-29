@@ -37,7 +37,7 @@
 #include <QStringList>
 
 // Forward Declarations
-class KIcon;
+class QIcon;
 class QWebFrame;
 
 
@@ -53,7 +53,7 @@ public:
      */
     static IconManager *self();
 
-    KIcon iconForUrl(const QUrl &url);
+    QIcon iconForUrl(const QUrl &url);
     
     QString iconPathForUrl(const QUrl &url);
 
@@ -62,7 +62,7 @@ public:
     void saveDesktopIconForUrl(const QUrl &u);
 
     // Engine ToolBar needed method
-    KIcon engineFavicon(const QUrl &);
+    QIcon engineFavicon(const QUrl &);
     
 private:
     IconManager(QObject *parent = 0);
