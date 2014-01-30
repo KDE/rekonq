@@ -45,7 +45,7 @@
 
 
 SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent)
-    : KDialog(parent)
+    : QDialog(parent)
     , m_host(host)
     , m_info(info)
 {
@@ -54,8 +54,9 @@ SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidge
 
     setMinimumWidth(300);
 
-    setButtons(KDialog::User1 | KDialog::Close);
-
+    // User1 && Close buttons 
+    setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Close); 
+    
     setButtonGuiItem(User1, KGuiItem(i18n("Export"), QL1S("view-certificate-export")));
     connect(this, SIGNAL(user1Clicked()), this, SLOT(exportCert()));
 

@@ -33,10 +33,6 @@
 // Auto Includes
 #include "rekonq.h"
 
-// KDE Includes
-#include <KDialog>
-#include <KPushButton>
-
 // Qt Includes
 #include <QProcess>
 

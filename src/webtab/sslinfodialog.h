@@ -37,10 +37,8 @@
 // Ui Includes
 #include "ui_sslinfo.h"
 
-// KDE Includes
-#include <KDialog>
-
 // Qt Includes
+#include <QDialog>
 #include <QString>
 
 // Forward Declarations
@@ -54,7 +52,7 @@ class QSslCertificate;
  * an SSL session.
  *
  */
-class SslInfoDialog : public KDialog
+class SslInfoDialog : public QDialog
 {
     Q_OBJECT
 

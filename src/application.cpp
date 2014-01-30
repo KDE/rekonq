@@ -56,25 +56,21 @@
 #include "ui_cleardata.h"
 
 // KDE Includes
-// #include <KDialog>
-#include <KProcess>
-// #include <KPushButton>
-#include <KWindowSystem>
-#include <KWindowInfo>
-#include <KStartupInfo>
-
 #include <KMessageBox>
+#include <KProcess>
+#include <KStartupInfo>
+#include <KWindowInfo>
+#include <KWindowSystem>
 
 // Qt Includes
 #include <QAction>
-#include <QIcon>
-#include <QStandardPaths>
-
-#include <QDir>
-#include <QTimer>
-
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDialog>
+#include <QDir>
+#include <QIcon>
+#include <QStandardPaths>
+#include <QTimer>
 
 
 Application::Application(int &argc, char **argv)
@@ -719,12 +715,12 @@ void Application::queryQuit()
 
 void Application::clearPrivateData()
 {
-    QPointer<KDialog> dialog = new KDialog(rekonqWindow());
+    QPointer<QDialog> dialog = new QDialog(rekonqWindow());
     dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+    dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
-    dialog->button(KDialog::Ok)->setIcon(QIcon::fromTheme("edit-clear"));
-    dialog->button(KDialog::Ok)->setText(i18n("Clear"));
+    dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme("edit-clear"));
+    dialog->button(QDialogButtonBox::Ok)->setText(i18n("Clear"));
 
     Ui::ClearDataWidget clearWidget;
     QWidget widget;
@@ -806,10 +802,10 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
     }
     QString h = u.host();
 
-    QPointer<KDialog> dialog = new KDialog(rekonqWindow());
+    QPointer<QDialog> dialog = new QDialog(rekonqWindow());
     dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
-    dialog->button(KDialog::Ok)->setText(i18n("Create"));
+    dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    dialog->button(QDialogButtonBox::Ok)->setText(i18n("Create"));
     dialog->setMinimumSize(400, 50);
     dialog->setWindowIcon(QIcon(IconManager::self()->iconForUrl(u).pixmap(16)));
 

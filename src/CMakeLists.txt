@@ -261,6 +261,7 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             KF5::TextWidgets
                             KF5::Wallet
                             KF5::WidgetsAddons
+			    KF5::WindowSystem
                             KF5::XmlGui
                             # ---------------------------------------
                             KF5::Parts

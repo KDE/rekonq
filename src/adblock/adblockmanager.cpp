@@ -350,9 +350,9 @@ void AdBlockManager::showSettings()
     // at this point, the settings should be loaded
     _settingsLoaded.waitForFinished();
 
-    QPointer<KDialog> dialog = new KDialog();
+    QPointer<QDialog> dialog = new QDialog();
     dialog->setCaption(i18nc("@title:window", "Ad Block Settings"));
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+    dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
     AdBlockSettingWidget widget(_adblockConfig);
     dialog->setMainWidget(&widget);

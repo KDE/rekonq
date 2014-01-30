@@ -31,16 +31,15 @@
 #include "rekonq.h"
 
 // KDE Includes
-#include <KDialogButtonBox>
 #include <KLocalizedString>
-#include <KStandardGuiItem>
 
 // Qt Includes
 #include <QCheckBox>
-#include <QVBoxLayout>
+#include <QDialogButtonBox>
+#include <QIcon>
 #include <QLabel>
 #include <QPushButton>
-#include <QIcon>
+#include <QVBoxLayout>
 
 
 AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
@@ -81,9 +80,11 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
     layout->addWidget(_chBox);
 
     // Ok & Cancel buttons
-    KDialogButtonBox *buttonBox = new KDialogButtonBox(this, Qt::Horizontal);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(this, Qt::Horizontal);
+
     buttonBox->addButton(KStandardGuiItem::ok(), QDialogButtonBox::AcceptRole, this, SLOT(accept()));
     buttonBox->addButton(KStandardGuiItem::cancel(), QDialogButtonBox::RejectRole, this, SLOT(close()));
+
     layout->addWidget(buttonBox);
 }
 

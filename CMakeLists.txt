@@ -76,6 +76,7 @@ FIND_PACKAGE (KF5 CONFIG REQUIRED
     TextWidgets
     Wallet
     WidgetsAddons
+    WindowSystem
     XmlGui
     # -------------------------
     Parts

@@ -35,11 +35,11 @@
 #include "webpage.h"
 
 // KDE Includes
-#include <KDialog>
 #include <KMenu>
 
 // Qt Includes
 #include <QAction>
+#include <QDialog>
 
 
 QPointer<UserAgentManager> UserAgentManager::s_userAgentManager;
@@ -69,9 +69,9 @@ UserAgentManager::UserAgentManager(QObject *parent)
 
 void UserAgentManager::showSettings()
 {
-    QPointer<KDialog> dialog = new KDialog(m_uaTab.data());
+    QPointer<QDialog> dialog = new QDialog(m_uaTab.data());
     dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
-    dialog->setButtons(KDialog::Ok);
+    dialog->setStandardButtons(QDialogButtonBox::Ok);
 
     UserAgentWidget widget;
     dialog->setMainWidget(&widget);

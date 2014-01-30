@@ -40,15 +40,12 @@
 #include "webwindow.h"
 #include "webpage.h"
 
-// KDE Includes
-#include <KDialog>
-#include <KPushButton>
-
 // Qt Includes
-#include <QStandardPaths>
-#include <QFile>
+#include <QDialog>
 #include <QDomDocument>
+#include <QFile>
 #include <QPointer>
+#include <QStandardPaths>
 #include <QUrl>
 
 
@@ -483,12 +480,12 @@ void SessionManager::manageSessions()
 {
     qDebug() << "OK ,manage session..";
     
-    QPointer<KDialog> dialog = new KDialog();
+    QPointer<QDialog> dialog = new QDialog();
     dialog->setCaption(i18nc("@title:window", "Manage Session"));
-    dialog->setButtons(KDialog::Ok | KDialog::Close);
+    dialog->setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Close);
 
-    dialog->button(KDialog::Ok)->setIcon(QIcon::fromTheme("system-run"));
-    dialog->button(KDialog::Ok)->setText(i18n("Load"));
+    dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme("system-run"));
+    dialog->button(QDialogButtonBox::Ok)->setText(i18n("Load"));
 
     SessionWidget widg;
     dialog->setMainWidget(&widg);
