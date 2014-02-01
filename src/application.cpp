@@ -79,7 +79,7 @@ Application::Application(int &argc, char **argv)
     // updating rekonq configuration
     updateConfiguration();
 
-    setWindowIcon( QIcon::fromTheme("rekonq") );
+    setWindowIcon(QIcon::fromTheme(QL1S("rekonq")));
 
     // just create History Manager...
     HistoryManager::self();
@@ -277,23 +277,23 @@ int Application::newInstance()
                 case 1: // open new tab page
                     if (incognito)
                     {
-                        loadUrl(QUrl("rekonq:home"), Rekonq::NewPrivateWindow);
+                        loadUrl(QUrl(QL1S("rekonq:home")), Rekonq::NewPrivateWindow);
                         break;
                     }
                     if (SessionManager::self()->restoreJustThePinnedTabs())
-                        loadUrl(QUrl("rekonq:home") , Rekonq::NewTab);
+                        loadUrl(QUrl(QL1S("rekonq:home")) , Rekonq::NewTab);
                     else
-                        loadUrl(QUrl("rekonq:home"), Rekonq::NewWindow);
+                        loadUrl(QUrl(QL1S("rekonq:home")), Rekonq::NewWindow);
                     break;
                 case 2: // restore session
                     if (incognito)
                     {
-                        loadUrl(QUrl("rekonq:home"), Rekonq::NewPrivateWindow);
+                        loadUrl(QUrl(QL1S("rekonq:home")), Rekonq::NewPrivateWindow);
                         break;
                     }
                     if (hasToBeRecoveredFromCrash || !SessionManager::self()->restoreSessionFromScratch())
                     {
-                        loadUrl(QUrl("rekonq:home") , Rekonq::NewTab);
+                        loadUrl(QUrl(QL1S("rekonq:home")) , Rekonq::NewTab);
                     }
                     break;
                 case 3:
@@ -312,14 +312,14 @@ int Application::newInstance()
             switch (ReKonfig::newTabsBehaviour())
             {
             case 0: // new tab page
-                loadUrl(QUrl("rekonq:home") , type);
+                loadUrl(QUrl(QL1S("rekonq:home")) , type);
                 break;
             case 2: // homepage
                 loadUrl(QUrl(ReKonfig::homePage()) , type);
                 break;
             case 1: // blank page
             default:
-                loadUrl(QUrl("about:blank") , type);
+                loadUrl(QUrl(QL1S("about:blank")) , type);
                 break;
             }
         }
@@ -338,7 +338,7 @@ int Application::newInstance()
             SessionManager::self()->setSessionManagementEnabled(true);
         }
 
-        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && SearchEngine::defaultEngine().isNull())
+        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash /* FIXME && SearchEngine::defaultEngine().isNull() */)
             QTimer::singleShot(2000, rekonqWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
@@ -490,7 +490,7 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
 
     // As we are filtering the events occurred to the tabwindows, check also
     // when we close one of them, remove from tab window list and check if it was last...
-    if ((event->type() == QEvent::Close) && !rApp->sessionSaving())
+    if ((event->type() == QEvent::Close) /* FIXME && !rApp->sessionSaving() */)
     {
         RekonqWindow *window = qobject_cast<RekonqWindow*>(watched);
 
@@ -532,7 +532,7 @@ void Application::loadUrl(const QUrl& url, const Rekonq::OpenType& type)
     
     Rekonq::OpenType newType = type;
     // Don't open useless tabs or windows for actions in rekonq: pages
-    if (url.url().contains("rekonq:") && url.url().contains("/"))
+    if (url.url().contains(QL1S("rekonq:")) && url.url().contains(QL1C('/')))
         newType = Rekonq::CurrentTab;
 
     RekonqWindow *w = 0;
@@ -655,14 +655,14 @@ void Application::updateConfiguration()
     case 1: // title previews
         for (int i = 0; i < rekonqWindow()->tabBar()->count(); i++)
         {
-            rekonqWindow()->tabBar()->setTabToolTip(i, rekonqWindow()->tabWidget()->tabText(i).remove('&'));
+            rekonqWindow()->tabBar()->setTabToolTip(i, rekonqWindow()->tabWidget()->tabText(i).remove(QL1C('&')));
         }
         break;
 
     case 2: // url previews
         for (int i = 0; i < rekonqWindow()->tabBar()->count(); i++)
         {
-            rekonqWindow()->tabBar()->setTabToolTip(i, rekonqWindow()->tabWidget()->webWindow(i)->url().toMimeDataString());
+            rekonqWindow()->tabBar()->setTabToolTip(i, rekonqWindow()->tabWidget()->webWindow(i)->url().url());
         }
         break;
 
@@ -688,10 +688,10 @@ void Application::queryQuit()
                          i18n("Do you want to close the window or the whole application?"),
                          i18n("Application/Window closing..."),
                          KGuiItem(i18n("C&lose Current Window"),
-                                  QIcon::fromTheme("window-close")),
+                                  QIcon::fromTheme( QL1S("window-close") )),
                          KStandardGuiItem::quit(),
                          KStandardGuiItem::cancel(),
-                         "confirmClosingMultipleWindows"
+                         QL1S("confirmClosingMultipleWindows")
                      );
 
         switch (answer)
@@ -719,7 +719,7 @@ void Application::clearPrivateData()
     dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
     dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
-    dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme("edit-clear"));
+    dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme(QL1S("edit-clear")));
     dialog->button(QDialogButtonBox::Ok)->setText(i18n("Clear"));
 
     Ui::ClearDataWidget clearWidget;
@@ -757,13 +757,13 @@ void Application::clearPrivateData()
 
         if (clearWidget.clearCookies->isChecked())
         {
-            QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
-            QDBusReply<void> reply = kcookiejar.call("deleteAllCookies");
+            QDBusInterface kcookiejar(QL1S("org.kde.kded"), QL1S("/modules/kcookiejar"), QL1S("org.kde.KCookieServer"));
+            QDBusReply<void> reply = kcookiejar.call(QL1S("deleteAllCookies"));
         }
 
         if (clearWidget.clearCachedPages->isChecked())
         {
-            KProcess::startDetached(QStandardPaths::findExecutable("kio_http_cache_cleaner"),
+            KProcess::startDetached(QStandardPaths::findExecutable(QL1S("kio_http_cache_cleaner")),
                                      QStringList(QL1S("--clear-all")));
         }
 
@@ -822,7 +822,7 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
     {
         webAppTitle = titleString;
     }
-    webAppTitle = webAppTitle.remove('&');
+    webAppTitle = webAppTitle.remove(QL1C('&'));
     
     wAppWidget.nameLineEdit->setText(webAppTitle);
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
@@ -860,7 +860,7 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
 
         if (ReKonfig::createDesktopAppShortcut())
         {
-            QString desktop = KGlobalSettings::desktopPath();
+            QString desktop = QStandardPaths::displayName(QStandardPaths::DesktopLocation);
             QFile wAppFile(desktop + QL1C('/') + webAppTitle);
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -910,7 +910,7 @@ void Application::bookmarksToolbarToggled(bool b)
 void Application::newPrivateBrowsingWindow()
 {
     // NOTE: what about a "rekonq:incognito" page?
-    loadUrl(QUrl("rekonq:home"), Rekonq::NewPrivateWindow);
+    loadUrl(QUrl(QL1S("rekonq:home")), Rekonq::NewPrivateWindow);
 }
 
 

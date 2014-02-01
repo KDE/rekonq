@@ -36,7 +36,7 @@
 #include "webview.h"
 
 // KDE Includes
-#include <KParts/Part>
+// #include <KParts/Part>
 
 // Qt Includes
 #include <QWidget>
@@ -81,8 +81,8 @@ public:
 
     bool isPageLoading();
 
-    KParts::ReadOnlyPart *part();
-    void setPart(KParts::ReadOnlyPart *p, const QUrl &u);
+//     KParts::ReadOnlyPart *part();
+//     void setPart(KParts::ReadOnlyPart *p, const QUrl &u);
     
     bool isWebApp();
 
@@ -135,7 +135,7 @@ private:
     QPointer<PreviewSelectorBar> m_previewSelectorBar;
     QPointer<QWebInspector> m_inspector;
 
-    KParts::ReadOnlyPart *m_part;
+//     KParts::ReadOnlyPart *m_part;
 
     int m_zoomFactor;
 
