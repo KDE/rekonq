@@ -37,7 +37,7 @@
 #include <KAboutData>
 
 // Qt Includes
-#include <QDir>
+#include <QCommandLineParser>
 #include <QUrl>
 
 
@@ -45,17 +45,30 @@ static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
 
 
-extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
+extern "C" int kdemain(int argc, char **argv)
 {
-    KAboutData about("rekonq",
+    if (!Application::start())
+    {
+        qWarning() << "rekonq is already running!";
+        return 0;
+    }
+
+    Application app(argc, argv);
+
+    // set application data
+    QCoreApplication::setApplicationName(QLatin1String("rekonq"));
+    QCoreApplication::setApplicationVersion(REKONQ_VERSION);
+    QCoreApplication::setOrganizationDomain(QLatin1String("kde.org"));
+
+    KAboutData about(QLatin1String("rekonq"),
                      0,
                      ki18n("rekonq"),
                      REKONQ_VERSION,
                      ki18n(description),
                      KAboutData::License_GPL_V3,
-                     ki18n("(C) 2008-2013 Andrea Diamantini"),
+                     ki18n("(C) 2008-2014 Andrea Diamantini"),
                      KLocalizedString(),
-                     "http://rekonq.kde.org"
+                     QLatin1String("http://rekonq.kde.org")
                     );
 
 
@@ -192,7 +205,17 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "pino@kde.org",
                     "");
 
+    KAboutData::setAboutData(about);
+        
+// -----------------------------------------------------------------------------------------------------------------
+    
 
+    QCommandLineParser parser;
+    about.setupCommandLine(&parser);
+    parser.setApplicationDescription(about.shortDescription());
+    parser.addHelpOption();
+    parser.addVersionOption();
+    
 //     // Initialize command line args
 //     KCmdLineArgs::init(argc, argv, &about);
 // 
@@ -207,11 +230,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 //     // Register the supported options
 //     KCmdLineArgs::addCmdLineOptions(options);
 
-    if (!Application::start())
-    {
-        qWarning() << "rekonq is already running!";
-        return 0;
-    }
 
 // #if defined(Q_WS_X11)
 //     // On X11, the raster engine gives better performance than native.
@@ -220,12 +238,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 // 
 //     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
 
-    Application app(argc, argv);
-
-    // set application data
-    QCoreApplication::setApplicationName(QLatin1String("rekonq"));
-    QCoreApplication::setApplicationVersion(REKONQ_VERSION);
-    QCoreApplication::setOrganizationDomain("kde.org");
 
     if (app.isSessionRestored())
     {

@@ -111,7 +111,7 @@ Application::~Application()
 
 int Application::newInstance()
 {
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+    QStringList args = arguments();
 
     // not that easy, indeed
     // We have to consider 3 variables here:
@@ -120,7 +120,7 @@ int Application::newInstance()
     // 3) Is rekonq recovering from crash?
     // so, we have 8 possible cases...
     static bool isFirstLoad = true;
-    bool areThereArguments = (args->count() > 0);
+    bool areThereArguments = (args.count() > 0);
     bool hasToBeRecoveredFromCrash = (ReKonfig::recoverOnCrash() > 0);
     // note that hasToBeRecoveredFromCrash is always true if it is not the first load
     // !isFirstLoad -> hasToBeRecoveredFromCrash
@@ -129,28 +129,28 @@ int Application::newInstance()
     qDebug() << "are there arguments? " << areThereArguments;
     qDebug() << "is rekonq crashed? " << hasToBeRecoveredFromCrash;
 
-    bool incognito = args->isSet("incognito");
-    bool webapp = args->isSet("webapp");
+    bool incognito = false; // FIXMEargs->isSet("incognito");
+    bool webapp = false; // FIXME args->isSet("webapp");
 
     if (webapp)
     {
         qDebug() << "WEBAPP MODE...";
-        if (args->count() == 0)
+        if (!areThereArguments)
         {
             KMessageBox::error(0, i18n("Error"), i18n("Cannot launch webapp mode without an URL to load"));
             return 1;
         }
 
-        if (args->count() > 1)
+        if (args.count() > 1)
         {
             KMessageBox::error(0, i18n("Error"), i18n("Cannot load more than one URL in webapp mode"));
             return 1;
         }
 
-        QUrl u = args->url(0);
+        QUrl u = QUrl(args.at(0));
         if (!u.isLocalFile() || !QFile::exists(u.toLocalFile()))
         {
-            u = UrlResolver::urlFromTextTyped(args->arg(0));
+            u = UrlResolver::urlFromTextTyped(args.at(0));
         }
         qDebug() << "URL: " << u;
 
@@ -167,9 +167,9 @@ int Application::newInstance()
 
         // prepare URLS to load
         QList<QUrl> urlList;
-        for (int i = 0; i < args->count(); ++i)
+        for (int i = 0; i < args.count(); ++i)
         {
-            const QUrl u = args->url(i);
+            const QUrl u = QUrl(args.at(i));
 
             if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
             {
@@ -178,7 +178,7 @@ int Application::newInstance()
             else
             {
                 // "rekonq kde.org" || "rekonq kde:kdialog" cases
-                urlList << UrlResolver::urlFromTextTyped(args->arg(i));
+                urlList << UrlResolver::urlFromTextTyped(args.at(i));
             }
         }
 
