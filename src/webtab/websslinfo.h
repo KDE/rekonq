@@ -27,13 +27,16 @@
 #ifndef WEBSSLINFO_H
 #define WEBSSLINFO_H
 
-#include <kdemacros.h>
 
-#include <QtCore/QUrl>
-#include <QtCore/QList>
-#include <QtCore/QString>
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QSslCertificate>
+// Rekonq Includes
+#include "rekonq_defines.h"
+
+// Qt Includes
+#include <QList>
+#include <QHostAddress>
+#include <QSslCertificate>
+#include <QString>
+#include <QUrl>
 
 
 class WebSslInfo

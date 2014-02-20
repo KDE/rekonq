@@ -32,8 +32,7 @@
 #include "rekonq.h"
 
 // KDE Includes
-#include <klocalizedstring.h>
-
+#include <KLocalizedString>
 #include <KIO/Job>
 
 // Qt Includes
@@ -60,7 +59,7 @@ void SSHSyncHandler::initialLoadAndCheck()
     {
         _remoteBookmarksUrl = QUrl();
         _remoteBookmarksUrl.setHost(ReKonfig::syncHost());
-        _remoteBookmarksUrl.setScheme("fish");
+        _remoteBookmarksUrl.setScheme( QL1S("fish") );
         _remoteBookmarksUrl.setUserName(ReKonfig::syncUser());
         _remoteBookmarksUrl.setPassword(ReKonfig::syncPass());
         _remoteBookmarksUrl.setPort(ReKonfig::syncPort());
@@ -78,7 +77,7 @@ void SSHSyncHandler::initialLoadAndCheck()
     {
         _remoteHistoryUrl = QUrl();
         _remoteHistoryUrl.setHost(ReKonfig::syncHost());
-        _remoteHistoryUrl.setScheme("fish");
+        _remoteHistoryUrl.setScheme( QL1S("fish") );
         _remoteHistoryUrl.setUserName(ReKonfig::syncUser());
         _remoteHistoryUrl.setPassword(ReKonfig::syncPass());
         _remoteHistoryUrl.setPort(ReKonfig::syncPort());
@@ -96,13 +95,13 @@ void SSHSyncHandler::initialLoadAndCheck()
     {
         _remotePasswordsUrl = QUrl();
         _remotePasswordsUrl.setHost(ReKonfig::syncHost());
-        _remotePasswordsUrl.setScheme("fish");
+        _remotePasswordsUrl.setScheme( QL1S("fish") );
         _remotePasswordsUrl.setUserName(ReKonfig::syncUser());
         _remotePasswordsUrl.setPassword(ReKonfig::syncPass());
         _remotePasswordsUrl.setPort(ReKonfig::syncPort());
         _remotePasswordsUrl.setPath(ReKonfig::syncPath() + QL1S("/kdewallet.kwl"));
 
-        const QString passwordsFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/kwallet/kdewallet.kwl"));
+        const QString passwordsFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/kwallet/kdewallet.kwl");
         _localPasswordsUrl = QUrl(passwordsFilePath);
 
         KIO::StatJob *job = KIO::stat(_remotePasswordsUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);

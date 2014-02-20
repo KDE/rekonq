@@ -35,7 +35,7 @@
 #include "ui_settings_appearance.h"
 
 // Qt Includes
-#include <QtGui/QWidget>
+#include <QWidget>
 
 
 class AppearanceWidget : public QWidget, private Ui::appearance

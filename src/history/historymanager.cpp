@@ -37,10 +37,6 @@
 #include "historymodels.h"
 #include "autosaver.h"
 
-// KDE Includes
-#include <KLocale>
-#include <KCompletion>
-
 // Qt Includes
 #include <QApplication>
 #include <QStandardPaths>
@@ -133,7 +129,7 @@ void HistoryManager::addHistoryEntry(const QUrl &url, const QString &title)
     QUrl urlToClean(url);
 
     // don't store rekonq: urls (home page related)
-    if (urlToClean.scheme() == QString("rekonq"))
+    if (urlToClean.scheme() == QL1S("rekonq"))
         return;
 
     urlToClean.setPassword(QString());
@@ -231,7 +227,7 @@ void HistoryManager::removeHistoryEntry(const QUrl &url, const QString &title)
     HistoryItem item;
     for (int i = 0; i < m_history.count(); ++i)
     {
-        if (url == m_history.at(i).url
+        if (url.url() == m_history.at(i).url
                 && (title.isEmpty() || title == m_history.at(i).title))
         {
             item = m_history.at(i);
@@ -266,7 +262,7 @@ QList<HistoryItem> HistoryManager::find(const QString &text)
         int index = m_historyFilterModel->historyLocation(url);
         HistoryItem item = m_history.at(index);
 
-        QStringList words = text.split(' ');
+        QStringList words = text.split(QL1C(' '));
         bool matches = true;
         Q_FOREACH(const QString & word, words)
         {

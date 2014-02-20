@@ -33,14 +33,15 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "tabhistory.h"
+
 // Qt Includes
 #include <QObject>
 #include <QString>
 #include <QPointer>
 
 // Forward Declarations
-class TabHistory;
-
 class RekonqWindow;
 
 

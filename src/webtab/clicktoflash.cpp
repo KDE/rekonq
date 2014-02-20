@@ -109,19 +109,19 @@ bool ClickToFlash::checkElement(QWebElement el)
     QString checkString;
     QString urlString;
 
-    checkString = QUrl(el.attribute("src")).toString(QUrl::RemoveQuery);
+    checkString = QUrl(el.attribute( QL1S("src") )).toString(QUrl::RemoveQuery);
     urlString = m_url.toString(QUrl::RemoveQuery);
 
     if (urlString.contains(checkString))
         return true;
 
-    QWebElementCollection collec = el.findAll("*");
+    QWebElementCollection collec = el.findAll( QL1S("*") );
     int i = 0;
     while (i < collec.count())
     {
         QWebElement el = collec.at(i);
 
-        checkString = QUrl(el.attribute("src")).toString(QUrl::RemoveQuery);
+        checkString = QUrl(el.attribute( QL1S("src") )).toString(QUrl::RemoveQuery);
         urlString = m_url.toString(QUrl::RemoveQuery);
 
         if (urlString.contains(checkString))

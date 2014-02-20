@@ -31,14 +31,15 @@
 #include "rekonqmenu.h"
 
 // KDE Includes
+#include <KAboutData>
 #include <KActionCollection>
-#include <KCmdLineArgs>
-#include <KMenu>
 #include <KHelpMenu>
+#include <KLocalizedString>
 #include <KToolBar>
 
 // Qt Includes
 #include <QFile>
+#include <QMenu>
 #include <QStandardPaths>
 #include <QString>
 
@@ -98,8 +99,8 @@ QAction *actionByName(const QString &name)
 
 QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 {
-    QDomDocument document("rekonqui.rc");
-    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "/rekonq/rekonqui.rc");
+    QDomDocument document( QL1S("rekonqui.rc") );
+    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("/rekonq/rekonqui.rc") );
 
     if (!readDocument(document, xmlFilePath))
         return 0;
@@ -112,15 +113,15 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
         return 0;
     }
 
-    for (unsigned int i = 0; i < elementToolbarList.length(); ++i)
+    for (int i = 0; i < elementToolbarList.length(); ++i)
     {
         QDomNode node = elementToolbarList.at(i);
         QDomElement element = node.toElement();
 
-        if (element.attribute("name") != name)
+        if (element.attribute( QL1S("name") ) != name)
             continue;
 
-        if (element.attribute("deleted").toLower() == "true")
+        if (element.attribute( QL1S("deleted") ).toLower() == QL1S("true") )
         {
             qDebug() << "ELEMENT DELETED. RETURNING NULL";
             return 0;
@@ -148,14 +149,14 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
         return 0;
     }
 
-    for (unsigned int i = 0; i < elementMenuList.length(); ++i)
+    for (int i = 0; i < elementMenuList.length(); ++i)
     {
         QDomNode node = elementMenuList.at(i);
         QDomElement element = node.toElement();
-        if (element.attribute("name") != name)
+        if (element.attribute( QL1S("name") ) != name)
             continue;
 
-        if (element.attribute("deleted").toLower() == "true")
+        if (element.attribute( QL1S("deleted") ).toLower() == QL1S("true") )
         {
             qDebug() << "ELEMENT DELETED. RETURNING NULL";
             return 0;
@@ -169,12 +170,12 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
         }
         else if (name == QL1S("help"))
         {
-            KHelpMenu *m = new KHelpMenu(parent, KCmdLineArgs::aboutData());
+            KHelpMenu *m = new KHelpMenu(parent, KAboutData::applicationData());
             return m->menu();
         }
         else
         {
-            KMenu *m = new KMenu(parent);
+            QMenu *m = new QMenu(parent);
             fillMenu(m, node);
             return m;
         }
@@ -195,7 +196,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
         QDomNodeList menuNodes = node.childNodes();
 
         QMenuBar *menuBar = new QMenuBar(parent);
-        for (unsigned int i = 0; i < menuNodes.length(); ++i)
+        for (int i = 0; i < menuNodes.length(); ++i)
         {
             QDomNode node = menuNodes.at(i);
             if (node.isComment())
@@ -203,17 +204,17 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
             
             QDomElement element = node.toElement();
             
-            if (element.attribute("deleted").toLower() == "true")
+            if (element.attribute( QL1S("deleted") ).toLower() == QL1S("true") )
                 continue;
             
-            if (element.attribute("name") == QL1S("help"))
+            if (element.attribute( QL1S("name") ) == QL1S("help"))
             {
-                KHelpMenu *m = new KHelpMenu(parent, KCmdLineArgs::aboutData());
+                KHelpMenu *m = new KHelpMenu(parent, KAboutData::applicationData());
                 menuBar->addMenu(m->menu());
                 continue;
             }
             
-            KMenu *m = new KMenu(parent);
+            QMenu *m = new QMenu(parent);
             fillMenu(m, node);
             menuBar->addMenu(m);
         }
@@ -229,8 +230,8 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 
 void RekonqFactory::updateWidget(QWidget *widg, const QString &name)
 {
-    QDomDocument document("rekonqui.rc");
-    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "/rekonq/rekonqui.rc");
+    QDomDocument document( QL1S("rekonqui.rc") );
+    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("/rekonq/rekonqui.rc") );
 
     if (!readDocument(document, xmlFilePath))
         return;
@@ -243,15 +244,15 @@ void RekonqFactory::updateWidget(QWidget *widg, const QString &name)
         return;
     }
 
-    for (unsigned int i = 0; i < elementToolbarList.length(); ++i)
+    for (int i = 0; i < elementToolbarList.length(); ++i)
     {
         QDomNode node = elementToolbarList.at(i);
         QDomElement element = node.toElement();
 
-        if (element.attribute("name") != name)
+        if (element.attribute( QL1S("name") ) != name)
             continue;
 
-        if (element.attribute("deleted").toLower() == "true")
+        if (element.attribute( QL1S("deleted") ).toLower() == QL1S("true") )
         {
             return;
         }
@@ -274,35 +275,35 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node)
     
     QDomElement element = node.toElement();
 
-    if (element.hasAttribute("iconSize"))
+    if (element.hasAttribute( QL1S("iconSize") ))
     {
-        int iconSize = element.attribute("iconSize").toInt();
+        int iconSize = element.attribute( QL1S("iconSize") ).toInt();
         b->setIconDimensions(iconSize);
     }
 
-    if (element.hasAttribute("iconText"))
+    if (element.hasAttribute( QL1S("iconText") ))
     {
-        if (element.attribute("iconText").toLower() == QL1S("icononly"))
+        if (element.attribute( QL1S("iconText") ).toLower() == QL1S("icononly"))
         {
             b->setToolButtonStyle(Qt::ToolButtonIconOnly);
         }
 
-        if (element.attribute("iconText").toLower() == QL1S("textonly"))
+        if (element.attribute( QL1S("iconText") ).toLower() == QL1S("textonly"))
         {
             b->setToolButtonStyle(Qt::ToolButtonTextOnly);
         }
 
-        if (element.attribute("iconText").toLower() == QL1S("icontextright"))
+        if (element.attribute( QL1S("iconText") ).toLower() == QL1S("icontextright"))
         {
             b->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         }
 
-        if (element.attribute("iconText").toLower() == QL1S("textundericon"))
+        if (element.attribute( QL1S("iconText") ).toLower() == QL1S("textundericon"))
         {
             b->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         }
 
-        if (element.attribute("iconText").toLower() == QL1S("followstyle"))
+        if (element.attribute( QL1S("iconText") ).toLower() == QL1S("followstyle"))
         {
             b->setToolButtonStyle(Qt::ToolButtonFollowStyle);
         }
@@ -310,13 +311,13 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node)
 
     QDomNodeList childrenList = node.childNodes();
 
-    for (unsigned int i = 0; i < childrenList.length(); ++i)
+    for (int i = 0; i < childrenList.length(); ++i)
     {
         QDomElement el = childrenList.at(i).toElement();
 
         if (el.tagName() == QL1S("Action"))
         {
-            const QString actionName = el.attribute("name");
+            const QString actionName = el.attribute( QL1S("name") );
             QAction *a = actionByName(actionName);
             if (a)
             {
@@ -334,17 +335,17 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node)
 }
 
 
-void RekonqFactory::fillMenu(KMenu *m, QDomNode node)
+void RekonqFactory::fillMenu(QMenu *m, QDomNode node)
 {
     QDomNodeList childrenList = node.childNodes();
 
-    for (unsigned int i = 0; i < childrenList.length(); ++i)
+    for (int i = 0; i < childrenList.length(); ++i)
     {
         QDomElement el = childrenList.at(i).toElement();
 
         if (el.tagName() == QL1S("Action"))
         {
-            const QString actionName = el.attribute("name");
+            const QString actionName = el.attribute( QL1S("name") );
             QAction *a = actionByName(actionName);
             if (a)
             {
@@ -360,8 +361,8 @@ void RekonqFactory::fillMenu(KMenu *m, QDomNode node)
 
         if (el.tagName() == QL1S("Menu"))
         {
-            const QString menuName = el.attribute("name");
-            KMenu *subm = qobject_cast<KMenu *>(createWidget(menuName, m));
+            const QString menuName = el.attribute( QL1S("name") );
+            QMenu *subm = qobject_cast<QMenu *>(createWidget(menuName, m));
             m->addMenu(subm);
         }
 

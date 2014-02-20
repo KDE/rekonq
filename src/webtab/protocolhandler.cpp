@@ -44,7 +44,8 @@
 // KDE Includes
 #include <KIO/Job>
 #include <KDirLister>
-#include <KLocale>
+#include <KFormat>
+#include <KIconLoader>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KProcess>
@@ -53,9 +54,10 @@
 #include <KRun>
 
 // Qt Includes
+#include <QRegularExpression>
 #include <QStandardPaths>
-#include <QTextDocument>
 #include <QNetworkRequest>
+#include <QUrlQuery>
 #include <QWebFrame>
 
 
@@ -112,7 +114,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     _frame = frame;
 
     // javascript handling
-    if (_url.protocol() == QL1S("javascript"))
+    if (_url.scheme() == QL1S("javascript"))
     {
         QString scriptSource = _url.authority();
         if (scriptSource.isEmpty())
@@ -134,49 +136,50 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     }
 
     // "rekonq" handling
-    if (_url.protocol() == QL1S("rekonq"))
+    if (_url.scheme() == QL1S("rekonq"))
     {
-        QByteArray encodedUrl = _url.toEncoded();
+        QString stringUrl = _url.toString();
 
-        if (_url.directory() == QL1S("webapp"))
+        if (_url.path() == QL1S("webapp"))
         {
+            QUrlQuery queryUrl(_url);
             if (_url.fileName() == QL1S("launch"))
             {
-                QString value = _url.queryItemValue(QL1S("url"));
+                QString value = queryUrl.queryItemValue(QL1S("url"));
                 rApp->loadUrl(QUrl(value), Rekonq::WebApp);
                 return true;
             }
             if (_url.fileName() == QL1S("install"))
             {
-                QString urlValue = _url.queryItemValue(QL1S("url"));
-                QString titleValue = _url.queryItemValue(QL1S("title"));
+                QString urlValue = queryUrl.queryItemValue(QL1S("url"));
+                QString titleValue = queryUrl.queryItemValue(QL1S("title"));
                 rApp->createWebAppShortcut(urlValue, titleValue);
                 return true;
             }
         }
         
-        if (encodedUrl == QByteArray("rekonq:home"))
+        if (stringUrl == QL1S("rekonq:home"))
         {
             switch (ReKonfig::newTabStartPage())
             {
             case 0: // favorites
-                _url = QUrl("rekonq:favorites");
+                _url = QUrl( QL1S("rekonq:favorites") );
                 break;
             case 1: // bookmarks
-                _url = QUrl("rekonq:bookmarks");
+                _url = QUrl( QL1S("rekonq:bookmarks") );
                 break;
             case 2: // history
-                _url = QUrl("rekonq:history");
+                _url = QUrl( QL1S("rekonq:history") );
                 break;
             case 3: // downloads
-                _url = QUrl("rekonq:downloads");
+                _url = QUrl( QL1S("rekonq:downloads") );
                 break;
             case 4: // closed tabs
-                _url = QUrl("rekonq:closedtabs");
+                _url = QUrl( QL1S("rekonq:closedtabs") );
                 break;
             default: // unuseful
                 qDebug() << "oops... this should NOT happen...";
-                _url = QUrl("rekonq:favorites");
+                _url = QUrl( QL1S("rekonq:favorites") );
                 break;
             }
         }
@@ -198,27 +201,27 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
 
     // "mailto" handling: It needs to be handled both in preHandling (mail url launched)
     // and in postHandling (mail links clicked)
-    if (_url.protocol() == QL1S("mailto"))
+    if (_url.scheme() == QL1S("mailto"))
     {
         KToolInvocation::invokeMailer(_url);
         return true;
     }
 
     // "apt" handling
-    // NOTE: this is a stupid workaround to ensure apt protocol works
-    if (_url.protocol() == QL1S("apt"))
+    // NOTE: this is a stupid workaround to ensure apt scheme works
+    if (_url.scheme() == QL1S("apt"))
     {
         qDebug() << "APT URL: " << _url;
-        (void)new KRun(_url, _webwin, 0, _url.isLocalFile());
+        (void)new KRun(_url, _webwin, _url.isLocalFile());
         return true;
     }
 
-    // let webkit try to load a known (or missing) protocol...
+    // let webkit try to load a known (or missing) scheme...
     if (KProtocolInfo::isKnownProtocol(_url))
         return false;
 
     // Error Message, for those protocols we cannot handle
-    KMessageBox::error(_webwin, i18nc("@info", "rekonq does not know how to handle this protocol: %1", _url.protocol()));
+    KMessageBox::error(_webwin, i18nc("@info", "rekonq does not know how to handle this protocol: %1", _url.scheme()));
 
     return true;
 }
@@ -230,12 +233,12 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     _frame = frame;
 
     // "http(s)" (fast) handling
-    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
+    if (_url.scheme() == QL1S("http") || _url.scheme() == QL1S("https"))
         return false;
 
     // "mailto" handling: It needs to be handled both here(mail links clicked)
     // and in prehandling (mail url launched)
-    if (_url.protocol() == QL1S("mailto"))
+    if (_url.scheme() == QL1S("mailto"))
     {
         KToolInvocation::invokeMailer(_url);
         return true;
@@ -246,7 +249,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // My idea is: webkit cannot handle in any way ftp. So we have surely to return true here.
     // We start trying to guess what the url represent: it's a dir? show its contents (and download them).
     // it's a file? download it. It's another thing? beat me, but I don't know what to do...
-    if (_url.protocol() == QL1S("ftp"))
+    if (_url.scheme() == QL1S("ftp"))
     {
         KIO::StatJob *job = KIO::stat(_url);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(slotMostLocalUrlResult(KJob*)));
@@ -254,7 +257,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     }
 
     // "file" handling. This is quite trivial :)
-    if (_url.protocol() == QL1S("file"))
+    if (_url.scheme() == QL1S("file"))
     {
         QFileInfo fileInfo(_url.path());
         if (fileInfo.isDir())
@@ -272,7 +275,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // Try KRunning it...
     if (KProtocolInfo::isKnownProtocol(_url))
     {
-        (void)new KRun(_url, _webwin, 0, _url.isLocalFile());
+        (void)new KRun(_url, _webwin, _url.isLocalFile());
         return true;
     }
 
@@ -314,20 +317,20 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
 {
     if (!_lister)
     {
-        return QString("rekonq error, sorry :(");
+        return QL1S("rekonq error, sorry :(");
     }
 
     // let me modify it..
     QUrl rootUrl = _url;
 
     // display "rekonq info" page
-    QString infoFilePath =  QStandardPaths::locate(QStandardPaths::GenericDataLocation, "rekonq/htmls/rekonqinfo.html");
+    QString infoFilePath =  QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("rekonq/htmls/rekonqinfo.html") );
     QFile file(infoFilePath);
 
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
     {
-        return QString("rekonq error, sorry :(");
+        return QL1S("rekonq error, sorry :(");
     }
 
     // 1. default data path
@@ -341,12 +344,12 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     QString msg = i18nc("%1=an URL", "<h2>Index of %1</h2>", _url.url());
 
 
-    if (rootUrl.cd(".."))
+    if (true) // FIXME rootUrl.cd(".."))
     {
         QString path = rootUrl.url();
-        QString uparrow = KIconLoader::global()->iconPath("arrow-up", KIconLoader::Small);
-        msg += "<img src=\"file://" + uparrow + "\" alt=\"up-arrow\" />";
-        msg += "<a href=\"" + path + "\">" + i18n("Up to higher level directory") + "</a><br /><br />";
+        QString uparrow = KIconLoader::global()->iconPath( QL1S("arrow-up"), KIconLoader::Small);
+        msg += QL1S("<img src=\"file://") + uparrow +  QL1S("\" alt=\"up-arrow\" />");
+        msg += QL1S("<a href=\"") + path +  QL1S("\">") + i18n("Up to higher level directory") +  QL1S("</a><br /><br />");
     }
 
     msg += QL1S("<table width=\"95%\" align=\"center\">");
@@ -360,20 +363,21 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     Q_FOREACH(const KFileItem & item, orderedList)
     {
         msg += QL1S("<tr>");
-        QString fullPath = Qt::escape(item.url().url());
+        QString fullPath = QRegularExpression::escape(item.url().url());
 
         QString iconName = item.iconName();
-        QString icon = QString("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
+        QString icon = QL1S("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
 
         msg += QL1S("<td width=\"70%\">");
         msg += QL1S("<img src=\"") + icon + QL1S("\" alt=\"") + iconName + QL1S("\" /> ");
-        msg += QL1S("<a href=\"") + fullPath + QL1S("\">") + Qt::escape(item.name()) + QL1S("</a>");
+        msg += QL1S("<a href=\"") + fullPath + QL1S("\">") + QRegularExpression::escape(item.name()) + QL1S("</a>");
         msg += QL1S("</td>");
 
         msg += QL1S("<td align=\"right\">");
         if (item.isFile())
         {
-            msg += KGlobal::locale()->formatByteSize(item.size(), 1);
+            KFormat fmt(QLocale::system());
+            msg += fmt.formatByteSize(item.size(), 1);
         }
         msg += QL1S("</td>");
 

@@ -48,26 +48,24 @@
 // KDE Includes
 #include <KActionMenu>
 #include <KLocalizedString>
-#include <KMenu>
 #include <KStandardAction>
 #include <KToolInvocation>
 
 #include <sonnet/speller.h>
-#include <Sonnet/Dialog>
+#include <sonnet/dialog.h>
 #include <sonnet/backgroundchecker.h>
 
 // Qt Includes
-#include <QFile>
-#include <QTimer>
-#include <QStandardPaths>
 #include <QAction>
-
 #include <QApplication>
 #include <QBitmap>
 #include <QClipboard>
 #include <QContextMenuEvent>
+#include <QFile>
 #include <QLabel>
-
+#include <QMenu>
+#include <QStandardPaths>
+#include <QTimer>
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QNetworkRequest>
@@ -97,7 +95,7 @@ WebView::WebView(QWidget* parent, bool isPrivateBrowsing)
     , m_verticalAutoScrollSpeed(0)
     , m_horizontalAutoScrollSpeed(0)
     , m_isViewAutoScrolling(false)
-    , m_autoScrollIndicator(QPixmap(QStandardDirs::locate(QStandardPaths::DataLocation , "pics/autoscroll.png")))
+    , m_autoScrollIndicator(QPixmap(QStandardPaths::locate(QStandardPaths::DataLocation , QL1S("pics/autoscroll.png") )))
     , m_smoothScrollTimer(new QTimer(this))
     , m_dy(0)
     , m_smoothScrollSteps(0)
@@ -204,15 +202,15 @@ bool WebView::popupSpellMenu(QContextMenuEvent *event)
     if (element.isNull())
         return false;
 
-    int selStart = element.evaluateJavaScript("this.selectionStart").toInt();
-    int selEnd = element.evaluateJavaScript("this.selectionEnd").toInt();
+    int selStart = element.evaluateJavaScript( QL1S("this.selectionStart") ).toInt();
+    int selEnd = element.evaluateJavaScript( QL1S("this.selectionEnd") ).toInt();
     if (selEnd != selStart)
         return false; // selection, handle normally
 
     // No selection - Spell Checking only
     // Get word
-    QString text = element.evaluateJavaScript("this.value").toString();
-    QRegExp ws("\\b");
+    QString text = element.evaluateJavaScript( QL1S("this.value") ).toString();
+    QRegExp ws( QL1S("\\b") );
     int s1 = text.lastIndexOf(ws, selStart);
     int s2 = text.indexOf(ws, selStart);
     QString word = text.mid(s1, s2 - s1).trimmed();
@@ -273,14 +271,14 @@ bool WebView::popupSpellMenu(QContextMenuEvent *event)
                 QString script(QL1S("this.value=this.value.substring(0,"));
                 script += QString::number(s1);
                 script += QL1S(") + \'");
-                script +=  w.replace('\'', "\\\'"); // Escape any Quote marks in replacement word
+                script +=  w.replace( QL1C('\''), QL1S("\\\'") ); // Escape any Quote marks in replacement word
                 script += QL1C('\'') + QL1S("+this.value.substring(");
                 script += QString::number(s2);
                 script += QL1C(')');
                 
                 element.evaluateJavaScript(script);
                 // reposition cursor
-                element.evaluateJavaScript("this.selectionEnd=this.selectionStart=" + QString::number(selStart) + QL1C(';'));
+                element.evaluateJavaScript( QL1S("this.selectionEnd=this.selectionStart=") + QString::number(selStart) + QL1C(';'));
             }
         }
     }
@@ -302,10 +300,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     WebWindow *webwin = m_parentTab->webWindow();
     
-    KMenu menu(this);
+    QMenu menu(this);
 
     QAction *sendByMailAction = new QAction(&menu);
-    sendByMailAction->setIcon(QIcon::fromTheme("mail-send"));
+    sendByMailAction->setIcon(QIcon::fromTheme( QL1S("mail-send") ));
     connect(sendByMailAction, SIGNAL(triggered(bool)), this, SLOT(sendByMail()));
 
     // Choose right context
@@ -357,10 +355,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
 
         // Frame
-        QActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), &menu);
+        KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), &menu);
         frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
 
-        a = new QAction(QIcon::fromTheme("document-print-frame"), i18n("Print Frame"), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("document-print-frame") ), i18n("Print Frame"), &menu);
         connect(a, SIGNAL(triggered()), m_parentTab, SLOT(printFrame()));
         frameMenu->addAction(a);
 
@@ -372,19 +370,19 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(KWebPage::SelectAll));
 
         if (webwin)
-            menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::Save)));
+            menu.addAction(webwin->actionByName( QL1S(KStandardAction::name(KStandardAction::Save)) ));
 
-        if (!QStandardPaths::findExecutable("kget").isNull() && ReKonfig::kgetList())
+        if (!QStandardPaths::findExecutable( QL1S("kget") ).isNull() && ReKonfig::kgetList())
         {
-            a = new QAction(QIcon::fromTheme("kget"), i18n("List All Links"), &menu);
+            a = new QAction(QIcon::fromTheme( QL1S("kget") ), i18n("List All Links"), &menu);
             connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
             menu.addAction(a);
         }
 
         if (webwin)
         {
-            menu.addAction(webwin->actionByName("page_source"));
-            menu.addAction(webwin->actionByName("web_inspector"));
+            menu.addAction(webwin->actionByName( QL1S("page_source") ));
+            menu.addAction(webwin->actionByName( QL1S("web_inspector") ));
         }
     }
 
@@ -395,19 +393,19 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(m_contextMenuHitResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
-        a = new QAction(QIcon::fromTheme("tab-new"), i18n("Open in New &Tab"), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("tab-new") ), i18n("Open in New &Tab"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
         menu.addAction(a);
 
-        a = new QAction(QIcon::fromTheme("window-new"), i18n("Open in New &Window"), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("window-new") ), i18n("Open in New &Window"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
         if (!m_parentTab->isWebApp())
         {
-            a = new QAction(QIcon::fromTheme("view-media-artist"), i18n("Open in Private &Window"), &menu);
+            a = new QAction(QIcon::fromTheme( QL1S("view-media-artist") ), i18n("Open in Private &Window"), &menu);
             a->setData(m_contextMenuHitResult.linkUrl());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInPrivateWindow()));
             menu.addAction(a);
@@ -415,7 +413,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         if (m_isExternalLinkHovered)
         {
-            a = new QAction(QIcon::fromTheme("view-close"), i18n("Open &Here"), this);
+            a = new QAction(QIcon::fromTheme( QL1S("view-close") ), i18n("Open &Here"), this);
             a->setData(m_contextMenuHitResult.linkUrl());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkHere()));
             menu.addAction(a);
@@ -442,25 +440,25 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        a = new QAction(QIcon::fromTheme("view-preview"), i18n("&View Image"), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("view-preview") ), i18n("&View Image"), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
                 this, SLOT(viewImage(Qt::MouseButtons,Qt::KeyboardModifiers)));
         menu.addAction(a);
 
-        a = new QAction(QIcon::fromTheme("document-save"), i18n("Save image as..."), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("document-save") ), i18n("Save image as..."), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(saveImage()));
         menu.addAction(a);
 
-        a = new QAction(QIcon::fromTheme("view-media-visualization"), i18n("&Copy Image Location"), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("view-media-visualization") ), i18n("&Copy Image Location"), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
 
         if (AdBlockManager::self()->isEnabled())
         {
-            a = new QAction(QIcon::fromTheme("preferences-web-browser-adblock"), i18n("Block image"), &menu);
+            a = new QAction(QIcon::fromTheme( QL1S("preferences-web-browser-adblock") ), i18n("Block image"), &menu);
             a->setData(m_contextMenuHitResult.imageUrl());
             connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(blockImage()));
             menu.addAction(a);
@@ -487,9 +485,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             a->setText(i18n("Copy"));
         menu.addAction(a);
 
-        if (selectedText().contains('.')
-                && selectedText().indexOf('.') < selectedText().length()
-                && !selectedText().trimmed().contains(" ")
+        if (selectedText().contains( QL1C('.') )
+                && selectedText().indexOf( QL1C('.') ) < selectedText().length()
+                && !selectedText().trimmed().contains( QL1S(" ") )
            )
         {
             QString text = selectedText();
@@ -507,14 +505,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 }
 
                 // open selected text url in a new tab
-                QAction * const openInNewTabAction = new QAction(QIcon::fromTheme("tab-new"),
+                QAction * const openInNewTabAction = new QAction(QIcon::fromTheme( QL1S("tab-new") ),
                         i18n("Open '%1' in New Tab", truncatedUrl), &menu);
                 openInNewTabAction->setData( QUrl::fromUserInput(selectedText()) );
                 connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
                 menu.addAction(openInNewTabAction);
                 
                 // open selected text url in a new window
-                QAction * const openInNewWindowAction = new QAction(QIcon::fromTheme("window-new"),
+                QAction * const openInNewWindowAction = new QAction(QIcon::fromTheme( QL1S("window-new") ),
                         i18n("Open '%1' in New Window", truncatedUrl), &menu);
                 openInNewWindowAction->setData( QUrl::fromUserInput(selectedText()) );
                 connect(openInNewWindowAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
@@ -529,19 +527,23 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         {
             a = new QAction(i18nc("Search selected text with the default search engine", "Search with %1",
                                   defaultEngine->name()), &menu);
-            a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
+            QString s = SearchEngine::buildQuery(defaultEngine, QL1S("") );
+            QUrl u(s);
+            a->setIcon(IconManager::self()->iconForUrl(u));
             a->setData(defaultEngine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             menu.addAction(a);
         }
 
         //All favourite ones
-        KActionMenu *searchMenu = new KActionMenu(QIcon::fromTheme("edit-find"), i18nc("@title:menu", "Search"), &menu);
+        KActionMenu *searchMenu = new KActionMenu(QIcon::fromTheme( QL1S("edit-find") ), i18nc("@title:menu", "Search"), &menu);
 
         Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
         {
             a = new QAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), &menu);
-            a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(engine, "")));
+            QString s = SearchEngine::buildQuery(defaultEngine, QL1S("") );
+            QUrl u(s);
+            a->setIcon(IconManager::self()->iconForUrl(u));
             a->setData(engine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             searchMenu->addAction(a);
@@ -549,7 +551,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         if (webwin)
         {
-            a = new QAction(QIcon::fromTheme("edit-find"), i18n("On Current Page"), &menu);
+            a = new QAction(QIcon::fromTheme( QL1S("edit-find") ), i18n("On Current Page"), &menu);
             connect(a, SIGNAL(triggered()), webwin, SLOT(findSelectedText()));
             searchMenu->addAction(a);
         }
@@ -566,7 +568,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {      
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         
-        a = new QAction(QIcon::fromTheme("bookmark-new"), i18n("&Bookmark link"), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("bookmark-new") ), i18n("&Bookmark link"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
         menu.addAction(a);
@@ -575,7 +577,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         if (!m_parentTab->isWebApp() && webwin)
         {
-            a = webwin->actionByName(KStandardAction::name(KStandardAction::AddBookmark));
+            a = webwin->actionByName( QL1S(KStandardAction::name(KStandardAction::AddBookmark)) );
             menu.addAction(a);
         }
     }
@@ -584,7 +586,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     menu.addSeparator();
 
     if (webwin)
-        menu.addAction(webwin->actionByName("web_inspector"));
+        menu.addAction(webwin->actionByName( QL1S("web_inspector") ));
 
     // SPELL CHECK Actions
     if (m_contextMenuHitResult.isContentEditable())
@@ -596,7 +598,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     
     if (webwin && window()->isFullScreen())
     {
-        a = new QAction(QIcon::fromTheme("view-fullscreen"), i18n("Exit FullScreen Mode"), &menu);
+        a = new QAction(QIcon::fromTheme( QL1S("view-fullscreen") ), i18n("Exit FullScreen Mode"), &menu);
         a->setCheckable(true);
         a->setChecked(true);
         connect(a, SIGNAL(triggered(bool)), webwin, SIGNAL(setFullScreen(bool)));
@@ -732,9 +734,10 @@ void WebView::dropEvent(QDropEvent *event)
             emit loadUrl(url, Rekonq::NewFocusedTab);
         }
     }
-    else if (event->mimeData()->hasFormat("text/plain") && event->source() != this && !isEditable) //dropped plain text with url format
+    else if (event->mimeData()->hasFormat( QL1S("text/plain") ) && event->source() != this && !isEditable) //dropped plain text with url format
     {
-        QUrl url = QUrl::fromUserInput(event->mimeData()->data("text/plain"));
+        QString s = QL1S(event->mimeData()->data( QL1S("text/plain") ));
+        QUrl url = QUrl::fromUserInput(s);
 
         if (url.isValid())
             emit loadUrl(url, Rekonq::NewFocusedTab);
@@ -793,17 +796,7 @@ void WebView::slotCopyImageLocation()
 {
     QAction *a = qobject_cast<QAction*>(sender());
     QUrl imageUrl(a->data().toUrl());
-#ifndef QT_NO_MIMECLIPBOARD
-    // Set it in both the mouse selection and in the clipboard
-    QMimeData* mimeData = new QMimeData;
-    imageUrl.populateMimeData(mimeData);
-    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
-    mimeData = new QMimeData;
-    imageUrl.populateMimeData(mimeData);
-    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Selection);
-#else
     QApplication::clipboard()->setText(imageUrl.url());
-#endif
 }
 
 
@@ -851,7 +844,7 @@ void WebView::bookmarkLink()
     QAction *a = qobject_cast<QAction*>(sender());
     QUrl url(a->data().toUrl());
 
-    BookmarkManager::self()->rootGroup().addBookmark(url.url(), url);
+    BookmarkManager::self()->rootGroup().addBookmark(url.toString(), url, QString());
     BookmarkManager::self()->emitChanged();
 }
 
@@ -870,7 +863,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
+    const QString tagName = page()->mainFrame()->evaluateJavaScript( QL1S("document.activeElement.tagName") ).toString();
 
     if (event->modifiers() == Qt::ControlModifier)
     {
@@ -891,7 +884,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         // CTRL + RETURN: open link into another tab
         if (event->key() == Qt::Key_Return && tagName == QL1S("A"))
         {
-            QUrl u = QUrl(page()->mainFrame()->evaluateJavaScript("document.activeElement.attributes[\"href\"].value").toString());
+            QUrl u = QUrl(page()->mainFrame()->evaluateJavaScript( QL1S("document.activeElement.attributes[\"href\"].value") ).toString());
             emit loadUrl(u, Rekonq::NewTab);
             event->accept();
             return;
@@ -909,7 +902,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         // and fails on sites like g+. The opposite is true for javascript check.
         // Please, help me finding the right way to check this EVERY TIME.
         bool isContentEditableQW = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
-        bool isContentEditableJS = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
+        bool isContentEditableJS = page()->mainFrame()->evaluateJavaScript( QL1S("document.activeElement.isContentEditable") ).toBool();
 
         if (!isContentEditableQW && !isContentEditableJS)
         {
@@ -990,7 +983,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         {
             // See note up!
             bool isContentEditableQW = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
-            bool isContentEditableJS = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
+            bool isContentEditableJS = page()->mainFrame()->evaluateJavaScript( QL1S("document.activeElement.isContentEditable") ).toBool();
 
             if (!isContentEditableQW && !isContentEditableJS)
             {
@@ -1245,13 +1238,13 @@ void WebView::hideAccessKeys()
 void WebView::showAccessKeys()
 {
     QStringList supportedElement;
-    supportedElement << QLatin1String("a")
-                     << QLatin1String("input")
-                     << QLatin1String("area")
-                     << QLatin1String("button")
-                     << QLatin1String("label")
-                     << QLatin1String("legend")
-                     << QLatin1String("textarea");
+    supportedElement << QL1S("a")
+                     << QL1S("input")
+                     << QL1S("area")
+                     << QL1S("button")
+                     << QL1S("label")
+                     << QL1S("legend")
+                     << QL1S("textarea");
 
     QList<QChar> unusedKeys;
     for (char c = 'A'; c <= 'Z'; ++c)
@@ -1273,7 +1266,7 @@ void WebView::showAccessKeys()
             {
                 continue;
             }
-            QString accessKeyAttribute = element.attribute(QLatin1String("accesskey")).toUpper();
+            QString accessKeyAttribute = element.attribute(QL1S("accesskey")).toUpper();
             if (accessKeyAttribute.isEmpty())
                 continue;
             QChar accessKey;
@@ -1334,7 +1327,7 @@ void WebView::showAccessKeys()
 void WebView::makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element)
 {
     QLabel *label = new QLabel(this);
-    label->setText(QString(QLatin1String("<qt><b>%1</b>")).arg(accessKey));
+    label->setText(QString(QL1S("<qt><b>%1</b>")).arg(accessKey));
 
     label->setAutoFillBackground(true);
     label->setFrameStyle(QFrame::Box | QFrame::Plain);
@@ -1406,7 +1399,7 @@ void WebView::sendByMail()
     QAction *a = qobject_cast<QAction*>(sender());
     QString url = a->data().toString();
 
-    KToolInvocation::invokeMailer("", "", "", "", url);
+    KToolInvocation::invokeMailer( QL1S(""), QL1S(""), QL1S(""), QL1S(""), url);
 }
 
 
@@ -1510,7 +1503,7 @@ void WebView::spellCheckerCorrected(const QString& original, int pos, const QStr
     script += QString::number(index);
     script += QL1S(") + \"");
     QString w(replacement);
-    script +=  w.replace('\'', "\\\'"); // Escape any Quote marks in replacement word
+    script +=  w.replace( QL1C('\''), QL1S("\\\'") ); // Escape any Quote marks in replacement word
     script += QL1S("\" + this.value.substring(");
     script += QString::number(index + original.length());
     script += QL1S(")");

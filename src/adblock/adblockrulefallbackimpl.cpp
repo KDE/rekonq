@@ -118,7 +118,7 @@ bool AdBlockRuleFallbackImpl::match(const QNetworkRequest &request, const QStrin
     
     if (m_thirdPartyOption)
     {
-        const QString referer = request.rawHeader("referer");
+        const QString referer = QL1S( request.rawHeader("referer") );
         const QString host = request.url().host();
 
         bool isThirdParty = !referer.contains(host);

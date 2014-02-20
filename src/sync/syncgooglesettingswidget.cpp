@@ -42,14 +42,14 @@ SyncGoogleSettingsWidget::SyncGoogleSettingsWidget(QWidget *parent)
     kcfg_syncUser->setText(ReKonfig::syncUser());
     kcfg_syncPass->setText(ReKonfig::syncPass());
 
-    kcfg_syncPass->setPasswordMode(true);
+    kcfg_syncPass->setEchoMode(QLineEdit::Password);
 }
 
 
 int SyncGoogleSettingsWidget::nextId() const
 {
     // save
-    ReKonfig::setSyncHost("http://bookmarks.google.com/");
+    ReKonfig::setSyncHost( QL1S("http://bookmarks.google.com/") );
     ReKonfig::setSyncUser(kcfg_syncUser->text());
     ReKonfig::setSyncPass(kcfg_syncPass->text());
 

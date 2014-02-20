@@ -54,7 +54,7 @@ public:
      * This method takes an rekonq: url and loads
      * the corresponding part of the new tab page
      */
-    void generate(const QUrl &url = QUrl("rekonq:home"));
+    void generate(const QUrl &url = QUrl( QL1S("rekonq:home") ));
 
 private:
     // these are the "high-level" functions to build the new tab page.
@@ -103,7 +103,7 @@ private:
      */
     inline QWebElement markup(const QString &selector) const
     {
-        return m_root.document().findFirst("#models > " + selector).clone();
+        return m_root.document().findFirst( QL1S("#models > ") + selector).clone();
     }
 
     QString checkTitle(const QString &title, int max = 20);

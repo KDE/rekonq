@@ -27,6 +27,9 @@
 // Local Includes
 #include "webkitwidget.h"
 
+// KDE Includes
+#include <KLocalizedString>
+
 
 WebKitWidget::WebKitWidget(QWidget *parent)
     : QWidget(parent)

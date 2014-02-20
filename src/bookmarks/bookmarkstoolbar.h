@@ -36,7 +36,7 @@
 #include <KToolBar>
 
 // Forward Declarations
-class KMenu;
+class QMenu;
 
 
 /**
@@ -65,7 +65,7 @@ private Q_SLOTS:
 private:
     void startDrag();
 
-    KMenu *m_currentMenu;
+    QMenu *m_currentMenu;
     QPoint m_startDragPos;
     QAction *m_dragAction;
     QAction *m_dropAction;

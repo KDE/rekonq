@@ -35,8 +35,8 @@
 #include <KService>
 
 // Qt Includes
-#include <QString>
 #include <QList>
+#include <QString>
 #include <QUrl>
 
 

@@ -42,7 +42,7 @@ KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
     // Proxy
     QNetworkProxy proxy;
     
-    KConfig config("kioslaverc", KConfig::NoGlobals);
+    KConfig config( QL1S("kioslaverc"), KConfig::NoGlobals);
     
     KConfigGroup proxyGroup(&config, QL1S("Proxy Settings"));
     
@@ -52,8 +52,8 @@ KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
     if (proxyType == 0)
         return;
 
-    QStringList httpProxy = proxyGroup.readEntry( QL1S("httpProxy"), QString("") ).split(QL1C(' '));
-    QStringList socksProxy = proxyGroup.readEntry( QL1S("socksProxy"), QString("") ).split(QL1C(' '));
+    QStringList httpProxy = proxyGroup.readEntry( QL1S("httpProxy"), QString(QL1S("")) ).split(QL1C(' '));
+    QStringList socksProxy = proxyGroup.readEntry( QL1S("socksProxy"), QString(QL1S("")) ).split(QL1C(' '));
     
     QStringList proxyInfoList;
 
@@ -75,7 +75,7 @@ KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
         return;
     
     // else
-    proxyInfoList.first().remove("http://");
+    proxyInfoList.first().remove( QL1S("http://") );
 
     // set host
     QString proxyHost = proxyInfoList.at(0);

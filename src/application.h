@@ -66,22 +66,8 @@ public:
     int newInstance();
     static Application *instance();
 
-    RekonqWindow *rekonqWindow(const QString & activityID = QString());
+    RekonqWindow *rekonqWindow();
     RekonqWindowList rekonqWindowList();
-
-    /**
-     * @returns the list of windows associated with activity whose id is @param activityID
-     * @param activityID the ID of the activity  (if empty, it is interpreted as the current activity)
-     * @note If activities are disabled, returns the function returns the list of all tabs.
-     */
-    RekonqWindowList tabsForActivity(const QString & activityID = QString());
-    
-    /**
-     * @returns the true if there are windows associated with activity whose id is @param activityID
-     * @param activityID the ID of the activity  (if empty, it is interpreted as the current activity)
-     * @note If activities are disabled, returns true if there are any tabs.
-     */
-    bool haveWindowsForActivity(const QString & activityID = QString());
 
     WebAppList webAppList();
     

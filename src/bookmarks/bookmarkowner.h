@@ -81,8 +81,8 @@ public:
      * Functions to get current information.
      */
     virtual QString currentTitle() const;
-    virtual QString currentUrl() const;
-    virtual QList< QPair<QString, QString> > currentBookmarkList() const;
+    virtual QUrl currentUrl() const;
+    virtual QList<KBookmarkOwner::FutureBookmark> currentBookmarkList() const;
     // @}
 
     virtual bool supportsTabs() const
@@ -146,7 +146,7 @@ class CustomBookmarkAction : public QAction
     Q_OBJECT
 
 public:
-    CustomBookmarkAction(const KBookmark &bookmark, const KIcon &icon, const QString &text, QObject *parent);
+    CustomBookmarkAction(const KBookmark &bookmark, const QIcon &icon, const QString &text, QObject *parent);
 
 Q_SIGNALS:
     void triggered(const KBookmark &);

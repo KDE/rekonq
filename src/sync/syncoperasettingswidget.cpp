@@ -32,13 +32,17 @@
 #include "rekonq.h"
 
 // Config Includes
+#if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
+// Config Includes
 #include <config-qca2.h>
 #include <config-qtoauth.h>
+#endif
 
 // Local Includes
 #include "syncassistant.h"
 
-
+// KDE Includes
+#include <KLocalizedString>
 
 
 SyncOperaSettingsWidget::SyncOperaSettingsWidget(QWidget *parent)
@@ -69,7 +73,7 @@ int SyncOperaSettingsWidget::nextId() const
 #if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
 
     // save
-    ReKonfig::setSyncHost("http://link.opera.com/");
+    ReKonfig::setSyncHost( QL1S("http://link.opera.com/") );
     ReKonfig::setSyncUser(kcfg_syncUser->text());
     ReKonfig::setSyncPass(kcfg_syncPass->text());
 

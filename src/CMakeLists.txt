@@ -4,7 +4,7 @@ ADD_SUBDIRECTORY (data)
 
 
 ### ------- SETTING REKONQ FILES...
-ADD_DEFINITIONS (-DQT_STATICPLUGIN)
+#ADD_DEFINITIONS (-DQT_STATICPLUGIN)
 # QT4_WRAP_CPP(wk_HEADERS_MOC qwebkitplatformplugin.h)
 
 # src files
@@ -77,7 +77,6 @@ SET (rekonq_KDEINIT_SRCS
     sync/syncoperasettingswidget.cpp
     sync/syncsshsettingswidget.cpp
     #----------------------------------------
-    tabwindow/rwindow.cpp
     tabwindow/rekonqwindow.cpp
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
@@ -118,8 +117,8 @@ SET (rekonq_KDEINIT_SRCS
     webwindow/rekonqmenu.cpp
     webwindow/webwindow.cpp
     #----------------------------------------
-    kspellplugin.cpp
-    ${wk_HEADERS_MOC}
+#    kspellplugin.cpp
+#    ${wk_HEADERS_MOC}
 )
 
 
@@ -244,28 +243,32 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             Qt5::Network
                             Qt5::Script
                             Qt5::WebKitWidgets
+                            Qt5::Concurrent
                             # ---------------------------------------
                             KF5::Auth
                             KF5::Bookmarks
-                            KF5::Config
+                            KF5::Codecs
+                            KF5::ConfigCore
                             KF5::ConfigWidgets
                             KF5::CoreAddons
                             KF5::DBusAddons
                             KF5::GlobalAccel
                             KF5::GuiAddons
                             KF5::I18n
-                            KF5::Init
+                            KF5::IconThemes
                             KF5::JobWidgets
                             KF5::KCMUtils
+                            KF5::Notifications
                             KF5::Solid
+                            KF5::SonnetCore
                             KF5::TextWidgets
                             KF5::Wallet
                             KF5::WidgetsAddons
-			    KF5::WindowSystem
+                            KF5::WindowSystem
                             KF5::XmlGui
                             # ---------------------------------------
                             KF5::Parts
-                            KF5::KIO
+                            KF5::KIOCore
                             KF5::Service
                             KF5::WebKit
 )
@@ -294,5 +297,5 @@ INSTALL( TARGETS rekonq ${INSTALL_TARGETS_DEFAULT_ARGS} )
 INSTALL( TARGETS kdeinit_rekonq  ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 INSTALL( FILES rekonq.kcfg  DESTINATION  ${KCFG_INSTALL_DIR} )
-INSTALL( FILES webwindow/rekonqui.rc  DESTINATION  ${XDG_DATA_INSTALL_DIR}/rekonq )
+INSTALL( FILES webwindow/rekonqui.rc  DESTINATION  ${DATA_INSTALL_DIR}/rekonq )
 

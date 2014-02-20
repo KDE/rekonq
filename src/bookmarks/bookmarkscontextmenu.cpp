@@ -77,7 +77,7 @@ void BookmarksContextMenu::addFolderActions()
 {
     KBookmarkGroup group = bookmark().toGroup();
 
-    if (bookmark().internalElement().attributeNode("toolbar").value() == "yes")
+    if (bookmark().internalElement().attributeNode( QL1S("toolbar") ).value() == QL1S("yes") )
     {
         addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::UNSET_TOOLBAR_FOLDER));
     }

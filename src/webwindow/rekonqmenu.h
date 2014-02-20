@@ -33,8 +33,8 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KMenu>
+// Qt Includes
+#include <QMenu>
 
 // Forward Declarations
 class QWidget;
@@ -45,7 +45,7 @@ class QWidget;
  * Inspired by Dolphin solution.
  *
  */
-class RekonqMenu : public KMenu
+class RekonqMenu : public QMenu
 {
     Q_OBJECT
 

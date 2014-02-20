@@ -40,18 +40,18 @@
 
 // KDE Includes
 #include <KLocalizedString>
-#include <KMenu>
 #include <KMessageBox>
 
 // Qt Includes
 #include <QAction>
 #include <QHeaderView>
+#include <QMenu>
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
     : UrlPanel(title, parent, flags)
 {
-    setObjectName("historyPanel");
+    setObjectName( QL1S("historyPanel") );
     setVisible(ReKonfig::showHistoryPanel());
 }
 
@@ -64,30 +64,30 @@ HistoryPanel::~HistoryPanel()
 
 void HistoryPanel::contextMenuItem(const QPoint &pos)
 {
-    KMenu menu;
+    QMenu menu;
     QAction* action;
 
-    action = new QAction(QIcon::fromTheme("tab-new"), i18n("Open"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("tab-new") ), i18n("Open"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInCurrentTab()));
     menu.addAction(action);
 
-    action = new QAction(QIcon::fromTheme("tab-new"), i18n("Open in New Tab"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("tab-new") ), i18n("Open in New Tab"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInNewTab()));
     menu.addAction(action);
 
-    action = new QAction(QIcon::fromTheme("window-new"), i18n("Open in New Window"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("window-new") ), i18n("Open in New Window"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInNewWindow()));
     menu.addAction(action);
 
-    action = new QAction(QIcon::fromTheme("edit-copy"), i18n("Copy Link Address"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("edit-copy") ), i18n("Copy Link Address"), this);
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(copyToClipboard()));
     menu.addAction(action);
 
-    action = new QAction(QIcon::fromTheme("edit-clear"), i18n("Remove Entry"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("edit-clear") ), i18n("Remove Entry"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(deleteEntry()));
     menu.addAction(action);
 
-    action = new QAction(QIcon::fromTheme("edit-clear"), i18n("Remove all occurrences"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("edit-clear") ), i18n("Remove all occurrences"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(forgetSite()));
     menu.addAction(action);
 
@@ -97,14 +97,14 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
 
 void HistoryPanel::contextMenuGroup(const QPoint &pos)
 {
-    KMenu menu;
+    QMenu menu;
     QAction* action;
 
-    action = new QAction(QIcon::fromTheme("tab-new"), i18n("Open Folder in Tabs"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("tab-new") ), i18n("Open Folder in Tabs"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(openAll()));
     menu.addAction(action);
 
-    action = new QAction(QIcon::fromTheme("edit-clear"), i18n("Remove Folder"), this);
+    action = new QAction(QIcon::fromTheme( QL1S("edit-clear") ), i18n("Remove Folder"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(deleteGroup()));
     menu.addAction(action);
 
@@ -126,7 +126,7 @@ void HistoryPanel::openAll()
     QList<QUrl> allChild;
 
     for (int i = 0; i < index.model()->rowCount(index); i++)
-        allChild << qVariantValue<QUrl>(index.child(i, 0).data(Qt::UserRole));
+        allChild << index.child(i, 0).data(Qt::UserRole).toUrl();
 
     if (allChild.length() > 8)
     {
@@ -140,7 +140,10 @@ void HistoryPanel::openAll()
     }
 
     for (int i = 0; i < allChild.length(); i++)
-        emit openUrl(allChild.at(i).url(), Rekonq::NewTab);
+    {
+        QUrl u(allChild.at(i).url());
+        emit openUrl(u, Rekonq::NewTab);
+    }
 }
 
 
@@ -153,7 +156,7 @@ void HistoryPanel::deleteGroup()
     //Getting all URLs of sub items.
     QList<QUrl> allChild;
     for (int i = 0; i < index.model()->rowCount(index); i++)
-        allChild << qVariantValue<QUrl>(index.child(i, 0).data(Qt::UserRole));
+        allChild << index.child(i, 0).data(Qt::UserRole).toUrl();
 
     for (int i = 0; i < allChild.length(); i++)
         HistoryManager::self()->removeHistoryEntry(allChild.at(i));
@@ -179,7 +182,7 @@ void HistoryPanel::deleteEntry()
         return;
     removedFolderIndex = index.parent().row();
 
-    HistoryManager::self()->removeHistoryEntry(qVariantValue< QUrl >(index.data(Qt::UserRole)));
+    HistoryManager::self()->removeHistoryEntry(index.data(Qt::UserRole).toUrl());
 
     QModelIndex expandItem = panelTreeView()->model()->index(removedFolderIndex, 0);
     if (expandItem.isValid())
@@ -194,7 +197,7 @@ void HistoryPanel::forgetSite()
         return;
     removedFolderIndex = index.row();
 
-    QString site = qVariantValue< QUrl >(index.data(Qt::UserRole)).host();
+    QString site = index.data(Qt::UserRole).toUrl().host();
     QList<HistoryItem> toRemove = HistoryManager::self()->find(site);
     for (int i = 0; i < toRemove.length(); i++)
     {

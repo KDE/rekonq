@@ -31,8 +31,7 @@
 #include "rekonq.h"
 
 // KDE Includes
-#include <klocalizedstring.h>
-
+#include <KLocalizedString>
 #include <KIO/Job>
 
 // Qt Includes
@@ -59,13 +58,13 @@ void FTPSyncHandler::initialLoadAndCheck()
     {
         _remoteBookmarksUrl = QUrl();
         _remoteBookmarksUrl.setHost(ReKonfig::syncHost());
-        _remoteBookmarksUrl.setScheme("ftp");
+        _remoteBookmarksUrl.setScheme( QL1S("ftp") );
         _remoteBookmarksUrl.setUserName(ReKonfig::syncUser());
         _remoteBookmarksUrl.setPassword(ReKonfig::syncPass());
         _remoteBookmarksUrl.setPort(ReKonfig::syncPort());
         _remoteBookmarksUrl.setPath(ReKonfig::syncPath() + QL1S("/bookmarks.xml"));
 
-        const QString bookmarksFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/konqueror/bookmarks.xml"));
+        const QString bookmarksFilePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/konqueror/bookmarks.xml");
         _localBookmarksUrl = QUrl(bookmarksFilePath);
 
         KIO::StatJob *job = KIO::stat(_remoteBookmarksUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
@@ -77,7 +76,7 @@ void FTPSyncHandler::initialLoadAndCheck()
     {
         _remoteHistoryUrl = QUrl();
         _remoteHistoryUrl.setHost(ReKonfig::syncHost());
-        _remoteHistoryUrl.setScheme("ftp");
+        _remoteHistoryUrl.setScheme( QL1S("ftp") );
         _remoteHistoryUrl.setUserName(ReKonfig::syncUser());
         _remoteHistoryUrl.setPassword(ReKonfig::syncPass());
         _remoteHistoryUrl.setPort(ReKonfig::syncPort());
@@ -95,7 +94,7 @@ void FTPSyncHandler::initialLoadAndCheck()
     {
         _remotePasswordsUrl = QUrl();
         _remotePasswordsUrl.setHost(ReKonfig::syncHost());
-        _remotePasswordsUrl.setScheme("ftp");
+        _remotePasswordsUrl.setScheme( QL1S("ftp") );
         _remotePasswordsUrl.setUserName(ReKonfig::syncUser());
         _remotePasswordsUrl.setPassword(ReKonfig::syncPass());
         _remotePasswordsUrl.setPort(ReKonfig::syncPort());

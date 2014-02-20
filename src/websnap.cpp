@@ -135,7 +135,8 @@ QString WebSnap::imagePathFromUrl(const QUrl &url)
 
     QByteArray hashedName = QCryptographicHash::hash(name, QCryptographicHash::Md5).toHex();
 
-    return QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1C('/') + QString("thumbs/") + hashedName + QL1S(".png");
+    QString w = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1C('/') + QL1S("thumbs/") + QL1S(hashedName) + QL1S(".png");
+    return w;
 }
 
 

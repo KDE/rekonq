@@ -35,18 +35,18 @@
 #include "bookmarkmanager.h"
 
 // KDE Includes
-#include <KLocalizedString>
 #include <KBookmarkManager>
+#include <KLocalizedString>
 
+// Qt Includes
+#include <QDomDocument>
 #include <QList>
-#include <QWebPage>
-#include <QWebFrame>
-#include <QWebElement>
-#include <QUrl>
-#include <QWebSettings>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QDomDocument>
+#include <QUrl>
+#include <QWebElement>
+#include <QWebFrame>
+#include <QWebSettings>
 
 
 GoogleSyncHandler::GoogleSyncHandler(QObject *parent)
@@ -149,7 +149,7 @@ void GoogleSyncHandler::startLogin()
     _doLogin = true;
 
     qDebug() << "Loading login page...";
-    _webPage.mainFrame()->load(QUrl("http://bookmarks.google.com/"));
+    _webPage.mainFrame()->load(QUrl( QL1S("http://bookmarks.google.com/") ));
 }
 
 //Loading a webpage finished, what action to take is decided based on url we have loaded.
@@ -192,7 +192,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
         // We get to this page after successful login, let's fetch the bookmark list in Xml format.
         QNetworkAccessManager *qnam = _webPage.networkAccessManager();
         QNetworkRequest request;
-        request.setUrl(QUrl("http://www.google.com/bookmarks/?output=xml"));
+        request.setUrl(QUrl( QL1S("http://www.google.com/bookmarks/?output=xml") ));
         _reply = qnam->get(request);
         emit syncStatus(Rekonq::Bookmarks, true, i18n("Fetching bookmarks from server..."));
         connect(_reply, SIGNAL(finished()), this, SLOT(fetchingBookmarksFinished()));
@@ -233,16 +233,20 @@ void GoogleSyncHandler::loadFinished(bool ok)
             {
                 KBookmark bookmark = BookmarkManager::self()->bookmarkForUrl(*iter);
                 QByteArray postData;
-                postData.append("bkmk=" + QUrl::toPercentEncoding(bookmark.url().url().toUtf8()));
-                postData.append("&title=" + QUrl::toPercentEncoding(bookmark.text().toUtf8()));
-                postData.append("&annotation=");
-                postData.append("&labels=");
-                postData.append("&prev=/lookup");
-                postData.append("&sig=" + sigKey.toUtf8());
-
+                postData.append( QByteArray("bkmk=") );
+                postData.append( QUrl::toPercentEncoding( bookmark.url().toString() ));   
+                postData.append( QByteArray("&title=") );
+                postData.append( QUrl::toPercentEncoding( bookmark.text() ));
+                postData.append( QByteArray("&annotation=") );
+                postData.append( QByteArray("&labels=") );
+                postData.append( QByteArray("&prev=/lookup") );
+                postData.append( QByteArray("&sig=") );
+                postData.append( sigKey.toUtf8() );
+                
+    
                 QNetworkRequest request;
-                request.setUrl(QUrl("https://www.google.com/bookmarks/mark?sig=" + sigKey + QL1S("&btnA") ));
-                request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+                request.setUrl(QUrl( QL1S("https://www.google.com/bookmarks/mark?sig=") + sigKey + QL1S("&btnA") ));
+                request.setHeader(QNetworkRequest::ContentTypeHeader, QL1S("application/x-www-form-urlencoded") );
                 qDebug() << "Url: " << request.url();
                 qDebug() << "Post data is :" << postData;
                 QNetworkReply *r = qnam->post(request, postData);
@@ -273,7 +277,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
 //We received bookmarks stored on server in xml format, now take the action based on which mode we are in.
 void GoogleSyncHandler::fetchingBookmarksFinished()
 {
-    QString data = _reply->readAll();
+    QString data = QL1S(_reply->readAll());
 
     QDomDocument doc( QL1S("bookmarks") );
     doc.setContent(data);
@@ -298,23 +302,24 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
                 //Add bookmark
                 qDebug() << "Add bookmark";
                 emit syncStatus(Rekonq::Bookmarks, true, i18n("Adding bookmark"));
-                root.addBookmark(title.isEmpty() ? url : title, QUrl(url));
+                root.addBookmark(title.isEmpty() ? url : title, QUrl(url), QString());
                 manager->manager()->emitChanged(root);
             }
 
         }
 
-        // After receiving changes, we compare local bookmarks with Google bookmarks and if some bookmarks exist locally but not on Google Bookmarks, we add them.
+        // After receiving changes, we compare local bookmarks with Google bookmarks and if some bookmarks exist locally 
+        // but not on Google Bookmarks, we add them.
         checkToAddGB(root, bookmarksOnServer);
 
         if (!_bookmarksToAdd.isEmpty())
         {
             qDebug() << "Getting sigkey";
-            _webPage.mainFrame()->load(QUrl("https://www.google.com/bookmarks/mark?op=add&hl=en"));
+            _webPage.mainFrame()->load(QUrl( QL1S("https://www.google.com/bookmarks/mark?op=add&hl=en") ));
         }
         else
         {
-            _webPage.mainFrame()->load(QUrl("https://accounts.google.com/Logout?hl=en"));
+            _webPage.mainFrame()->load(QUrl( QL1S("https://accounts.google.com/Logout?hl=en") ));
             emit syncStatus(Rekonq::Bookmarks, true, i18n("Signing out..."));
         }
     }
@@ -326,11 +331,11 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
         if (!_bookmarksToAdd.isEmpty() || !_bookmarksToDelete.isEmpty())
         {
             qDebug() << "Getting sigkey";
-            _webPage.mainFrame()->load(QUrl("https://www.google.com/bookmarks/mark?op=add&hl=en"));
+            _webPage.mainFrame()->load(QUrl( QL1S("https://www.google.com/bookmarks/mark?op=add&hl=en") ));
         }
         else
         {
-            _webPage.mainFrame()->load(QUrl("https://accounts.google.com/Logout?hl=en"));
+            _webPage.mainFrame()->load(QUrl( QL1S("https://accounts.google.com/Logout?hl=en") ));
             emit syncStatus(Rekonq::Bookmarks, true, i18n("Signing out..."));
         }
     }
@@ -353,7 +358,7 @@ QString GoogleSyncHandler::getChildElement(const QDomNode &node, QString name)
             return element.text();
         }
     }
-    return NULL;
+    return QString();
 }
 
 //This method checks whether we have any other bookmarks than the ones which exist on the server
@@ -423,7 +428,7 @@ void GoogleSyncHandler::updateBookmarkFinished()
 
     if (_requestCount <= 0)
     {
-        _webPage.mainFrame()->load(QUrl("https://accounts.google.com/Logout?hl=en"));
+        _webPage.mainFrame()->load(QUrl( QL1S("https://accounts.google.com/Logout?hl=en") ));
         emit syncStatus(Rekonq::Bookmarks, true, i18n("Signing out..."));
     }
 

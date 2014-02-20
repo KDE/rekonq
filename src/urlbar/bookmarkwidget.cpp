@@ -34,21 +34,23 @@
 #include "bookmarkowner.h"
 
 // KDE Includes
+#include <KBookmarkManager>
 #include <KComboBox>
-#include <KLocalizedString>
 #include <KLineEdit>
+#include <KLocalizedString>
 #include <KRatingWidget>
 
 // Qt Includes
-#include <QDialogButtonBox>
-#include <QFormLayout>
-#include <QLabel>
-#include <QPushButton>
 #include <QCompleter>
-#include <QTextCursor>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QDialogButtonBox>
+#include <QFormLayout>
 #include <QIcon>
+#include <QLabel>
+#include <QPushButton>
+#include <QTextCursor>
+
 
 #ifdef HAVE_NEPOMUK
 // Local Nepomuk Includes
@@ -237,15 +239,11 @@ void BookmarkWidget::setupFolderComboBox()
 
     if (toolBarRoot.address() == root.address())
     {
-        m_folder->addItem(QIcon::fromTheme("bookmark-toolbar"),
-                          i18n("Bookmark Toolbar"),
-                          toolBarRoot.address());
+        m_folder->addItem(QIcon::fromTheme( QL1S("bookmark-toolbar") ), i18n("Bookmark Toolbar"), toolBarRoot.address());
     }
     else
     {
-        m_folder->addItem(QIcon::fromTheme("bookmark-toolbar"),
-                          toolBarRoot.text(),
-                          toolBarRoot.address());
+        m_folder->addItem(QIcon::fromTheme( QL1S("bookmark-toolbar") ), toolBarRoot.text(), toolBarRoot.address());
     }
     m_folder->insertSeparator(1);
 
@@ -311,7 +309,7 @@ void BookmarkWidget::parseTags()
     if (m_tagLine->text().contains(','))
     {
         QString text = m_tagLine->text();
-        QStringList tagStringList = text.split(QChar::fromAscii(','));
+        QStringList tagStringList = text.split(QL1C(','));
 
         Q_FOREACH(const QString & tag, tagStringList)
         {

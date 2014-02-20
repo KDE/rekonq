@@ -46,7 +46,7 @@ BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::Window
     , _bkTreeModel(new BookmarksTreeModel(this))
     , _loadingState(false)
 {
-    setObjectName("bookmarksPanel");
+    setObjectName( QL1S("bookmarksPanel") );
     setVisible(ReKonfig::showBookmarksPanel());
 
     panelTreeView()->setDragEnabled(true);
@@ -98,7 +98,7 @@ void BookmarksPanel::onCollapse(const QModelIndex &index)
     if (_loadingState)
         return;
 
-    bookmarkForIndex(index).internalElement().setAttribute("folded", "yes");
+    bookmarkForIndex(index).internalElement().setAttribute( QL1S("folded"), QL1S("yes") );
     emit expansionChanged();
 }
 
@@ -108,7 +108,7 @@ void BookmarksPanel::onExpand(const QModelIndex &index)
     if (_loadingState)
         return;
 
-    bookmarkForIndex(index).internalElement().setAttribute("folded", "no");
+    bookmarkForIndex(index).internalElement().setAttribute( QL1S("folded"), QL1S("no") );
     emit expansionChanged();
 }
 

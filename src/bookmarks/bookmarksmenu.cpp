@@ -36,6 +36,11 @@
 #include "iconmanager.h"
 #include "webwindow.h"
 
+// KDE Includes
+#include <KBookmarkAction>
+#include <KBookmarkActionMenu>
+#include <KBookmarkManager>
+
 // Qt Includes
 #include <QFrame>
 #include <QActionEvent>
@@ -44,7 +49,7 @@
 
 BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
                            KBookmarkOwner *owner,
-                           KMenu *menu,
+                           QMenu *menu,
                            KActionCollection* actionCollection)
     : KBookmarkMenu(manager, owner, menu, actionCollection)
 {
@@ -53,7 +58,7 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
 
 BookmarkMenu::BookmarkMenu(KBookmarkManager  *manager,
                            KBookmarkOwner  *owner,
-                           KMenu  *parentMenu,
+                           QMenu  *parentMenu,
                            const QString &parentAddress)
     : KBookmarkMenu(manager, owner, parentMenu, parentAddress)
 {
@@ -66,12 +71,14 @@ BookmarkMenu::~BookmarkMenu()
 }
 
 
-KMenu * BookmarkMenu::contextMenu(QAction *act)
+QMenu * BookmarkMenu::contextMenu(QAction *act)
 {
-    KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
-    if (!action)
+    // FIXME
+//     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
+//     if (!action)
+//         return 0;
+//     return new BookmarksContextMenu(action->bookmark(), manager(), static_cast<BookmarkOwner*>(owner()));
         return 0;
-    return new BookmarksContextMenu(action->bookmark(), manager(), static_cast<BookmarkOwner*>(owner()));
 }
 
 

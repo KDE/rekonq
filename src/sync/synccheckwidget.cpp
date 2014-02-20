@@ -34,10 +34,13 @@
 #include "syncassistant.h"
 #include "syncmanager.h"
 
+// KDE Includes
+#include <KLocalizedString>
+
 // Qt Includes
-#include <QStandardPaths>
-#include <QMovie>
 #include <QIcon>
+#include <QMovie>
+#include <QStandardPaths>
 
 
 SyncCheckWidget::SyncCheckWidget(QWidget *parent)
@@ -80,7 +83,7 @@ void SyncCheckWidget::initializePage()
     hsMsgLabel->setText(QString());
     psMsgLabel->setText(QString());
 
-    KIcon notSyncedIcon(QL1S("dialog-cancel"));
+    QIcon notSyncedIcon = QIcon::fromTheme( QL1S("dialog-cancel") );
 
     if (!ReKonfig::syncEnabled())
     {
@@ -90,7 +93,7 @@ void SyncCheckWidget::initializePage()
         return;
     }
 
-    QString loadingGitPath = QStandardDirs::locate(QStandardPaths::DataLocation , "pics/loading.mng");
+    QString loadingGitPath = QStandardPaths::locate(QStandardPaths::DataLocation , QL1S("pics/loading.mng") );
 
     // Now, load syncManager settings...
     SyncManager::self()->loadSettings();
@@ -151,8 +154,8 @@ void SyncCheckWidget::initializePage()
 
 void SyncCheckWidget::updateWidget(Rekonq::SyncData type, bool done, QString msg)
 {
-    KIcon doneIcon(QL1S("dialog-ok-apply"));
-    KIcon failIcon(QL1S("edit-delete"));
+    QIcon doneIcon = QIcon::fromTheme(QL1S("dialog-ok-apply"));
+    QIcon failIcon = QIcon::fromTheme(QL1S("edit-delete"));
 
     switch (type)
     {

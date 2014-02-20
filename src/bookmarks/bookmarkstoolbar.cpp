@@ -37,12 +37,17 @@
 #include "webwindow.h"
 
 // KDE Includes
-#include <KMenu>
+#include <KBookmarkActionInterface>
+#include <KBookmarkActionMenu>
+#include <KBookmarkManager>
 
 // Qt Includes
-#include <QFrame>
 #include <QActionEvent>
 #include <QApplication>
+#include <QDrag>
+#include <QFrame>
+#include <QMimeData>
+#include <QMenu>
 
 
 BookmarkToolBar::BookmarkToolBar(QWidget *parent)
@@ -99,7 +104,7 @@ void BookmarkToolBar::contextMenu(const QPoint &point)
 void BookmarkToolBar::menuDisplayed()
 {
     qApp->installEventFilter(this);
-    m_currentMenu = qobject_cast<KMenu*>(sender());
+    m_currentMenu = qobject_cast<QMenu*>(sender());
 }
 
 
@@ -184,8 +189,8 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     {
         QDragEnterEvent *dragEvent = static_cast<QDragEnterEvent*>(event);
         if (dragEvent->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type())
-                || dragEvent->mimeData()->hasFormat("text/uri-list")
-                || dragEvent->mimeData()->hasFormat("text/plain"))
+                || dragEvent->mimeData()->hasFormat( QL1S("text/uri-list") )
+                || dragEvent->mimeData()->hasFormat( QL1S("text/plain") ))
         {
             QFrame* dropIndicatorWidget = new QFrame(this);
             dropIndicatorWidget->setFrameShape(QFrame::VLine);
@@ -216,8 +221,8 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     {
         QDragMoveEvent *dragEvent = static_cast<QDragMoveEvent*>(event);
         if (dragEvent->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type())
-                || dragEvent->mimeData()->hasFormat("text/uri-list")
-                || dragEvent->mimeData()->hasFormat("text/plain"))
+                || dragEvent->mimeData()->hasFormat( QL1S("text/uri-list") )
+                || dragEvent->mimeData()->hasFormat( QL1S("text/plain") ))
         {
             QAction *overAction = actionAt(dragEvent->pos());
             KBookmarkActionInterface *overActionBK = dynamic_cast<KBookmarkActionInterface*>(overAction);
@@ -301,17 +306,19 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             if (bookmark.isNull())
                 return false;
         }
-        else if (dropEvent->mimeData()->hasFormat("text/uri-list"))
+        else if (dropEvent->mimeData()->hasFormat( QL1S("text/uri-list") ))
         {
             // DROP is URL
-            QString url = dropEvent->mimeData()->urls().at(0).toString();
+            QUrl url = dropEvent->mimeData()->urls().at(0);
             WebWindow *w = qobject_cast<WebWindow *>(parent());
-            QString title = url.contains(w->url().url())
-                            ? w->title()
-                            : url;
-            bookmark = root.addBookmark(title, url);
+            // FIXME
+            QString title = w->title();
+//             QString title = url.contains(w->url().url())
+//                             ? w->title()
+//                             : url;
+            bookmark = root.addBookmark(title, url, QString() );
         }
-        else if (dropEvent->mimeData()->hasFormat("text/plain"))
+        else if (dropEvent->mimeData()->hasFormat( QL1S("text/plain") ))
         {
             // DROP is TEXT
             QString url = dropEvent->mimeData()->text();
@@ -319,10 +326,12 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             if (u.isValid())
             {
                 WebWindow *w = qobject_cast<WebWindow *>(parent());
-                QString title = url.contains(w->url().url())
-                                ? w->title()
-                                : url;
-                bookmark = root.addBookmark(title, url);
+                // FIXME
+                QString title = w->title();
+//                 QString title = url.contains(w->url().url())
+//                                 ? w->title()
+//                                 : url;
+                bookmark = root.addBookmark(title, u, QString());
             }
         }
         else

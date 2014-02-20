@@ -35,11 +35,13 @@
 #include "webpage.h"
 
 // KDE Includes
-#include <KMenu>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QAction>
 #include <QDialog>
+#include <QDialogButtonBox>
+#include <QMenu>
 
 
 QPointer<UserAgentManager> UserAgentManager::s_userAgentManager;
@@ -62,7 +64,7 @@ UserAgentManager::UserAgentManager(QObject *parent)
     : QObject(parent)
     , m_uaSettingsAction(0)
 {
-    m_uaSettingsAction = new QAction(QIcon::fromTheme("preferences-web-browser-identification"), i18n("Browser Identification"), this);
+    m_uaSettingsAction = new QAction(QIcon::fromTheme( QL1S("preferences-web-browser-identification") ), i18n("Browser Identification"), this);
     connect(m_uaSettingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettings()));
 }
 
@@ -70,18 +72,19 @@ UserAgentManager::UserAgentManager(QObject *parent)
 void UserAgentManager::showSettings()
 {
     QPointer<QDialog> dialog = new QDialog(m_uaTab.data());
-    dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
-    dialog->setStandardButtons(QDialogButtonBox::Ok);
+//     dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
+//     dialog->setStandardButtons(QDialogButtonBox::Ok);
 
-    UserAgentWidget widget;
-    dialog->setMainWidget(&widget);
+    // FIXME
+//     UserAgentWidget widget;
+//     dialog->setMainWidget(&widget);
     dialog->exec();
 
     dialog->deleteLater();
 }
 
 
-void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebWindow *uaTab)
+void UserAgentManager::populateUAMenuForTabUrl(QMenu *uaMenu, WebWindow *uaTab)
 {
     if (!m_uaTab.isNull())
     {
@@ -106,22 +109,22 @@ void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebWindow *uaTab)
     uaMenu->addSeparator();
 
     // Main Browsers Menus
-    KMenu *ffMenu = new KMenu(i18n("Firefox"), uaMenu);
+    QMenu *ffMenu = new QMenu(i18n("Firefox"), uaMenu);
     uaMenu->addMenu(ffMenu);
 
-    KMenu *ieMenu = new KMenu(i18n("Internet Explorer"), uaMenu);
+    QMenu *ieMenu = new QMenu(i18n("Internet Explorer"), uaMenu);
     uaMenu->addMenu(ieMenu);
 
-    KMenu *nsMenu = new KMenu(i18n("Netscape"), uaMenu);
+    QMenu *nsMenu = new QMenu(i18n("Netscape"), uaMenu);
     uaMenu->addMenu(nsMenu);
 
-    KMenu *opMenu = new KMenu(i18n("Opera"), uaMenu);
+    QMenu *opMenu = new QMenu(i18n("Opera"), uaMenu);
     uaMenu->addMenu(opMenu);
 
-    KMenu *sfMenu = new KMenu(i18n("Safari"), uaMenu);
+    QMenu *sfMenu = new QMenu(i18n("Safari"), uaMenu);
     uaMenu->addMenu(sfMenu);
 
-    KMenu *otMenu = new KMenu(i18n("Other"), uaMenu);
+    QMenu *otMenu = new QMenu(i18n("Other"), uaMenu);
     uaMenu->addMenu(otMenu);
 
     UserAgentInfo uaInfo;
@@ -144,7 +147,7 @@ void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebWindow *uaTab)
             defaultUA = false;
         }
 
-        QString tag = providers.at(i)->property("X-KDE-UA-TAG").toString();
+        QString tag = providers.at(i)->property( QL1S("X-KDE-UA-TAG") ).toString();
         if (tag == QL1S("FF"))
         {
             ffMenu->addAction(a);

@@ -89,7 +89,7 @@
         <default>http://www.kde.org/</default>
     </entry>
     <entry name="downloadPath" type="Url">
-        <default code="true">QUrl(QStandardPaths::standardLocation(QStandardPaths::DownloadLocation).at(0))</default>
+        <default code="true">QUrl(QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).at(0))</default>
     </entry>
     <entry name="askDownloadPath" type="Bool">
         <default>false</default>
@@ -137,10 +137,10 @@
 <!-- Fonts Settings -->
 <group name="Appearance">
     <entry name="standardFontFamily" type="String">
-        <default code="true">KGlobalSettings::generalFont().family()</default>
+        <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont)</default>
     </entry>
     <entry name="fixedFontFamily" type="String">
-        <default code="true">KGlobalSettings::fixedFont().family()</default>
+        <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont)</default>
     </entry>
     <entry name="serifFontFamily" type="String">
         <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::SerifFont)</default>

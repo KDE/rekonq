@@ -36,7 +36,7 @@
 #include <QWidget>
 
 // Forward Declarations
-class KLineEdit;
+class QLineEdit;
 
 class QString;
 class QCheckBox;
@@ -70,7 +70,7 @@ Q_SIGNALS:
     void triggerPartFind();
 
 private:
-    KLineEdit *m_lineEdit;
+    QLineEdit *m_lineEdit;
     QCheckBox *m_matchCase;
     QCheckBox *m_highlightAll;
 

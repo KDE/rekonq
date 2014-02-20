@@ -33,21 +33,20 @@
 #include <sys/utsname.h>
 
 // KDE Includes
+#include <KConfig>
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <KProtocolManager>
 #include <KService>
 #include <KServiceTypeTrader>
 
-#include <KConfig>
-#include <KConfigGroup>
-
-#include <KProtocolManager>
-
 // Qt includes
-#include <QStringBuilder>
+#include <QLocale>
 
 
 UserAgentInfo::UserAgentInfo()
 {
-    m_providers = KServiceTypeTrader::self()->query("UserAgentStrings");
+    m_providers = KServiceTypeTrader::self()->query( QL1S("UserAgentStrings") );
 }
 
 
@@ -65,16 +64,16 @@ QString UserAgentInfo::userAgentString(int i)
         return QL1S("Default");
     }
 
-    QString tmp = m_providers.at(i)->property("X-KDE-UA-FULL").toString();
+    QString tmp = m_providers.at(i)->property( QL1S("X-KDE-UA-FULL") ).toString();
 
     struct utsname utsn;
     uname(&utsn);
 
-    tmp.replace(QL1S("appSysName"), QString(utsn.sysname));
-    tmp.replace(QL1S("appSysRelease"), QString(utsn.release));
-    tmp.replace(QL1S("appMachineType"), QString(utsn.machine));
+    tmp.replace(QL1S("appSysName"), QL1S(utsn.sysname));
+    tmp.replace(QL1S("appSysRelease"), QL1S(utsn.release));
+    tmp.replace(QL1S("appMachineType"), QL1S(utsn.machine));
 
-    QStringList languageList = KGlobal::locale()->languageList();
+    QStringList languageList = QLocale::system().uiLanguages();
     if (languageList.count())
     {
         int ind = languageList.indexOf(QL1S("C"));
@@ -87,7 +86,7 @@ QString UserAgentInfo::userAgentString(int i)
         }
     }
 
-    tmp.replace(QL1S("appLanguage"), QString("%1").arg(languageList.join(", ")));
+    tmp.replace(QL1S("appLanguage"), languageList.join( QL1S(", ") ));
     tmp.replace(QL1S("appPlatform"), QL1S("X11"));
 
     return tmp;
@@ -102,7 +101,7 @@ QString UserAgentInfo::userAgentName(int i)
         return QL1S("Default");
     }
 
-    return m_providers.at(i)->property("X-KDE-UA-NAME").toString();
+    return m_providers.at(i)->property( QL1S("X-KDE-UA-NAME") ).toString();
 }
 
 
@@ -114,7 +113,7 @@ QString UserAgentInfo::userAgentVersion(int i)
         return QL1S("Default");
     }
 
-    return m_providers.at(i)->property("X-KDE-UA-VERSION").toString();
+    return m_providers.at(i)->property( QL1S("X-KDE-UA-VERSION") ).toString();
 }
 
 
@@ -126,8 +125,8 @@ QString UserAgentInfo::userAgentDescription(int i)
         return QL1S("Default");
     }
 
-    QString systemName = m_providers.at(i)->property("X-KDE-UA-SYSNAME").toString();
-    QString systemRelease = m_providers.at(i)->property("X-KDE-UA-SYSRELEASE").toString();
+    QString systemName = m_providers.at(i)->property( QL1S("X-KDE-UA-SYSNAME") ).toString();
+    QString systemRelease = m_providers.at(i)->property( QL1S("X-KDE-UA-SYSRELEASE") ).toString();
     QString systemSummary;
 
     if (!systemName.isEmpty() && !systemRelease.isEmpty())
@@ -153,7 +152,7 @@ QStringList UserAgentInfo::availableUserAgents()
 
 bool UserAgentInfo::setUserAgentForHost(int uaIndex, const QString &host)
 {
-    KConfig config("kio_httprc", KConfig::NoGlobals);
+    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
 
     QStringList modifiedHosts = config.groupList();
     KConfigGroup hostGroup(&config, host);
@@ -195,7 +194,7 @@ int UserAgentInfo::uaIndexForHost(const QString &host)
 bool UserAgentInfo::providerExists(int i)
 {
     KService::Ptr s = m_providers.at(i);
-    if (s.isNull())
+    if (!s)
     {
         return false;
     }

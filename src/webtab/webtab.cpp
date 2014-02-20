@@ -47,22 +47,19 @@
 #include "webwindow.h"
 
 // KDE Includes
-#include <KWebWallet>
-#include <KStandardShortcut>
-#include <KMenu>
 #include <KActionMenu>
-#include <kdeprintdialog.h>
 #include <KLocalizedString>
+#include <KStandardShortcut>
 
-// #include <KParts/Part>
-// #include <KParts/BrowserExtension>
+#include <KParts/BrowserExtension>
+#include <KParts/Part>
 
 // Qt Includes
-#include <QVBoxLayout>
+#include <QMenu>
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QSplitter>
-
+#include <QVBoxLayout>
 #include <QWebSettings>
 
 
@@ -182,7 +179,7 @@ QUrl WebTab::url()
 
 QString WebTab::title()
 {
-    if (view() && url().protocol() == QL1S("rekonq"))
+    if (view() && url().scheme() == QL1S("rekonq"))
         return view()->title();
     
     if (page() && page()->isOnRekonqPage())
@@ -220,8 +217,8 @@ bool WebTab::isPageLoading()
 
 bool WebTab::hasRSSInfo()
 {
-    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
-    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
+    QWebElementCollection col = page()->mainFrame()->findAllElements( QL1S("link[type=\"application/rss+xml\"]") );
+    col.append(page()->mainFrame()->findAllElements( QL1S("link[type=\"application/atom+xml\"]") ));
     if (col.count() != 0)
         return true;
 
@@ -298,37 +295,37 @@ void WebTab::hideSelectorBar()
 }
 
 
-// KParts::ReadOnlyPart *WebTab::part()
-// {
-//     return m_part;
-// }
-// 
-// 
-// void WebTab::setPart(KParts::ReadOnlyPart *p, const QUrl &u)
-// {
-//     if (p)
-//     {
-//         // Ok, part exists. Insert & show it..
-//         m_part = p;
-//         qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, p->widget());
-//         p->openUrl(u);
-//         view()->hide();
-//         m_splitter->hide();
-//         emit titleChanged(u.url());
-//         emit urlChanged(u.url());
-//         return;
-//     }
-// 
-//     if (!m_part)
-//         return;
-// 
-//     // Part NO more exists. Let's clean up from webtab
-//     view()->show();
-//     m_splitter->show();
-//     qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_part->widget());
-//     delete m_part;
-//     m_part = 0;
-// }
+KParts::ReadOnlyPart *WebTab::part()
+{
+    return m_part;
+}
+
+
+void WebTab::setPart(KParts::ReadOnlyPart *p, const QUrl &u)
+{
+    if (p)
+    {
+        // Ok, part exists. Insert & show it..
+        m_part = p;
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, p->widget());
+        p->openUrl(u);
+        view()->hide();
+        m_splitter->hide();
+        emit titleChanged(u.url());
+        emit urlChanged(u);
+        return;
+    }
+
+    if (!m_part)
+        return;
+
+    // Part NO more exists. Let's clean up from webtab
+    view()->show();
+    m_splitter->show();
+    qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_part->widget());
+    delete m_part;
+    m_part = 0;
+}
 
 
 void WebTab::showCrashMessageBar()
@@ -365,42 +362,43 @@ void WebTab::showSearchEngineBar()
 
 void WebTab::printFrame()
 {
-    if (page()->isOnRekonqPage())
-    {
-        // trigger print part action instead of ours..
-        KParts::ReadOnlyPart *p = part();
-        if (p)
-        {
-            KParts::BrowserExtension *ext = p->browserExtension();
-            if (ext)
-            {
-                KParts::BrowserExtension::ActionSlotMap *actionSlotMap = KParts::BrowserExtension::actionSlotMapPtr();
-
-                connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print"));
-                emit triggerPartPrint();
-
-                return;
-            }
-        }
-    }
-
-    QWebFrame *printFrame = page()->currentFrame();
-    if (printFrame == 0)
-    {
-        printFrame = page()->mainFrame();
-    }
-
-    QPrinter printer;
-    printer.setDocName(printFrame->title());
-    QPrintDialog *printDialog = KdePrint::createPrintDialog(&printer, this);
-
-    if (printDialog) //check if the Dialog was created
-    {
-        if (printDialog->exec())
-            printFrame->print(&printer);
-
-        delete printDialog;
-    }
+    // FIXME
+//     if (page()->isOnRekonqPage())
+//     {
+//         // trigger print part action instead of ours..
+//         KParts::ReadOnlyPart *p = part();
+//         if (p)
+//         {
+//             KParts::BrowserExtension *ext = p->browserExtension();
+//             if (ext)
+//             {
+//                 KParts::BrowserExtension::ActionSlotMap *actionSlotMap = KParts::BrowserExtension::actionSlotMapPtr();
+// 
+//                 connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print"));
+//                 emit triggerPartPrint();
+// 
+//                 return;
+//             }
+//         }
+//     }
+// 
+//     QWebFrame *printFrame = page()->currentFrame();
+//     if (printFrame == 0)
+//     {
+//         printFrame = page()->mainFrame();
+//     }
+// 
+//     QPrinter printer;
+//     printer.setDocName(printFrame->title());
+//     QPrintDialog *printDialog = KdePrint::createPrintDialog(&printer, this);
+// 
+//     if (printDialog) //check if the Dialog was created
+//     {
+//         if (printDialog->exec())
+//             printFrame->print(&printer);
+// 
+//         delete printDialog;
+//     }
 }
 
 
@@ -458,7 +456,7 @@ void WebTab::setZoom(int zoomFactor)
     // qDebug() << "NEW ZOOM FACTOR: " << zoomFactor;
     
     // set zoom factor
-    KSharedConfig::Ptr config = KGlobal::config();
+    KSharedConfig::Ptr config; // FIXME = KGlobal::config();
     KConfigGroup group(config, "Zoom");
     group.writeEntry(url().host(), m_zoomFactor);
 

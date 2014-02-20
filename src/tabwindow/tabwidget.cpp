@@ -40,37 +40,33 @@
 #include "webtab.h"
 #include "webwindow.h"
 
-#include "tabhistory.h"
-
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
 #include "sessionmanager.h"
 
 // KDE Includes
+#include <KBookmark>
 #include <KConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KToggleFullScreenAction>
-
-#include <KBookmark>
-#include <KBookmarkGroup>
-
 #include <KWindowInfo>
 #include <KWindowSystem>
 
 // Qt Includes
-#include <QStandardPaths>
-#include <QDesktopWidget>
-#include <QLabel>
-#include <QMovie>
-#include <QTabBar>
-#include <QToolButton>
-#include <QSignalMapper>
-#include <QWebHistory>
-#include <QWebSettings>
-#include <QUrl>
 #include <QAction>
 #include <QApplication>
+#include <QDesktopWidget>
+#include <QKeySequence>
+#include <QLabel>
+#include <QMovie>
+#include <QSignalMapper>
+#include <QStandardPaths>
+#include <QTabBar>
+#include <QToolButton>
+#include <QUrl>
+#include <QWebHistory>
+#include <QWebSettings>
 
 
 TabWidget::TabWidget(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
@@ -125,6 +121,9 @@ void TabWidget::init()
 
     // sets document mode; this removes the frame around the tabs
     setDocumentMode(true);
+    
+    // let the tabs be movable
+    setMovable(true);
 
     // connecting tabbar signals
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
@@ -145,17 +144,17 @@ void TabWidget::init()
 
     QAction* a;
 
-    a = new QAction(QIcon::fromTheme("tab-new"), i18n("New &Tab"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
+    a = new QAction(QIcon::fromTheme(QL1S("tab-new")), i18n("New &Tab"), this);
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
     actionCollection()->addAction(QL1S("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(newTab()));
 
-    a = new QAction(QIcon::fromTheme("tab-new"), i18n("Open Last Closed Tab"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
+    a = new QAction(QIcon::fromTheme(QL1S("tab-new")), i18n("Open Last Closed Tab"), this);
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
     actionCollection()->addAction(QL1S("open_last_closed_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(restoreLastClosedTab()));
 
-    a = new QAction(QIcon::fromTheme("tab-close"), i18n("&Close Tab"), this);
+    a = new QAction(QIcon::fromTheme(QL1S("tab-close")), i18n("&Close Tab"), this);
     a->setShortcuts(KStandardShortcut::close());
     actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
@@ -171,11 +170,10 @@ void TabWidget::init()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(previousTab()));
 
     a = KStandardAction::fullScreen(this, SLOT(setFullScreen(bool)), this, actionCollection());
-    KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
-    fullScreenShortcut.setAlternate(Qt::Key_F11);
+    QKeySequence fullScreenShortcut(QKeySequence::FullScreen, Qt::Key_F11);
     a->setShortcut(fullScreenShortcut);
 
-    a = new QAction(QIcon::fromTheme("bookmarks"), i18n("Bookmark all tabs"), this);
+    a = new QAction(QIcon::fromTheme(QL1S("bookmarks")), i18n("Bookmark all tabs"), this);
     actionCollection()->addAction(QL1S("bookmark_all_tabs"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkAllTabs()));
 
@@ -195,15 +193,15 @@ void TabWidget::init()
     connect(this, SIGNAL(actionsReady()), rw, SLOT(registerWindow()));
 
     // setup bookmarks panel action
-    a = new QAction(QIcon::fromTheme("bookmarks-organize"), i18n("Bookmarks Panel"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
+    a = new QAction(QIcon::fromTheme(QL1S("bookmarks-organize")), i18n("Bookmarks Panel"), this);
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     actionCollection()->addAction(QL1S("show_bookmarks_panel"), a);
     a->setCheckable(true);
     connect(a, SIGNAL(triggered(bool)), rw, SLOT(showBookmarksPanel(bool)));
 
     // setup history panel action
-    a = new QAction(QIcon::fromTheme("view-history"), i18n("History Panel"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
+    a = new QAction(QIcon::fromTheme(QL1S("view-history")), i18n("History Panel"), this);
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QL1S("show_history_panel"), a);
     a->setCheckable(true);
     connect(a, SIGNAL(triggered(bool)), rw, SLOT(showHistoryPanel(bool)));
@@ -214,8 +212,8 @@ void TabWidget::init()
     for (int i = 0; i < 9; i++)
     {
         a = new QAction(i18n("Switch to Tab %1", i+1), this);
-        a->setShortcut(KShortcut(QString("Alt+%1").arg(i+1)));
-        actionCollection()->addAction(QL1S(QString("switch_tab_" + QString::number(i+1)).toAscii()), a);
+        a->setShortcut(QKeySequence( QL1S("Alt+") + QString::number(i+1) ));
+        actionCollection()->addAction( QL1S("switch_tab_") + QString::number(i+1) , a);
         connect(a, SIGNAL(triggered(bool)), tabSignalMapper, SLOT(map()));
         tabSignalMapper->setMapping(a, i);
     }
@@ -226,8 +224,8 @@ void TabWidget::init()
     for (int i = 1; i <= 9; ++i)
     {
         a = new QAction(i18n("Switch to Favorite Page %1", i), this);
-        a->setShortcut(KShortcut(QString("Ctrl+%1").arg(i)));
-        actionCollection()->addAction(QL1S(QString("switch_favorite_" + QString::number(i)).toAscii()), a);
+        a->setShortcut(QKeySequence( QL1S("Ctrl+") + QString::number(i) ));
+        actionCollection()->addAction( QL1S("switch_favorite_") + QString::number(i) , a);
         connect(a, SIGNAL(triggered(bool)), favoritesSignalMapper, SLOT(map()));
         favoritesSignalMapper->setMapping(a, i);
     }
@@ -308,14 +306,14 @@ void TabWidget::newTab(WebPage *page)
     switch (ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
-        tab->load(QUrl("rekonq:home"));
+        tab->load(QUrl(QL1S("rekonq:home")));
         break;
     case 2: // homepage
         tab->load(QUrl(ReKonfig::homePage()));
         break;
     case 1: // blank page
     default:
-        tab->load(QUrl("about:blank"));
+        tab->load(QUrl(QL1S("about:blank")));
         break;
     }
 }
@@ -463,7 +461,7 @@ void TabWidget::tabTitleChanged(const QString &title)
         return;
 
     QString tabTitle = title.isEmpty() ? tab->title() : title;
-    tabTitle.replace('&', "&&");
+    tabTitle.replace(QL1C('&'), QL1S("&&"));
 
     int index = indexOf(tab);
 
@@ -482,7 +480,7 @@ void TabWidget::tabTitleChanged(const QString &title)
     }
     
     if (ReKonfig::hoveringTabOption() == 1)
-        tabBar()->setTabToolTip(index, tabTitle.remove('&'));
+        tabBar()->setTabToolTip(index, tabTitle.remove( QL1C('&') ));
 }
 
 
@@ -542,7 +540,7 @@ void TabWidget::tabLoadStarted()
 
         if (!label->movie())
         {
-            static QString loadingGitPath = QStandardPaths::locate(QStandardPaths::DataLocation , "/pics/loading.gif");
+            static QString loadingGitPath = QStandardPaths::locate(QStandardPaths::DataLocation , QL1S("/pics/loading.gif"));
 
             QMovie *movie = new QMovie(loadingGitPath, QByteArray(), label);
             movie->setSpeed(50);
@@ -647,7 +645,7 @@ void TabWidget::closeTab(int index, bool del)
             return;
         }
 
-        currentWebWindow()->load(QUrl("rekonq:home"));
+        currentWebWindow()->load(QUrl(QL1S("rekonq:home")));
         return;
     }
 
@@ -778,7 +776,7 @@ void TabWidget::bookmarkAllTabs()
     for (int i = 0; i < count(); ++i)
     {
         WebWindow *tab = webWindow(i);
-        KBookmark bk = folderGroup.addBookmark(tab->title(), tab->url());
+        KBookmark bk = folderGroup.addBookmark(tab->title(), tab->url(), QString());
     }
     
     // force bookmarks saving

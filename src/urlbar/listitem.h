@@ -46,7 +46,6 @@
 // Forward Declarations
 class UrlSuggestionItem;
 
-class KIcon;
 class KJob;
 
 class QAction;

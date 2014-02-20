@@ -32,7 +32,7 @@
 #include "ui_settings_tabs.h"
 
 // Qt Includes
-#include <QtGui/QWidget>
+#include <QWidget>
 
 
 class TabsWidget : public QWidget, private Ui::tabs

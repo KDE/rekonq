@@ -42,22 +42,23 @@
 // KDE Includes
 #include <kio/jobclasses.h>
 #include <kio/scheduler.h>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QAction>
-#include <QApplication>
 #include <QActionGroup>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QSizePolicy>
-#include <QPixmap>
-#include <QStylePainter>
-#include <QMouseEvent>
-#include <QWebSettings>
-#include <QFile>
-#include <QTextDocument>
+#include <QApplication>
 #include <QBitArray>
+#include <QFile>
+#include <QHBoxLayout>
 #include <QIcon>
+#include <QMouseEvent>
+#include <QPixmap>
+#include <QRegularExpression>
+#include <QSizePolicy>
+#include <QStylePainter>
+#include <QVBoxLayout>
+#include <QWebSettings>
 
 
 ListItem::ListItem(const UrlSuggestionItem &item, QWidget *parent)
@@ -168,13 +169,13 @@ TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     setLayout(hLayout);
 
     if (type & UrlSuggestionItem::Search)
-        hLayout->addWidget(getIcon("edit-find"));
+        hLayout->addWidget(getIcon( QL1S("edit-find") ));
     if (type & UrlSuggestionItem::Browse)
-        hLayout->addWidget(getIcon("applications-internet"));
+        hLayout->addWidget(getIcon( QL1S("applications-internet") ));
     if (type & UrlSuggestionItem::Bookmark)
-        hLayout->addWidget(getIcon("rating"));
+        hLayout->addWidget(getIcon( QL1S("rating") ));
     if (type & UrlSuggestionItem::History)
-        hLayout->addWidget(getIcon("view-history"));
+        hLayout->addWidget(getIcon( QL1S("view-history") ));
 }
 
 
@@ -247,8 +248,8 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
     const bool wasItalic = t.startsWith(QL1S("<i>"));
     if (wasItalic)
         t.remove(QRegExp(QL1S("<[/ib]*>")));
-    t = Qt::escape(t);
-    QStringList words = Qt::escape(textToPointOut.simplified()).split(QL1C(' '));
+    t = QRegularExpression::escape(t);
+    QStringList words = QRegularExpression::escape(textToPointOut.simplified()).split(QL1C(' '));
     t = highlightWordsInText(t, words);
     if (wasItalic)
         t = QL1S("<i style=color:\"#555\">") + t + QL1S("</i>");
@@ -268,7 +269,7 @@ TextLabel::TextLabel(QWidget *parent)
 
 void TextLabel::setEngineText(const QString &engine, const QString &text)
 {
-    setText(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text)));
+    setText(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, QRegularExpression::escape(text)));
 }
 
 
@@ -292,12 +293,12 @@ PreviewListItem::PreviewListItem(const UrlSuggestionItem &item, const QString &t
     if (title.isEmpty())
     {
         title = item.url;
-        title = title.remove("http://");
-        title.truncate(title.indexOf("/"));
+        title = title.remove( QL1S("http://") );
+        title.truncate(title.indexOf( QL1S("/") ));
     }
 
     vLayout->addWidget(new TextLabel(title, text, this));
-    vLayout->addWidget(new TextLabel("<i>" + item.url + "</i>", text, this));
+    vLayout->addWidget(new TextLabel( QL1S("<i>") + item.url + QL1S("</i>"), text, this));
     hLayout->addLayout(vLayout);
 
     setLayout(hLayout);
@@ -377,7 +378,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
     m_engineGroup = new QActionGroup(this);
     m_engineGroup->setExclusive(true);
 
-    if (SearchEngine::defaultEngine().isNull())
+    if (!SearchEngine::defaultEngine())
         return;
     
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
@@ -395,7 +396,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 
 QAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine)
 {
-    QUrl u = engine->property("Query").toUrl();
+    QUrl u = engine->property( QL1S("Query") ).toUrl();
     QUrl url = QUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
 
     QAction *a = new QAction(IconManager::self()->engineFavicon(url), engine->name(), this);

@@ -48,18 +48,18 @@ class BookmarkMenu : public KBookmarkMenu
 public:
     BookmarkMenu(KBookmarkManager* manager,
                  KBookmarkOwner* owner,
-                 KMenu* menu,
+                 QMenu* menu,
                  KActionCollection* actionCollection);
     
     BookmarkMenu(KBookmarkManager  *manager,
                  KBookmarkOwner  *owner,
-                 KMenu  *parentMenu,
+                 QMenu  *parentMenu,
                  const QString &parentAddress);
     
     ~BookmarkMenu();
 
 protected:
-    virtual KMenu * contextMenu(QAction * act);
+    virtual QMenu * contextMenu(QAction * act);
     virtual void refill();
     virtual QAction* actionForBookmark(const KBookmark &bookmark);
 

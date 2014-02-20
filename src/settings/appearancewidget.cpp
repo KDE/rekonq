@@ -31,8 +31,8 @@
 #include "rekonq.h"
 
 // KDE Includes
-#include <KGlobal>
 #include <KCharsets>
+#include <KLocalizedString>
 
 
 int zoomFactorList[13] = {5, 6, 7, 8, 9, 10, 11, 13, 15, 20, 25, 30};
@@ -45,8 +45,8 @@ AppearanceWidget::AppearanceWidget(QWidget *parent)
 {
     setupUi(this);
 
-    fixedFontChooser->setOnlyFixed(true);
-
+    fixedFontChooser->setFontFilters(QFontComboBox::NonScalableFonts);
+    
     standardFontChooser->setCurrentFont(QFont(ReKonfig::standardFontFamily()));
     fixedFontChooser->setCurrentFont(QFont(ReKonfig::fixedFontFamily()));
     serifFontChooser->setCurrentFont(QFont(ReKonfig::serifFontFamily()));
@@ -106,7 +106,7 @@ bool AppearanceWidget::isDefault()
 void AppearanceWidget::populateEncodingMenu()
 {
     encodingCombo->setEditable(false);
-    QStringList encodings = KGlobal::charsets()->availableEncodingNames();
+    QStringList encodings = KCharsets::charsets()->availableEncodingNames();
     encodingCombo->addItems(encodings);
 
     encodingCombo->setWhatsThis(i18n("Select the default encoding to be used; normally, you will be fine with 'Use language encoding' "

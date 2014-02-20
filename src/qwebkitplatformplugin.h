@@ -30,11 +30,11 @@
 #if defined(WTF_USE_QT_MULTIMEDIA) && WTF_USE_QT_MULTIMEDIA
 #include <QMediaPlayer>
 #endif
-#include <QtCore/QObject>
-#include <QtCore/QRect>
-#include <QtCore/QUrl>
-#include <QtGui/QColor>
-#include <QtGui/QFont>
+#include <QObject>
+#include <QRect>
+#include <QUrl>
+#include <QColor>
+#include <QFont>
 
 class QWebSelectData
 {

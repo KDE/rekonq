@@ -45,22 +45,22 @@
 #include <KAcceleratorManager>
 #include <KColorScheme>
 #include <KLocalizedString>
-#include <KMenu>
 
 // Qt Includes
 #include <QAction>
 #include <QLabel>
+#include <QMenu>
+#include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QSignalMapper>
 #include <QStyleOptionFrameV3>
-#include <QMouseEvent>
 #include <QTimer>
 #include <QUrl>
 
 
-static inline QByteArray highlightPropertyName(int index)
+static inline const char * highlightPropertyName(int index)
 {
-    return QByteArray("hAnim").append(QByteArray::number(index));
+    return QByteArray("hAnim").append(QByteArray::number(index)).data();
 }
 
 
@@ -192,30 +192,30 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
 
     QAction *a;
 
-    KMenu menu;
+    QMenu menu;
 
     a = w->actionByName(QL1S("new_tab"));
     menu.addAction(a);
 
     menu.addSeparator();    // ----------------------------------------------------------------
 
-    a = new QAction(QIcon::fromTheme("tab-duplicate"), i18n("Clone"), this);
+    a = new QAction(QIcon::fromTheme( QL1S("tab-duplicate") ), i18n("Clone"), this);
     a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(cloneTab()));
     menu.addAction(a);
 
-    a = new QAction(QIcon::fromTheme("view-refresh"), i18n("Reload"), this);
+    a = new QAction(QIcon::fromTheme( QL1S("view-refresh") ), i18n("Reload"), this);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(reloadTab()));
     a->setData(tabIndex);
     menu.addAction(a);
 
-    a = new QAction(QIcon::fromTheme("view-refresh"), i18n("Reload All"), this);
+    a = new QAction(QIcon::fromTheme( QL1S("view-refresh") ), i18n("Reload All"), this);
     connect(a, SIGNAL(triggered(bool)), w, SLOT(reloadAllTabs()));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new QAction(QIcon::fromTheme("tab-detach"), i18n("Detach"), this);
+        a = new QAction(QIcon::fromTheme( QL1S("tab-detach") ), i18n("Detach"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(detachTab()));
         a->setData(tabIndex);
         menu.addAction(a);
@@ -237,14 +237,14 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
     }
     menu.addSeparator();    // ----------------------------------------------------------------
 
-    a = new QAction(QIcon::fromTheme("tab-close"), i18n("&Close"), this);
+    a = new QAction(QIcon::fromTheme( QL1S("tab-close") ), i18n("&Close"), this);
     a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new QAction(QIcon::fromTheme("tab-close-other"), i18n("Close &Other Tabs"), this);
+        a = new QAction(QIcon::fromTheme( QL1S("tab-close-other") ), i18n("Close &Other Tabs"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(closeOtherTabs()));
         a->setData(tabIndex);
         menu.addAction(a);
@@ -272,7 +272,7 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
 
     QAction *a;
 
-    KMenu menu;
+    QMenu menu;
 
     a = w->actionByName(QL1S("new_tab"));
     menu.addAction(a);
@@ -299,7 +299,7 @@ void TabBar::setTabHighlighted(int index, bool b)
         return;
     }
 
-    const QByteArray propertyName = highlightPropertyName(index);
+    const char *propertyName = highlightPropertyName(index);
     const QColor highlightColor = KColorScheme(QPalette::Active, KColorScheme::Window).foreground(KColorScheme::PositiveText).color();
 
     if (tabTextColor(index) != highlightColor)
@@ -334,7 +334,7 @@ QRect TabBar::tabTextRect(int index)
 
 void TabBar::removeAnimation(int index)
 {
-    const QByteArray propertyName = highlightPropertyName(index);
+    const char * propertyName = highlightPropertyName(index);
     m_tabHighlightEffect->setProperty(propertyName, QVariant()); //destroy the property
 
     QPropertyAnimation *anim = m_highlightAnimation.take(propertyName);
@@ -361,8 +361,7 @@ void TabBar::tabInserted(int index)
 
     if (index < availableIndex)
     {
-        TabWidget *w = qobject_cast<TabWidget *>(parent());
-        w->moveTab(index, availableIndex);
+        moveTab(index, availableIndex);
     }
 
     QTabBar::tabInserted(index);
@@ -452,9 +451,8 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
     {
         if (!tabData(i).toBool())
         {
-            TabWidget *w = qobject_cast<TabWidget *>(parent());
-            w->moveTab(i, pinnedTabs);
-            w->setCurrentIndex(pinnedTabs);
+            moveTab(i, pinnedTabs);
+            setCurrentIndex(pinnedTabs);
         }
     }
 
@@ -463,9 +461,8 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
     {
         if (tabData(i).toBool())
         {
-            TabWidget *w = qobject_cast<TabWidget *>(parent());
-            w->moveTab(i, pinnedTabs - 1);
-            w->setCurrentIndex(pinnedTabs - 1);
+            moveTab(i, pinnedTabs - 1);
+            setCurrentIndex(pinnedTabs - 1);
         }
     }
 
@@ -553,8 +550,7 @@ void TabBar::pinTab()
         }
     }
 
-    TabWidget *w = qobject_cast<TabWidget *>(parent());
-    w->moveTab(index, availableIndex);
+    moveTab(index, availableIndex);
     index = availableIndex;
 
     // set this tab data true to know this has been pinned
@@ -573,6 +569,7 @@ void TabBar::pinTab()
     setTabButton(index, QTabBar::LeftSide, 0);
     setTabButton(index, QTabBar::LeftSide, label);
 
+    TabWidget *w = qobject_cast<TabWidget *>(parent());
     QIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
     label->setPixmap(ic.pixmap(16, 16));
 
@@ -600,11 +597,11 @@ void TabBar::unpinTab()
         availableIndex++;
     }
     
-    TabWidget *w = qobject_cast<TabWidget *>(parent());
-    w->moveTab(index, availableIndex);
+    moveTab(index, availableIndex);
     index = availableIndex;
 
     tabButton(index, QTabBar::RightSide)->show();
+    TabWidget *w = qobject_cast<TabWidget *>(parent());
     setTabText(index, w->webWindow(index)->title());
 
     // set the tab data false to forget this pinned tab

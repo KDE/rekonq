@@ -32,10 +32,10 @@
 
 // KDE Includes
 #include <KActionCollection>
-#include <KMenu>
 
 // Qt Includes
 #include <QAction>
+#include <QMenu>
 #include <QPoint>
 
 
@@ -50,17 +50,17 @@ MainToolBar::MainToolBar(QWidget *parent)
 
 void MainToolBar::showCustomContextMenu(QPoint p)
 {
-    KMenu menu(this);
+    QMenu menu(this);
 
     WebWindow *w = qobject_cast<WebWindow *>(parent());
     QAction *a;
-    a = w->actionByName("show_bookmarks_toolbar");
+    a = w->actionByName( QL1S("show_bookmarks_toolbar") );
     if (a)
     {
         menu.addAction(a);
     }
 
-    a = w->actionByName("configure_main_toolbar");
+    a = w->actionByName( QL1S("configure_main_toolbar") );
     if (a)
     {
         menu.addAction(a);

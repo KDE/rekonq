@@ -33,6 +33,9 @@
 // Auto Includes
 #include "rekonq.h"
 
+// KDE Includes
+#include <KLocalizedString>
+
 // Qt Includes
 #include <QProcess>
 
@@ -46,8 +49,8 @@ PrivacyWidget::PrivacyWidget(QWidget *parent)
     reload();
 
     // DO NOT TRACK
-    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
-    doNotTrackCheckBox->setChecked(cg.readEntry("DoNotTrack", false));
+    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig( QL1S("kioslaverc"), KConfig::NoGlobals), QString());
+    doNotTrackCheckBox->setChecked(cg.readEntry( QL1S("DoNotTrack"), false));
     connect(doNotTrackCheckBox, SIGNAL(clicked()), this, SLOT(hasChanged()));
 
     // CACHE & COOKIES
@@ -61,8 +64,8 @@ PrivacyWidget::PrivacyWidget(QWidget *parent)
 
 void PrivacyWidget::save()
 {
-    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
-    cg.writeEntry("DoNotTrack", doNotTrackCheckBox->isChecked());
+    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig( QL1S("kioslaverc"), KConfig::NoGlobals), QString());
+    cg.writeEntry( QL1S("DoNotTrack"), doNotTrackCheckBox->isChecked());
     cg.sync();
 
     reload();

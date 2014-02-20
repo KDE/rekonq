@@ -41,9 +41,14 @@
 
 // KDE Includes
 #include <KActionCollection>
+#include <KBookmarkAction>
+#include <KBookmarkActionMenu>
+#include <KBookmarkManager>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QFile>
+#include <QMenu>
 #include <QStandardPaths>
 
 
@@ -73,13 +78,13 @@ BookmarkManager::BookmarkManager(QObject *parent)
     , m_actionCollection(new KActionCollection(this))
 {
     m_manager = KBookmarkManager::userBookmarksManager();
-    const QString bookmarksFile = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation), QL1S("/konqueror/bookmarks.xml");
+    const QString bookmarksFile = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QL1S("/konqueror/bookmarks.xml");
 
     if (!QFile::exists(bookmarksFile))
     {
         qDebug() << "copying of defaultbookmarks.xbel ...";
 
-        QString bookmarksDefaultPath = QStandardDirs::locate(QStandardPaths::DataLocation , "/defaultbookmarks.xbel");
+        QString bookmarksDefaultPath = QStandardPaths::locate(QStandardPaths::DataLocation , QL1S("defaultbookmarks.xbel") );
         KBookmarkManager *tempManager = KBookmarkManager::managerForExternalFile(bookmarksDefaultPath);
 
         copyBookmarkGroup(tempManager->root(), rootGroup());
@@ -225,7 +230,7 @@ void BookmarkManager::find(QList<KBookmark> *list, const KBookmark &bookmark, co
     }
     else
     {
-        QStringList words = text.split(' ');
+        QStringList words = text.split( QL1C(' ') );
         bool matches = true;
         Q_FOREACH(const QString & word, words)
         {
@@ -276,8 +281,8 @@ void BookmarkManager::copyBookmarkGroup(const KBookmarkGroup &groupToCopy, KBook
             KBookmarkGroup newDestGroup = destGroup.createNewFolder(bookmark.text());
             if (bookmark.toGroup().isToolbarGroup())
             {
-                newDestGroup.internalElement().setAttribute("toolbar", "yes");
-                newDestGroup.setIcon("bookmark-toolbar");
+                newDestGroup.internalElement().setAttribute( QL1S("toolbar"), QL1S("yes") );
+                newDestGroup.setIcon( QL1S("bookmark-toolbar") );
             }
             copyBookmarkGroup(bookmark.toGroup(), newDestGroup);
         }
@@ -287,7 +292,7 @@ void BookmarkManager::copyBookmarkGroup(const KBookmarkGroup &groupToCopy, KBook
         }
         else
         {
-            destGroup.addBookmark(bookmark.text(), bookmark.url());
+            destGroup.addBookmark(bookmark);
         }
         bookmark = groupToCopy.next(bookmark);
     }
@@ -317,9 +322,10 @@ void BookmarkManager::emitChanged()
     m_manager->emitChanged();
 }
 
+
 KActionMenu* BookmarkManager::bookmarkActionMenu(QWidget *parent)
 {
-    KMenu *menu = new KMenu(parent);
+    QMenu *menu = new QMenu(parent);
     KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
     bookmarkActionMenu->setMenu(menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
@@ -328,4 +334,3 @@ KActionMenu* BookmarkManager::bookmarkActionMenu(QWidget *parent)
 
     return bookmarkActionMenu;
 }
-

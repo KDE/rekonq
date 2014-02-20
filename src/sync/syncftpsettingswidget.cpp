@@ -51,7 +51,7 @@ SyncFTPSettingsWidget::SyncFTPSettingsWidget(QWidget *parent)
     kcfg_syncPath->setText(ReKonfig::syncPath());
     kcfg_syncPort->setValue(port);
 
-    kcfg_syncPass->setPasswordMode(true);
+    kcfg_syncPass->setEchoMode(QLineEdit::Password);
 }
 
 

@@ -30,10 +30,6 @@
 // Auto Includes
 #include "rekonq.h"
 
-// Config Includes
-#include <config-qca2.h>
-#include <config-qtoauth.h>
-
 // Local Includes
 #include "application.h"
 #include "bookmarkmanager.h"
@@ -45,6 +41,10 @@
 #include "sshsynchandler.h"
 
 #if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
+// Config Includes
+#include <config-qca2.h>
+#include <config-qtoauth.h>
+
 #include "operasynchandler.h"
 #endif
 

@@ -35,6 +35,9 @@
 #include "application.h"
 #include "rekonqwindow.h"
 
+// KDE Includes
+#include <KLocalizedString>
+
 // Qt Includes
 #include <QIcon>
 #include <QListWidgetItem>
@@ -54,10 +57,10 @@ SessionWidget::SessionWidget(QWidget *parent)
         listWidget->addItem(item);
     }
     
-    saveButton->setIcon(QIcon::fromTheme("document-save"));
+    saveButton->setIcon(QIcon::fromTheme( QL1S("document-save") ));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveSession()));
         
-    deleteButton->setIcon(QIcon::fromTheme("edit-delete"));
+    deleteButton->setIcon(QIcon::fromTheme( QL1S("edit-delete") ));
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteSession()));
     
     connect(listWidget, SIGNAL(currentRowChanged(int)), this, SLOT(updateButtons(int)));
@@ -75,7 +78,7 @@ void SessionWidget::loadSession()
     int cc = listWidget->currentRow();
     if (cc < 0)
     {
-        rApp->loadUrl(QUrl("rekonq:home"));
+        rApp->loadUrl(QUrl( QL1S("rekonq:home") ));
         return;
     }
     SessionManager::self()->restoreYourSession(cc);

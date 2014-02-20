@@ -78,7 +78,7 @@ QString DownloadItem::originUrl() const
 QString DownloadItem::fileDirectory() const
 {
     QUrl u = destUrl();
-    return (QL1S("file://") + u.directory());
+    return (QL1S("file://") + u.path());
 }
 
 

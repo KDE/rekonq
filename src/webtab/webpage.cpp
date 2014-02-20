@@ -53,8 +53,9 @@
 #include "webwindow.h"
 
 // KDE Includes
-#include <KJobUiDelegate>
+#include <KIconLoader>
 #include <KLocalizedString>
+#include <KMimeTypeTrader>
 #include <KMessageBox>
 #include <KService>
 #include <KWebWallet>
@@ -112,15 +113,16 @@ static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
     if (!mimeType.isEmpty())
         return;
 
-    if (!reply->hasRawHeader("Content-Type"))
+    if (!reply->hasRawHeader(QByteArray("Content-Type")))
         return;
 
-    const QString value(QL1S(reply->rawHeader("Content-Type").simplified().constData()));
-    const int index = value.indexOf(QL1C(';'));
-    if (index == -1)
-        mimeType = value;
-    else
-        mimeType = value.left(index);
+    // FIXME
+//     const QString value(QL1S(reply->rawHeader(QL1S("Content-Type")).simplified().constData()));
+//     const int index = value.indexOf(QL1C(';'));
+//     if (index == -1)
+//         mimeType = value;
+//     else
+//         mimeType = value.left(index);
 }
 
 
@@ -190,7 +192,7 @@ WebPage::~WebPage()
     disconnect();
 
     QPixmap preview = WebSnap::renderPagePreview(*this);
-    QString path = WebSnap::imagePathFromUrl(mainFrame()->url().toString());
+    QString path = WebSnap::imagePathFromUrl(mainFrame()->url());
     QFile::remove(path);
     preview.save(path);
     
@@ -270,7 +272,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         case QWebPage::NavigationTypeLinkClicked:
             if (_sslInfo.isValid())
             {
-                setRequestMetaData("ssl_was_in_use", "TRUE");
+                setRequestMetaData( QL1S("ssl_was_in_use") , QL1S("TRUE") );
             }
             break;
 
@@ -352,7 +354,7 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 // From Konqueror's konqsettings.cpp
 static bool alwaysEmbedMimeTypeGroup(const QString &mimeType)
 {
-    if (mimeType.startsWith("inode") || mimeType.startsWith("Browser"))
+    if (mimeType.startsWith( QL1S("inode") ) || mimeType.startsWith( QL1S("Browser") ))
         return true;
     return false;
 }
@@ -363,8 +365,8 @@ static bool alwaysEmbedMimeTypeGroup(const QString &mimeType)
 // TODO: Probably should be moved into some library for KDE Frameworks...
 static bool shouldEmbed(const QString &_mimeType)
 {
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals);
-    QMap<QString, QString> m_embedMap = config->entryMap("EmbedSettings");
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("filetypesrc"), KConfig::NoGlobals);
+    QMap<QString, QString> m_embedMap = config->entryMap( QL1S("EmbedSettings") );
 
     QMimeDatabase db;
     QMimeType mime = db.mimeTypeForName(_mimeType);
@@ -373,26 +375,26 @@ static bool shouldEmbed(const QString &_mimeType)
         qWarning() << "Unknown mimetype" << _mimeType;
         return false; // unknown mimetype!
     }
-    const QString mimeType = mime->name();
+    const QString mimeType = mime.name();
 
     // First check in user's settings whether to embed or not
     // 1 - in the filetypesrc config file (written by the configuration module)
-    QMap<QString, QString>::const_iterator it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeType );
+    QMap<QString, QString>::const_iterator it = m_embedMap.constFind( QL1S("embed-")+mimeType );
     if ( it != m_embedMap.constEnd() ) 
     {
         qDebug() << mimeType << it.value();
-        return it.value() == QLatin1String("true");
+        return it.value() == QL1S("true");
     }
     
     // 2 - in the configuration for the group if nothing was found in the mimetype
     if (alwaysEmbedMimeTypeGroup(mimeType))
         return true; //always embed mimetype inode/*, Browser/* and Konqueror/*
-    const QString mimeTypeGroup = mimeType.left(mimeType.indexOf('/'));
-    it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeTypeGroup );
+    const QString mimeTypeGroup = mimeType.left(mimeType.indexOf( QL1C('/') ));
+    it = m_embedMap.constFind( QL1S("embed-")+mimeTypeGroup );
     if ( it != m_embedMap.constEnd() ) 
     {
         qDebug() << mimeType << "group setting:" << it.value();
-        return it.value() == QLatin1String("true");
+        return it.value() == QL1S("true");
     }
     
     // 2 bis - configuration for group of parent mimetype, if different
@@ -408,7 +410,7 @@ static bool shouldEmbed(const QString &_mimeType)
             
             QMimeType mime = db.mimeTypeForName(parent);
             if (mime.isValid())
-                parents += mime->parentMimeTypes();
+                parents += mime.parentMimeTypes();
         }
     }
 
@@ -416,7 +418,7 @@ static bool shouldEmbed(const QString &_mimeType)
     // Note: if you change those defaults, also change keditfiletype/mimetypedata.cpp !
     // Embedding is false by default except for image/* and for zip, tar etc.
     const bool hasLocalProtocolRedirect = !KProtocolManager::protocolForArchiveMimetype(mimeType).isEmpty();
-    if (mimeTypeGroup == "image" || mimeTypeGroup == "multipart" || hasLocalProtocolRedirect)
+    if (mimeTypeGroup == QL1S("image") || mimeTypeGroup == QL1S("multipart") || hasLocalProtocolRedirect)
         return true;
     
     return false;
@@ -440,7 +442,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     // Get suggested file name...
     const KIO::MetaData& data = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
-    _suggestedFileName = data.value(QL1S("content-disposition-filename"));
+    _suggestedFileName = data.value( QL1S("content-disposition-filename") );
 
     // Get mimeType...
     extractMimeType(reply, _mimeType);
@@ -458,7 +460,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     QUrl replyUrl = reply->url();
     bool isLocal = replyUrl.isLocalFile();
 
-    if (appService.isNull())  // no service can handle this. We can just download it..
+    if (!appService)  // no service can handle this. We can just download it..
     {
         if (isLocal)
         {
@@ -498,8 +500,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     
     if (isLocal)
     {
+        QList<QUrl> listUrls;
+        listUrls << replyUrl;
         // Load outside local files
-        KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
+        KRun::run(*appService, listUrls, 0, false, _suggestedFileName);
         return;
     }
 
@@ -511,7 +515,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     // read askEmbedOrSave preferences. If we don't have to show dialog and rekonq settings are
     // to automatically choose download dir, we won't show local dir choose dialog
-    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals), QL1S("Notification Messages"));
+    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig( QL1S("filetypesrc") , KConfig::NoGlobals), QL1S("Notification Messages"));
     bool hideDialog = cg.readEntry(QL1S("askEmbedOrSave") + _mimeType, false);
 
     qDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
@@ -540,13 +544,12 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         qDebug() << "POST OPERATION: downloading file...";
         QFileInfo finfo(_suggestedFileName.isEmpty() ? _loadingUrl.fileName() : _suggestedFileName);
         QTemporaryFile tempFile;
-        tempFile.setSuffix(QL1C('.') + finfo.suffix());
+// FIXME         tempFile.setSuffix(QL1C('.') + finfo.suffix());
         tempFile.setAutoRemove(false);
         tempFile.open();
         QUrl destUrl;
         destUrl.setPath(tempFile.fileName());
         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
-        job->ui()->setWindow(view());
         connect(job, SIGNAL(result(KJob*)), this, SLOT(copyToTempFileResult(KJob*)));
         return;
     }
@@ -578,7 +581,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         // No parts, just app services. Load it!
         // If the app is a KDE one, publish the slave on hold to let it use it.
         // Otherwise, run the app and remove it (the io slave...)
-        KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
+        QList<QUrl> listUrls;
+        listUrls << replyUrl;
+        KRun::run(*appService, listUrls, 0, false, _suggestedFileName);
     }
 
     return;
@@ -588,8 +593,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 void WebPage::loadStarted()
 {
     // set zoom factor
-    KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup group(config, "Zoom");
+    KSharedConfig::Ptr config; // FIXME = KGlobal::config();
+    KConfigGroup group(config, QL1S("Zoom") );
     QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
 
     int value = stringValue.toInt();
@@ -690,18 +695,18 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 QString WebPage::errorPage(QNetworkReply *reply)
 {
     // display "not found" page
-    QString notfoundFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "rekonq/htmls/rekonqinfo.html");
+    QString notfoundFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("rekonq/htmls/rekonqinfo.html") );
     QFile file(notfoundFilePath);
 
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
     {
-        return QString("Couldn't open the rekonqinfo.html file! This probably means you installed rekonq in a bad way.");
+        return QL1S("Couldn't open the rekonqinfo.html file! This probably means you installed rekonq in a bad way.");
     }
 
     // NOTE:
     // this, to take care about XSS (see BUG 217464)...
-    QString urlString = Qt::escape(reply->url().toString());
+    QString urlString = QRegularExpression::escape(reply->url().toString());
 
     // 1. data path
     QString dataPath = QL1S("file://") + notfoundFilePath;
@@ -717,7 +722,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     {
         msg += QL1S("<h2>") + i18n("Network is not available") + QL1S("</h2>");
 
-        QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
+        QString faceIconPath = QL1S("file://") + KIconLoader::global()->iconPath( QL1S("face-surprise") , -KIconLoader::SizeHuge, false);
         msg += QL1S("<table>");
         msg += QL1S("<tr><td width=\"100px\">");
         msg += QL1S("<img style=\"margin: 0 auto;\" src=\"") + faceIconPath + QL1S("\" />");
@@ -747,7 +752,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     {
         msg += QL1S("<h2>") + i18n("Oops... Proxy problems!") + QL1S("</h2>");
 
-        QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
+        QString faceIconPath = QL1S("file://") + KIconLoader::global()->iconPath( QL1S("face-surprise") , -KIconLoader::SizeHuge, false);
         msg += QL1S("<table>");
         msg += QL1S("<tr><td width=\"100px\">");
         msg += QL1S("<img style=\"margin: 0 auto;\" src=\"") + faceIconPath + QL1S("\" />");
@@ -777,7 +782,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     // general error page
     msg += QL1S("<h2>") + i18n("Oops! Cannot load <em>%1</em>", urlString) + QL1S("</h1>");
 
-    QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
+    QString faceIconPath = QL1S("file://") + KIconLoader::global()->iconPath( QL1S("face-surprise") , -KIconLoader::SizeHuge, false);
     msg += QL1S("<table>");
     msg += QL1S("<tr><td width=\"100px\">");
     msg += QL1S("<img src=\"") + faceIconPath + QL1S("\" />");
@@ -852,17 +857,17 @@ void WebPage::downloadAllContentsWithKGet()
     QUrl baseUrl(currentFrame()->url());
     QUrl relativeUrl;
 
-    QWebElementCollection images = mainFrame()->documentElement().findAll("img");
+    QWebElementCollection images = mainFrame()->documentElement().findAll( QL1S("img") );
     Q_FOREACH(const QWebElement & img, images)
     {
-        relativeUrl = QUrl::fromEncoded(img.attribute("src").toUtf8());
+        relativeUrl = QUrl::fromEncoded(img.attribute( QL1S("src") ).toUtf8());
         contents << baseUrl.resolved(relativeUrl).toString();
     }
 
-    QWebElementCollection links = mainFrame()->documentElement().findAll("a");
+    QWebElementCollection links = mainFrame()->documentElement().findAll( QL1S("a") );
     Q_FOREACH(const QWebElement & link, links)
     {
-        relativeUrl = QUrl::fromEncoded(link.attribute("href").toUtf8());
+        relativeUrl = QUrl::fromEncoded(link.attribute( QL1S("href") ).toUtf8());
         contents << baseUrl.resolved(relativeUrl).toString();
     }
 
@@ -887,9 +892,6 @@ bool WebPage::hasSslValid() const
         return false;
 
     const QSslCertificate cert = certList.at(0);
-    if (!cert.isValid())
-        return false;
-
     QList<QStringList> errorList = SslInfoDialog::errorsFromString(_sslInfo.certificateErrors());
     if (!errorList.isEmpty())
     {

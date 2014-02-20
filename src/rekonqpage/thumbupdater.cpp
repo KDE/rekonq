@@ -33,11 +33,10 @@
 #include "websnap.h"
 
 // KDE Includes
-#include <KLocale>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QStandardPaths>
-
 #include <QWebFrame>
 
 
@@ -54,7 +53,7 @@ void ThumbUpdater::updateThumb()
 {
     // Set loading animation
     _thumb.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"), QL1S("file:///") + 
-        QStandardDirs::locate(QStandardPaths::DataLocation, "/pics/busywidget.gif"));
+        QStandardPaths::locate(QStandardPaths::DataLocation, QL1S("/pics/busywidget.gif")));
     _thumb.findFirst(QL1S("span a")).setPlainText(i18n("Loading Preview..."));
 
     // Load URL

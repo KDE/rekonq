@@ -31,7 +31,6 @@
 
 // Local Includes
 #include "application.h"
-#include "tabhistory.h"
 #include "sessionwidget.h"
 
 #include "rekonqwindow.h"
@@ -39,6 +38,9 @@
 
 #include "webwindow.h"
 #include "webpage.h"
+
+// KDE Includes
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QDialog>
@@ -77,24 +79,24 @@ int loadTabs(RekonqWindow *tw, QDomElement & window, bool useFirstTab, bool just
 {
     int currentTab = 0;
 
-    for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
+    for (int tabNo = 0; tabNo < window.elementsByTagName( QL1S("tab") ).length(); tabNo++)
     {
-        QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
-        bool tabIsPinned = tab.hasAttribute("pinned");
+        QDomElement tab = window.elementsByTagName( QL1S("tab") ).at(tabNo).toElement();
+        bool tabIsPinned = tab.hasAttribute( QL1S("pinned") );
         qDebug() << "Tab #" << tabNo <<  " is pinned? " << tabIsPinned;
 
         if (!justThePinnedOnes || tabIsPinned)
         {
-            if (tab.hasAttribute("currentTab"))
+            if (tab.hasAttribute( QL1S("currentTab") ))
                 currentTab = tabNo;
 
-            QUrl u = QUrl(tab.attribute("url"));
+            QUrl u = QUrl(tab.attribute( QL1S("url") ));
 
             TabHistory tabHistory;
-            tabHistory.title = tab.attribute("title");
-            tabHistory.url = tab.attribute("url");
+            tabHistory.title = tab.attribute( QL1S("title") );
+            tabHistory.url = tab.attribute( QL1S("url") );
             QDomCDATASection historySection = tab.firstChild().toCDATASection();
-            tabHistory.history = QByteArray::fromBase64(historySection.data().toAscii());
+            tabHistory.history = QByteArray::fromBase64( historySection.data().toLatin1() );
 
             if (tabNo == 0 && useFirstTab)
             {
@@ -122,10 +124,10 @@ bool areTherePinnedTabs(QDomElement & window)
 {
     bool b = false;
 
-    for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
+    for (int tabNo = 0; tabNo < window.elementsByTagName( QL1S("tab") ).length(); tabNo++)
     {
-        QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
-        b = tab.hasAttribute("pinned");
+        QDomElement tab = window.elementsByTagName( QL1S("tab") ).at(tabNo).toElement();
+        b = tab.hasAttribute( QL1S("pinned") );
         if (b)
             return true;
     }
@@ -178,8 +180,8 @@ void SessionManager::saveSession()
         return;
     }
     RekonqWindowList wl = rApp->rekonqWindowList();
-    QDomDocument document("session");
-    QDomElement session = document.createElement("session");
+    QDomDocument document( QL1S("session") );
+    QDomElement session = document.createElement( QL1S("session") );
     document.appendChild(session);
 
     Q_FOREACH(const QPointer<RekonqWindow> &w, wl)
@@ -187,10 +189,10 @@ void SessionManager::saveSession()
         if (w.data()->isPrivateBrowsingMode())
             continue;
         
-        QDomElement window = document.createElement("window");
+        QDomElement window = document.createElement( QL1S("window") );
         int tabInserted = 0;
 
-        window.setAttribute("name", w.data()->objectName());
+        window.setAttribute( QL1S("name"), w.data()->objectName());
         
         TabWidget *tw = w.data()->tabWidget();
         for (signed int tabNo = 0; tabNo < tw->count(); tabNo++)
@@ -198,22 +200,22 @@ void SessionManager::saveSession()
             QUrl u = tw->webWindow(tabNo)->url();
 
             tabInserted++;
-            QDomElement tab = document.createElement("tab");
-            tab.setAttribute("title", tw->webWindow(tabNo)->title()); // redundant, but needed for closedSites()
+            QDomElement tab = document.createElement( QL1S("tab") );
+            tab.setAttribute( QL1S("title"), tw->webWindow(tabNo)->title()); // redundant, but needed for closedSites()
             // as there's not way to read out the historyData
-            tab.setAttribute("url", u.url());
+            tab.setAttribute( QL1S("url"), u.url());
             if (tw->currentIndex() == tabNo)
             {
-                tab.setAttribute("currentTab", 1);
+                tab.setAttribute( QL1S("currentTab"), 1);
             }
             if (tw->tabBar()->tabData(tabNo).toBool()) // pinned tab info
             {
-                tab.setAttribute("pinned", 1);
+                tab.setAttribute( QL1S("pinned"), 1);
             }
             QByteArray history;
             QDataStream historyStream(&history, QIODevice::ReadWrite);
             historyStream << *(tw->webWindow(tabNo)->page()->history());
-            QDomCDATASection historySection = document.createCDATASection(history.toBase64());
+            QDomCDATASection historySection = document.createCDATASection( QL1S(history) );
 
             tab.appendChild(historySection);
             window.appendChild(tab);
@@ -234,14 +236,14 @@ void SessionManager::saveSession()
 
 bool SessionManager::restoreSessionFromScratch()
 {
-    QDomDocument document("session");
+    QDomDocument document( QL1S("session") );
 
     if (!readSessionDocument(document, m_sessionFilePath))
         return false;
 
-    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    for (int winNo = 0; winNo < document.elementsByTagName( QL1S("window") ).length(); winNo++)
     {
-        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+        QDomElement window = document.elementsByTagName( QL1S("window") ).at(winNo).toElement();
 
         RekonqWindow *tw = rApp->newWindow();
 
@@ -256,15 +258,15 @@ bool SessionManager::restoreSessionFromScratch()
 
 bool SessionManager::restoreJustThePinnedTabs()
 {
-    QDomDocument document("session");
+    QDomDocument document( QL1S("session") );
 
     if (!readSessionDocument(document, m_sessionFilePath))
         return false;
 
     bool done = false;
-    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    for (int winNo = 0; winNo < document.elementsByTagName( QL1S("window") ).length(); winNo++)
     {
-        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+        QDomElement window = document.elementsByTagName( QL1S("window") ).at(winNo).toElement();
 
         if (!areTherePinnedTabs(window))
             continue;
@@ -283,21 +285,21 @@ bool SessionManager::restoreJustThePinnedTabs()
 
 void SessionManager::restoreCrashedSession()
 {
-    QDomDocument document("session");
+    QDomDocument document( QL1S("session") );
 
     if (!readSessionDocument(document, m_sessionFilePath))
         return;
 
-    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    for (int winNo = 0; winNo < document.elementsByTagName( QL1S("window") ).length(); winNo++)
     {
-        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+        QDomElement window = document.elementsByTagName( QL1S("window") ).at(winNo).toElement();
 
         RekonqWindow *tw = (winNo == 0)
                         ? rApp->rekonqWindow()
                         : rApp->newWindow();
 
         QUrl u = tw->currentWebWindow()->url();
-        bool useCurrentTab = (u.isEmpty() || u.protocol() == QL1S("rekonq"));
+        bool useCurrentTab = (u.isEmpty() || u.scheme() == QL1S("rekonq"));
         int currentTab = loadTabs(tw, window, useCurrentTab);
 
         tw->tabWidget()->setCurrentIndex(currentTab);
@@ -309,18 +311,16 @@ void SessionManager::restoreCrashedSession()
 
 bool SessionManager::restoreWindow(RekonqWindow* window)
 {
-    QDomDocument document("session");
+    QDomDocument document( QL1S("session") );
 
     if (!readSessionDocument(document, m_sessionFilePath))
         return false;
 
-    unsigned int winNo;
-
-    for (winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    for (int winNo = 0; winNo < document.elementsByTagName( QL1S("window") ).length(); winNo++)
     {
-        QDomElement savedWindowElement = document.elementsByTagName("window").at(winNo).toElement();
+        QDomElement savedWindowElement = document.elementsByTagName( QL1S("window") ).at(winNo).toElement();
 
-        if (window->objectName() != savedWindowElement.attribute("name", ""))
+        if (window->objectName() != savedWindowElement.attribute( QL1S("name"), QL1S("") ))
             continue;
 
         int currentTab = loadTabs(window, savedWindowElement, false);
@@ -337,29 +337,29 @@ bool SessionManager::restoreWindow(RekonqWindow* window)
 QList<TabHistory> SessionManager::closedSitesForWindow(const QString &windowName)
 {
     QList<TabHistory> list;
-    QDomDocument document("session");
+    QDomDocument document( QL1S("session") );
 
     if (!readSessionDocument(document, m_sessionFilePath))
         return list;
 
-    for (unsigned int winNo = 0; winNo < document.elementsByTagName("tab").length(); winNo++)
+    for (int winNo = 0; winNo < document.elementsByTagName( QL1S("tab") ).length(); winNo++)
     {
-        QDomElement windowElement = document.elementsByTagName("window").at(winNo).toElement();
+        QDomElement windowElement = document.elementsByTagName( QL1S("window") ).at(winNo).toElement();
 
-        if (windowName != windowElement.attribute("name", ""))
+        if (windowName != windowElement.attribute( QL1S("name"), QL1S("")))
             continue;
         
-        for (unsigned int tabNo = 0; tabNo < windowElement.elementsByTagName("tab").length(); tabNo++)
+        for (int tabNo = 0; tabNo < windowElement.elementsByTagName( QL1S("tab") ).length(); tabNo++)
         {
-            QDomElement tab = windowElement.elementsByTagName("tab").at(tabNo).toElement();
+            QDomElement tab = windowElement.elementsByTagName( QL1S("tab") ).at(tabNo).toElement();
 
             TabHistory tabHistory;
 
-            tabHistory.title = tab.attribute("title");
-            tabHistory.url = tab.attribute("url");
+            tabHistory.title = tab.attribute( QL1S("title") );
+            tabHistory.url = tab.attribute( QL1S("url") );
 
             QDomCDATASection historySection = tab.firstChild().toCDATASection();
-            tabHistory.history = QByteArray::fromBase64(historySection.data().toAscii());
+            tabHistory.history = QByteArray::fromBase64(historySection.data().toLatin1());
 
             list << tabHistory;
         }
@@ -389,8 +389,8 @@ bool SessionManager::saveYourSession(int index)
     }
     
     RekonqWindowList wl = rApp->rekonqWindowList();
-    QDomDocument document("session");
-    QDomElement session = document.createElement("session");
+    QDomDocument document( QL1S("session") );
+    QDomElement session = document.createElement( QL1S("session") );
     document.appendChild(session);
 
     Q_FOREACH(const QPointer<RekonqWindow> &w, wl)
@@ -398,10 +398,10 @@ bool SessionManager::saveYourSession(int index)
         if (w.data()->isPrivateBrowsingMode())
             continue;
         
-        QDomElement window = document.createElement("window");
+        QDomElement window = document.createElement( QL1S("window") );
         int tabInserted = 0;
 
-        window.setAttribute("name", w.data()->objectName());
+        window.setAttribute( QL1S("name"), w.data()->objectName());
         
         TabWidget *tw = w.data()->tabWidget();
         for (signed int tabNo = 0; tabNo < tw->count(); tabNo++)
@@ -409,22 +409,22 @@ bool SessionManager::saveYourSession(int index)
             QUrl u = tw->webWindow(tabNo)->url();
 
             tabInserted++;
-            QDomElement tab = document.createElement("tab");
-            tab.setAttribute("title", tw->webWindow(tabNo)->title()); // redundant, but needed for closedSites()
+            QDomElement tab = document.createElement( QL1S("tab") );
+            tab.setAttribute( QL1S("title"), tw->webWindow(tabNo)->title()); // redundant, but needed for closedSites()
             // as there's not way to read out the historyData
-            tab.setAttribute("url", u.url());
+            tab.setAttribute( QL1S("url"), u.url());
             if (tw->currentIndex() == tabNo)
             {
-                tab.setAttribute("currentTab", 1);
+                tab.setAttribute( QL1S("currentTab"), 1);
             }
             if (tw->tabBar()->tabData(tabNo).toBool()) // pinned tab info
             {
-                tab.setAttribute("pinned", 1);
+                tab.setAttribute( QL1S("pinned"), 1);
             }
             QByteArray history;
             QDataStream historyStream(&history, QIODevice::ReadWrite);
             historyStream << *(tw->webWindow(tabNo)->page()->history());
-            QDomCDATASection historySection = document.createCDATASection(history.toBase64());
+            QDomCDATASection historySection = document.createCDATASection( QL1S(history) );
 
             tab.appendChild(historySection);
             window.appendChild(tab);
@@ -447,7 +447,7 @@ bool SessionManager::restoreYourSession(int index)
     const QString & sessionPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/usersessions/");
     const QString & sessionName = QL1S("ses") + QString::number(index);
     
-    QDomDocument document("session");
+    QDomDocument document( QL1S("session") );
 
     if (!readSessionDocument(document,sessionPath + sessionName))
         return false;
@@ -455,9 +455,9 @@ bool SessionManager::restoreYourSession(int index)
     // trace the windows to delete
     RekonqWindowList wList = rApp->rekonqWindowList();
     
-    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    for (int winNo = 0; winNo < document.elementsByTagName( QL1S("window") ).length(); winNo++)
     {
-        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+        QDomElement window = document.elementsByTagName( QL1S("window") ).at(winNo).toElement();
 
         RekonqWindow *tw = rApp->newWindow();
 
@@ -481,14 +481,15 @@ void SessionManager::manageSessions()
     qDebug() << "OK ,manage session..";
     
     QPointer<QDialog> dialog = new QDialog();
-    dialog->setCaption(i18nc("@title:window", "Manage Session"));
-    dialog->setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Close);
+    // FIXME
+//     dialog->setCaption(i18nc("@title:window", "Manage Session"));
+//     dialog->setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Close);
 
-    dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme("system-run"));
-    dialog->button(QDialogButtonBox::Ok)->setText(i18n("Load"));
+//     dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme("system-run"));
+//     dialog->button(QDialogButtonBox::Ok)->setText(i18n("Load"));
 
     SessionWidget widg;
-    dialog->setMainWidget(&widg);
+//     dialog->setMainWidget(&widg);
     
     connect(dialog, SIGNAL(okClicked()), &widg, SLOT(loadSession()));
     dialog->exec();

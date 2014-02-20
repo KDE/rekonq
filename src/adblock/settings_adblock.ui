@@ -26,16 +26,16 @@
     </widget>
    </item>
    <item>
-    <widget class="KTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="tabWidget">
      <property name="toolTip">
       <string/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="tabWidgetPage1" native="true">
       <attribute name="title">
-       <string>Automatic Filters</string>
+       <string/>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -51,7 +51,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KIntSpinBox" name="spinBox">
+          <widget class="QSpinBox" name="spinBox">
            <property name="minimumSize">
             <size>
              <width>120</width>
@@ -83,9 +83,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tabWidgetPage2" native="true">
       <attribute name="title">
-       <string>Manual Filters</string>
+       <string/>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -98,12 +98,12 @@
           </widget>
          </item>
          <item>
-          <widget class="KListWidgetSearchLine" name="searchLine"/>
+          <widget class="QLineEdit" name="searchLine"/>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="KListWidget" name="manualFiltersListWidget">
+        <widget class="QListWidget" name="manualFiltersListWidget">
          <property name="dragEnabled">
           <bool>true</bool>
          </property>
@@ -122,7 +122,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="KLineEdit" name="addFilterLineEdit"/>
+          <widget class="QLineEdit" name="addFilterLineEdit"/>
          </item>
          <item>
           <widget class="QToolButton" name="insertButton">
@@ -152,34 +152,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KIntSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>knuminput.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KListWidget</class>
-   <extends>QListWidget</extends>
-   <header>klistwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KTabWidget</class>
-   <extends>QTabWidget</extends>
-   <header>ktabwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>KListWidgetSearchLine</class>
-   <extends>KLineEdit</extends>
-   <header>klistwidgetsearchline.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

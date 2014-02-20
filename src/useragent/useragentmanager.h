@@ -35,9 +35,8 @@
 // Forward Declarations
 class WebWindow;
 
-class KMenu;
-
 class QAction;
+class QMenu;
 
 
 class UserAgentManager : public QObject
@@ -52,7 +51,7 @@ public:
      */
     static UserAgentManager *self();
 
-    void populateUAMenuForTabUrl(KMenu *, WebWindow *);
+    void populateUAMenuForTabUrl(QMenu *, WebWindow *);
 
 private:
     explicit UserAgentManager(QObject *parent = 0);

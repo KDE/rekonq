@@ -28,8 +28,6 @@
 #include "rwindow.h"
 
 // KDE Includes
-#include <KApplication>
-#include <KCmdLineArgs>
 #include <KSessionManager>
 
 // Qt Includes

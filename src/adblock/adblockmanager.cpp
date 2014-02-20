@@ -39,15 +39,17 @@
 #include <KIO/FileCopyJob>
 
 // Qt Includes
+#include <QDialog>
 #include <QUrl>
 #include <QTimer>
 #include <QStandardPaths>
 
 #include <QWebElement>
+#include <QWebFrame>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-#include <QtConcurrentRun>
+#include <QtConcurrent>
 
 
 QPointer<AdBlockManager> AdBlockManager::s_adBlockManager;
@@ -101,7 +103,7 @@ void AdBlockManager::loadSettings()
     const QString adblockFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrc");
     if (!QFile::exists(adblockFilePath))
     {
-        const QString generalAdblockFilePath = QStandardDirs::locate(QStandardPaths::DataLocation, QL1S("adblockrc"));
+        const QString generalAdblockFilePath = QStandardPaths::locate(QStandardPaths::DataLocation, QL1S("adblockrc"));
         QFile adblockFile(generalAdblockFilePath);
         const bool copied = adblockFile.copy(adblockFilePath);
         if (!copied)
@@ -110,7 +112,7 @@ void AdBlockManager::loadSettings()
             return;
         }
     }
-    _adblockConfig = KSharedConfig::openConfig("adblockrc", KConfig::SimpleConfig, "appdata");
+    _adblockConfig = KSharedConfig::openConfig( QL1S("adblockrc"), KConfig::SimpleConfig, QStandardPaths::DataLocation );
     // ----------------
 
     _hostWhiteList.clear();
@@ -150,10 +152,10 @@ void AdBlockManager::loadSettings()
     for (int i = 0; i < 60; i++)
     {
         QString n = QString::number(i + 1);
-        if (!filtersGroup.hasKey("FilterEnabled-" + n))
+        if (!filtersGroup.hasKey( QL1S("FilterEnabled-") + n))
             continue;
 
-        bool isFilterEnabled = filtersGroup.readEntry("FilterEnabled-" + n, false);
+        bool isFilterEnabled = filtersGroup.readEntry( QL1S("FilterEnabled-") + n, false);
         if (!isFilterEnabled)
             continue;
 
@@ -171,7 +173,7 @@ void AdBlockManager::loadSettings()
     }
 
     // load local rules
-    QString localRulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_local"));
+    QString localRulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_local");
     loadRules(localRulesFilePath);
 
     _isAdblockEnabled = true;
@@ -199,11 +201,11 @@ void AdBlockManager::loadRules(const QString &rulesFilePath)
 void AdBlockManager::loadRuleString(const QString &stringRule)
 {
     // ! rules are comments
-    if (stringRule.startsWith('!'))
+    if (stringRule.startsWith( QL1C('!') ))
         return;
 
     // [ rules are ABP info
-    if (stringRule.startsWith('['))
+    if (stringRule.startsWith( QL1C('[') ))
         return;
 
     // empty rules are just dangerous..
@@ -252,7 +254,7 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
         return false;
 
     QStringList whiteRefererList = ReKonfig::whiteReferer();
-    const QString referer = request.rawHeader("referer");
+    const QString referer = QL1S(request.rawHeader("referer"));
     Q_FOREACH(const QString & host, whiteRefererList)
     {
         if (referer.contains(host))
@@ -307,18 +309,18 @@ void AdBlockManager::updateSubscription(int i)
     KConfigGroup filtersGroup(_adblockConfig, "FiltersList");
     QString n = QString::number(i + 1);
 
-    const QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
+    const QString fUrl = filtersGroup.readEntry( QL1S("FilterURL-") + n, QString());
     QUrl subUrl = QUrl(fUrl);
 
     QString rulesFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrules_") + n;
     QUrl destUrl = QUrl(rulesFilePath);
 
     KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-    job->metaData().insert("ssl_no_client_cert", "TRUE");
-    job->metaData().insert("ssl_no_ui", "TRUE");
-    job->metaData().insert("UseCache", "false");
-    job->metaData().insert("cookies", "none");
-    job->metaData().insert("no-auth", "true");
+    job->metaData().insert( QL1S("ssl_no_client_cert"),  QL1S("true") );
+    job->metaData().insert( QL1S("ssl_no_ui"),  QL1S("true") );
+    job->metaData().insert( QL1S("UseCache"),  QL1S("false") );
+    job->metaData().insert( QL1S("cookies"),  QL1S("none") );
+    job->metaData().insert( QL1S("no-auth"),  QL1S("true") );
 
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotFinished(KJob*)));
 }
@@ -331,7 +333,7 @@ void AdBlockManager::slotFinished(KJob *job)
 
     KIO::FileCopyJob *fJob = qobject_cast<KIO::FileCopyJob *>(job);
     QUrl url = fJob->destUrl();
-    url.setProtocol(QString()); // this is needed to load local url well :(
+    url.setScheme(QString()); // this is needed to load local url well :(
     loadRules(url.url());
 }
 
@@ -351,14 +353,15 @@ void AdBlockManager::showSettings()
     _settingsLoaded.waitForFinished();
 
     QPointer<QDialog> dialog = new QDialog();
-    dialog->setCaption(i18nc("@title:window", "Ad Block Settings"));
-    dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    // FIXME
+//     dialog->setCaption(i18nc("@title:window", "Ad Block Settings"));
+//     dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
     AdBlockSettingWidget widget(_adblockConfig);
-    dialog->setMainWidget(&widget);
+//     dialog->setMainWidget(&widget);
     connect(dialog, SIGNAL(okClicked()), &widget, SLOT(save()));
     connect(dialog, SIGNAL(okClicked()), this, SLOT(loadSettings()));
-    dialog->exec();
+    dialog.data()->exec();
 
     dialog->deleteLater();
 }
@@ -380,7 +383,7 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
     }
 
     QTextStream out(&ruleFile);
-    out << stringRule << '\n';
+    out << stringRule << QL1C('\n');
 
     ruleFile.close();
 

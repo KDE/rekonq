@@ -37,18 +37,14 @@
 #include "listitem.h"
 #include "urlbar.h"
 
-// KDE Includes
-#include <KGlobalSettings>
-
 // Qt Includes
 #include <QApplication>
+#include <QEvent>
+#include <QKeyEvent>
 #include <QPoint>
 #include <QSize>
-#include <QEvent>
 #include <QUrl>
-
 #include <QVBoxLayout>
-#include <QKeyEvent>
 
 
 
@@ -172,7 +168,7 @@ void CompletionWidget::activateCurrentListItem()
     if (widget)
     {
         widget->activate();
-        bar->setQUrl(widget->text());
+        bar->setQUrl( QUrl::fromUserInput(widget->text()) );
     }
     else
     {

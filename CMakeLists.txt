@@ -52,16 +52,17 @@ INCLUDE (KDEFrameworkCompilerSettings)
     
 SET (QT_MIN_VERSION "5.2.0")
 
-FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Gui Widgets Network Script WebKitWidgets)
+FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Gui Widgets Network Script WebKitWidgets Concurrent)
 
 # ==================================================================================
 # KDE Frameworks
 
-SET (KF5_MIN_VERSION "5.0.0")
+SET (KF5_MIN_VERSION "4.96.0")
 
 FIND_PACKAGE (KF5 CONFIG REQUIRED
     Auth
     Bookmarks
+    Codecs
     Config
     ConfigWidgets
     CoreAddons
@@ -69,10 +70,13 @@ FIND_PACKAGE (KF5 CONFIG REQUIRED
     GlobalAccel
     GuiAddons
     I18n
+    IconThemes
     Init
     JobWidgets
     KCMUtils
+    Notifications
     Solid
+    Sonnet
     TextWidgets
     Wallet
     WidgetsAddons

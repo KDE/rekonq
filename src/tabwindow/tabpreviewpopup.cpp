@@ -58,8 +58,6 @@ TabPreviewPopup::TabPreviewPopup(const QPixmap &pixmap, const QString &urlText, 
     layout()->setAlignment(Qt::AlignTop);
     layout()->setMargin(0);
 
-    setPopupStyle(KPassivePopup::CustomStyle + 1);
-
     // use ToolTip appearance
     QPalette p;
 

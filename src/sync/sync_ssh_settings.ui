@@ -28,7 +28,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="KLineEdit" name="kcfg_syncHost"/>
+       <widget class="QLineEdit" name="kcfg_syncHost"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
@@ -38,7 +38,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="KLineEdit" name="kcfg_syncUser"/>
+       <widget class="QLineEdit" name="kcfg_syncUser"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -48,7 +48,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="KLineEdit" name="kcfg_syncPass"/>
+       <widget class="QLineEdit" name="kcfg_syncPass"/>
       </item>
       <item row="3" column="1">
        <widget class="QCheckBox" name="syncWithSSHKeys">
@@ -65,7 +65,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="KLineEdit" name="kcfg_syncPath"/>
+       <widget class="QLineEdit" name="kcfg_syncPath"/>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_5">
@@ -75,7 +75,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="KIntNumInput" name="kcfg_syncPort"/>
+       <widget class="QSpinBox" name="kcfg_syncPort"/>
       </item>
      </layout>
     </widget>
@@ -95,18 +95,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KIntNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

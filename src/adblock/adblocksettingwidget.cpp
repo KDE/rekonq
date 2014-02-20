@@ -31,6 +31,7 @@
 #include "rekonq.h"
 
 // KDE Includes
+#include <KLocalizedString>
 #include <KSharedConfig>
 
 // Qt Includes
@@ -54,17 +55,18 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
 
     manualFiltersListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
-    searchLine->setListWidget(manualFiltersListWidget);
+    // FIXME
+//     searchLine->setListWidget(manualFiltersListWidget);
 
-    insertButton->setIcon(QIcon::fromTheme("list-add"));
+    insertButton->setIcon(QIcon::fromTheme( QL1S("list-add") ));
     connect(insertButton, SIGNAL(clicked()), this, SLOT(insertRule()));
 
-    removeButton->setIcon(QIcon::fromTheme("list-remove"));
+    removeButton->setIcon(QIcon::fromTheme( QL1S("list-remove") ));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeRule()));
 
     load();
 
-    spinBox->setSuffix(ki18np(" day", " days"));
+// FIXME    spinBox->setSuffix(ki18np(" day", " days"));
 
     // emit changed signal
     connect(checkEnableAdblock, SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
@@ -149,10 +151,10 @@ void AdBlockSettingWidget::load()
     int i = 1;
     QString n = QString::number(i);
 
-    while (autoFiltersGroup.hasKey("FilterName-" + n))
+    while (autoFiltersGroup.hasKey( QL1S("FilterName-") + n))
     {
-        bool filterEnabled = autoFiltersGroup.readEntry("FilterEnabled-" + n, false);
-        QString filterName = autoFiltersGroup.readEntry("FilterName-" + n, QString());
+        bool filterEnabled = autoFiltersGroup.readEntry( QL1S("FilterEnabled-") + n, false);
+        QString filterName = autoFiltersGroup.readEntry( QL1S("FilterName-") + n, QString());
 
         QListWidgetItem *subItem = new QListWidgetItem(automaticFiltersListWidget);
         subItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
@@ -211,7 +213,7 @@ void AdBlockSettingWidget::save()
             active = false;
 
         const QString n = QString::number(i + 1);
-        autoFiltersGroup.writeEntry("FilterEnabled-" + n, active);
+        autoFiltersGroup.writeEntry( QL1S("FilterEnabled-") + n, active);
     }
 
     // local filters

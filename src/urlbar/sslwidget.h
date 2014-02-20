@@ -33,7 +33,6 @@
 
 // Qt Includes
 #include <QMenu>
-
 #include <QUrl>
 
 

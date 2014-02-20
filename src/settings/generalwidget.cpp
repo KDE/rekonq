@@ -36,8 +36,11 @@
 #include "webwindow.h"
 
 //KDE Includes
-#include <kstandarddirs.h>
+#include <KLocalizedString>
 #include <KUrlRequester>
+
+// Qt Includes
+#include <QStandardPaths>
 
 
 GeneralWidget::GeneralWidget(QWidget *parent)
@@ -99,7 +102,7 @@ void GeneralWidget::setHomeToCurrentPage()
 
 void GeneralWidget::checkKGetPresence()
 {
-    if (QStandardPaths::findExecutable("kget").isNull())
+    if (QStandardPaths::findExecutable( QL1S("kget") ).isNull())
     {
         kcfg_kgetDownload->setDisabled(true);
         kcfg_kgetList->setDisabled(true);

@@ -31,7 +31,12 @@
 #include "rekonq.h"
 #include "rekonq_defines.h"
 
+// Config Includes
+#if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
+// Config Includes
 #include <config-qca2.h>
+#endif
+
 
 // Local Includes
 #include "syncassistant.h"
@@ -72,7 +77,7 @@ SyncSSHSettingsWidget::SyncSSHSettingsWidget(QWidget* parent): QWizardPage(paren
         toggleUserPass(true);
     }
 
-    kcfg_syncPass->setPasswordMode(true);
+    kcfg_syncPass->setEchoMode(QLineEdit::Password);
     
     connect(syncWithSSHKeys,SIGNAL(toggled(bool)),SLOT(toggleUserPass(bool)));
 }

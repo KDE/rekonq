@@ -29,7 +29,7 @@
 
 
 // KDE Includes
-#include <KBookmarkMenu>
+#include <KBookmarkContextMenu>
 
 // Forward Declarations
 class BookmarkOwner;

@@ -35,9 +35,10 @@
 #include <KActionCollection>
 
 // Qt Includes
-#include <QWidget>
 #include <QAction>
+#include <QPointer>
 #include <QUrl>
+#include <QWidget>
 
 // Forward Declarations
 class WebPage;
@@ -48,10 +49,10 @@ class FindBar;
 class UrlBar;
 class RekonqMenu;
 
-class KMenu;
 class KToolBar;
 
 class QLabel;
+class QMenu;
 class QPixmap;
 class QTimer;
 
@@ -173,8 +174,8 @@ private:
 
     QAction *m_loadStopReloadAction;
 
-    KMenu *m_historyBackMenu;
-    KMenu *m_historyForwardMenu;
+    QMenu *m_historyBackMenu;
+    QMenu *m_historyForwardMenu;
 
     RekonqMenu *m_rekonqMenu;
 

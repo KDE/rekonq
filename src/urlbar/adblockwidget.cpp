@@ -56,7 +56,7 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
 
     // Title
     QLabel *title = new QLabel(this);
-    title->setText(i18n(" AdBlock"));
+    title->setText(i18n("AdBlock"));
     QFont f = title->font();
     f.setBold(true);
     title->setFont(f);
@@ -80,10 +80,12 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
     layout->addWidget(_chBox);
 
     // Ok & Cancel buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(this, Qt::Horizontal);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
 
-    buttonBox->addButton(KStandardGuiItem::ok(), QDialogButtonBox::AcceptRole, this, SLOT(accept()));
-    buttonBox->addButton(KStandardGuiItem::cancel(), QDialogButtonBox::RejectRole, this, SLOT(close()));
+    buttonBox->addButton(QDialogButtonBox::Ok);
+    connect(buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), this, SLOT(accept()));
+    buttonBox->addButton(QDialogButtonBox::Cancel);
+    connect(buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(close()));
 
     layout->addWidget(buttonBox);
 }

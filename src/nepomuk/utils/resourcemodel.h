@@ -22,7 +22,7 @@
 #ifndef _NEPOMUK_RESOUCE_MODEL_H_
 #define _NEPOMUK_RESOUCE_MODEL_H_
 
-#include <QtCore/QAbstractItemModel>
+#include <QAbstractItemModel>
 
 namespace Nepomuk2 {
 

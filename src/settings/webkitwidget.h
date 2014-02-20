@@ -32,7 +32,7 @@
 #include "ui_settings_webkit.h"
 
 // Qt Includes
-#include <QtGui/QWidget>
+#include <QWidget>
 
 
 class WebKitWidget : public QWidget, private Ui::webkit

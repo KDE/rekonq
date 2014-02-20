@@ -35,8 +35,9 @@
 
 // KDE Includes
 #include <KBookmark>
-#include <KService>
+#include <KLocalizedString>
 #include <KProtocolInfo>
+#include <KService>
 
 // Qt Includes
 #include <QByteArray>
@@ -76,7 +77,7 @@ UrlSuggester::UrlSuggester(const QString &typedUrl)
 {
     if (_browseRegexp.isEmpty())
     {
-        QString protocol = QString("^(%1)").arg(KProtocolInfo::protocols().join("|"));
+        QString protocol = QL1S("^(") + KProtocolInfo::protocols().join( QL1S("|") ) + QL1S(")");
         protocol += QL1S("|javascript");
         
         QString localhost = QL1S("^localhost");
@@ -113,7 +114,7 @@ UrlSuggester::UrlSuggester(const QString &typedUrl)
         QString engineUrl;
         Q_FOREACH(KService::Ptr s, SearchEngine::favorites())
         {
-            engineUrl = QRegExp::escape(s->property("Query").toString()).replace(QL1S("\\\\\\{@\\}"), QL1S("[\\d\\w-.]+"));
+            engineUrl = QRegExp::escape(s->property( QL1S("Query") ).toString()).replace(QL1S("\\\\\\{@\\}"), QL1S("[\\d\\w-.]+"));
             if (reg.isEmpty())
                 reg = QL1C('(') + engineUrl + QL1C(')');
             else
@@ -208,7 +209,7 @@ UrlSuggestionList UrlSuggester::orderLists()
         QString hst = QUrl(item.url).host();
         if (item.url.startsWith(_typedString)
                 || hst.startsWith(_typedString)
-                || hst.remove("www.").startsWith(_typedString))
+                || hst.remove( QL1S("www.") ).startsWith(_typedString))
         {
             relevant << item;
             _history.removeOne(item);
@@ -226,7 +227,7 @@ UrlSuggestionList UrlSuggester::orderLists()
             QString hst = QUrl(item.url).host();
             if (item.url.startsWith(_typedString)
                     || hst.startsWith(_typedString)
-                    || hst.remove("www.").startsWith(_typedString))
+                    || hst.remove( QL1S("www.") ).startsWith(_typedString))
             {
                 relevant << item;
                 _bookmarks.removeOne(item);

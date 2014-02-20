@@ -33,10 +33,8 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KLineEdit>
-
 // Qt Includes
+#include <QLineEdit>
 #include <QPointer>
 #include <QToolButton>
 #include <QUrl>
@@ -70,7 +68,7 @@ typedef QList<IconButton *> IconButtonPointerList;
 // ------------------------------------------------------------------------------------
 
 
-class UrlBar : public KLineEdit
+class UrlBar : public QLineEdit
 {
     Q_OBJECT
 

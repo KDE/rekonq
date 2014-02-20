@@ -35,14 +35,14 @@
 
 
 RekonqMenu::RekonqMenu(QWidget *parent)
-    : KMenu(parent)
+    : QMenu(parent)
 {
 }
 
 
 void RekonqMenu::showEvent(QShowEvent* event)
 {
-    KMenu::showEvent(event);
+    QMenu::showEvent(event);
 
     // Adjust the position of the menu to be shown within the
     // rekonq window to reduce the cases that sub-menus might overlap

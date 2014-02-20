@@ -28,6 +28,8 @@
 #include "useragentwidget.h"
 
 // KDE Includes
+#include <KConfig>
+#include <KConfigGroup>
 #include <KProtocolManager>
 
 
@@ -39,7 +41,7 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteUserAgent()));
     connect(deleteAllButton, SIGNAL(clicked()), this, SLOT(deleteAll()));
 
-    KConfig config("kio_httprc", KConfig::NoGlobals);
+    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
 
     QStringList hosts = config.groupList();
     Q_FOREACH(const QString & host, hosts)
@@ -66,7 +68,7 @@ void UserAgentWidget::deleteUserAgent()
 
     QString host = item->text(0);
 
-    KConfig config("kio_httprc", KConfig::NoGlobals);
+    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
     KConfigGroup group(&config, host);
     if (group.exists())
     {
@@ -80,7 +82,7 @@ void UserAgentWidget::deleteAll()
 {
     sitePolicyTreeWidget->clear();
 
-    KConfig config("kio_httprc", KConfig::NoGlobals);
+    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
 
     QStringList list = config.groupList();
     Q_FOREACH(const QString & groupName, list)

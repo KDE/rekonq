@@ -51,7 +51,7 @@
 
 
 RekonqWindow::RekonqWindow(bool withTab, bool privateBrowsingMode, QWidget *parent)
-    : RWindow(parent)
+    : QWidget(parent)
     , _tabWidget(new TabWidget(withTab, privateBrowsingMode, this))
     , _splitter(new QSplitter(this))
 {
@@ -60,7 +60,7 @@ RekonqWindow::RekonqWindow(bool withTab, bool privateBrowsingMode, QWidget *pare
 
 
 RekonqWindow::RekonqWindow(WebPage *pg, QWidget *parent)
-    : RWindow(parent)
+    : QWidget(parent)
     , _tabWidget(new TabWidget(pg, this))
     , _splitter(new QSplitter(this))
 {

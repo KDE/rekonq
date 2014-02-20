@@ -36,7 +36,7 @@
 #include <KBookmark>
 
 // Qt Includes
-#include <QtCore/QAbstractItemModel>
+#include <QAbstractItemModel>
 
 
 class BtmItem

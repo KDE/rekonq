@@ -101,8 +101,7 @@ enum SyncData
 // ----------------------------------------------------------------------------------------------------
 // INCLUDES
 
-// FIXME What about this?
-//#include <KDebug>
+#include <QDebug>
 
 
 

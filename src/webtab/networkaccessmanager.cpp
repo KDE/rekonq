@@ -35,7 +35,6 @@
 #include "knetworkaccessmanager.h"
 
 // KDE Includes
-#include <KLocale>
 #include <KProtocolManager>
 #include <KRun>
 
@@ -56,8 +55,8 @@ public:
         setRequest(req);
         setUrl(req.url());
         setHeader(QNetworkRequest::ContentLengthHeader, 0);
-        setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
-        setError(QNetworkReply::ContentAccessDenied, i18n("Blocked by ad filter"));
+        setHeader(QNetworkRequest::ContentTypeHeader, QL1S("text/plain") );
+        setError(QNetworkReply::ContentAccessDenied, QL1S("Blocked by ad filter"));
         setAttribute(QNetworkRequest::User, QNetworkReply::ContentAccessDenied);
         QTimer::singleShot(0, this, SIGNAL(finished()));
     }
@@ -94,7 +93,9 @@ static void hideBlockedElements(const QUrl& url, QWebElementCollection& collecti
 
         if (src.isEmpty())
             continue;
-        const QUrl resolvedUrl(baseUrl.resolved(src));
+        
+        QUrl srcUrl(src);
+        const QUrl resolvedUrl(baseUrl.resolved(srcUrl));
         if (url == resolvedUrl)
         {
             //qDebug() << "*** HIDING ELEMENT: " << (*it).tagName() << resolvedUrl;
@@ -127,51 +128,37 @@ QNetworkAccessManager *NetworkAccessManager::privateAccessManager()
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
 {
-    QString c = KGlobal::locale()->language();
-
-    if (c == QL1S("C"))
-        c = QL1S("en-US");
-    else
-        c = c.replace(QL1C('_') , QL1C('-'));
-
-    c.append(QL1S(", en-US; q=0.8, en; q=0.6"));
-
-    _acceptLanguage = c.toLatin1();
 }
 
 
-QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
     bool blocked = false;
 
     // Handle GET operations with AdBlock
     if (op == QNetworkAccessManager::GetOperation)
-        blocked = AdBlockManager::self()->blockRequest(req);
+        blocked = AdBlockManager::self()->blockRequest(request);
 
     if (!blocked)
     {
-        if (KProtocolInfo::isHelperProtocol(req.url()))
+        if (KProtocolInfo::isHelperProtocol(request.url()))
         {
-            (void) new KRun(req.url(), qobject_cast<QWidget*>(req.originatingObject()));
-            return new NullNetworkReply(req, this);
+            (void) new KRun(request.url(), qobject_cast<QWidget*>(request.originatingObject()));
+            return new NullNetworkReply(request, this);
         }
-
-        // set our "nice" accept-language header...
-        QNetworkRequest request = req;
-        request.setRawHeader("Accept-Language", _acceptLanguage);
 
         return KIO::AccessManager::createRequest(op, request, outgoingData);
     }
 
-    QWebFrame* frame = qobject_cast<QWebFrame*>(req.originatingObject());
+    QWebFrame* frame = qobject_cast<QWebFrame*>(request.originatingObject());
     if (frame)
     {
         if (!m_blockedRequests.contains(frame))
             connect(frame, SIGNAL(loadFinished(bool)), this, SLOT(applyHidingBlockedElements(bool)));
-        m_blockedRequests.insert(frame, req.url());
+        m_blockedRequests.insert(frame, request.url());
     }
 
-    return new NullNetworkReply(req, this);
+    return new NullNetworkReply(request, this);
 }
 
 

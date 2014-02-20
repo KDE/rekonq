@@ -38,7 +38,7 @@
 #include "iconmanager.h"
 
 // KDE Includes
-#include <KLocale>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QList>
@@ -71,7 +71,7 @@ HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)
 
 void HistoryModel::historyReset()
 {
-    reset();
+    resetInternalData();
 }
 
 
@@ -141,7 +141,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         if (index.column() == 0)
         {
-            return IconManager::self()->iconForUrl(item.url);
+            return IconManager::self()->iconForUrl( QUrl(item.url) );
         }
         break;
     case Qt::ToolTipRole:
@@ -263,7 +263,7 @@ QVariant HistoryFilterModel::headerData(int section, Qt::Orientation orientation
 void HistoryFilterModel::sourceReset()
 {
     m_loaded = false;
-    reset();
+    resetInternalData();
 }
 
 
@@ -315,7 +315,7 @@ QModelIndex HistoryFilterModel::mapFromSource(const QModelIndex &sourceIndex) co
     if (realRow == -1)
         return QModelIndex();
 
-    return createIndex(realRow, sourceIndex.column(), sourceModel()->rowCount() - sourceIndex.row());
+    return createIndex(realRow, sourceIndex.column());
 }
 
 
@@ -326,7 +326,7 @@ QModelIndex HistoryFilterModel::index(int row, int column, const QModelIndex &pa
             || column < 0 || column >= columnCount(parent))
         return QModelIndex();
 
-    return createIndex(row, column, m_sourceRow[row]);
+    return createIndex(row, column);
 }
 
 
@@ -417,7 +417,7 @@ bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &paren
             this, SLOT(sourceRowsRemoved(QModelIndex,int,int)));
     m_loaded = false;
     if (oldCount - count != rowCount())
-        reset();
+        resetInternalData();
     return true;
 }
 
@@ -462,7 +462,7 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
-        return QIcon::fromTheme("view-history");
+        return QIcon::fromTheme( QL1S("view-history") );
 
     if (role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
     {
@@ -562,8 +562,8 @@ QModelIndex HistoryTreeModel::index(int row, int column, const QModelIndex &pare
         return QModelIndex();
 
     if (!parent.isValid())
-        return createIndex(row, column, 0);
-    return createIndex(row, column, parent.row() + 1);
+        return createIndex(row, column);
+    return createIndex(row, column);
 }
 
 
@@ -572,7 +572,7 @@ QModelIndex HistoryTreeModel::parent(const QModelIndex &index) const
     int offset = index.internalId();
     if (offset == 0 || !index.isValid())
         return QModelIndex();
-    return createIndex(offset - 1, 0, 0);
+    return createIndex(offset - 1, 0);  // FIXME added a ZERO
 }
 
 
@@ -643,14 +643,14 @@ void HistoryTreeModel::setSourceModel(QAbstractItemModel *newSourceModel)
                 this, SLOT(sourceRowsRemoved(QModelIndex,int,int)));
     }
 
-    reset();
+    resetInternalData();
 }
 
 
 void HistoryTreeModel::sourceReset()
 {
     m_sourceRowCache.clear();
-    reset();
+    resetInternalData();
 }
 
 
@@ -661,7 +661,7 @@ void HistoryTreeModel::sourceRowsInserted(const QModelIndex &parent, int start, 
     if (start != 0 || start != end)
     {
         m_sourceRowCache.clear();
-        reset();
+        resetInternalData();
         return;
     }
 
@@ -696,7 +696,7 @@ QModelIndex HistoryTreeModel::mapFromSource(const QModelIndex &sourceIndex) cons
 
     int dateRow = qMax(0, it - m_sourceRowCache.begin());
     int row = sourceIndex.row() - m_sourceRowCache.at(dateRow);
-    return createIndex(row, sourceIndex.column(), dateRow + 1);
+    return createIndex(row, sourceIndex.column());
 }
 
 
@@ -714,7 +714,7 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
         if (it == m_sourceRowCache.end())
         {
             m_sourceRowCache.clear();
-            reset();
+            resetInternalData();
             return;
         }
 

@@ -31,6 +31,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "tabhistory.h"
+
 // KDE Includes
 #include <KActionCollection>
 
@@ -41,8 +44,6 @@
 class QUrl;
 
 class QToolButton;
-
-class TabHistory;
 
 class TabBar;
 class WebPage;

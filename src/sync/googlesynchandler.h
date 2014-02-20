@@ -28,20 +28,20 @@
 #ifndef GOOGLE_SYNC_HANDLER_H
 #define GOOGLE_SYNC_HANDLER_H
 
-#include <QWebPage>
-
 // Local Includes
 #include "synchandler.h"
 
 // KDE Includes
-#include <KBookmarkGroup>
+#include <KBookmark>
 
 // Qt Includes
 #include <QUrl>
+#include <QWebPage>
 
 // Forward Declarations
 class QNetworkReply;
 class BookmarkManager;
+
 
 class GoogleSyncHandler : public SyncHandler
 {

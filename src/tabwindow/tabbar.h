@@ -33,9 +33,9 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QTabBar>
-
+#include <QPointer>
 #include <QPropertyAnimation>
+#include <QTabBar>
 
 // Forward Declarations
 class TabPreviewPopup;

@@ -28,20 +28,18 @@
 #include "rsswidget.h"
 
 // KDE Includes
-#include <KComboBox>
 #include <KLocalizedString>
-#include <KMessageBox>
 #include <KProcess>
 
 // Qt Includes
+#include <QComboBox>
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
-
 #include <QDialogButtonBox>
 #include <QFormLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QPushButton>
-
 #include <QUrl>
 
 
@@ -66,10 +64,10 @@ RSSWidget::RSSWidget(const QMap< QUrl, QString > &map, QWidget *parent)
     QLabel *agregator = new QLabel(this);
     agregator->setText(i18n("Aggregator:"));
 
-    m_agregators = new KComboBox(this);
+    m_agregators = new QComboBox(this);
     m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    m_agregators->addItem(QIcon::fromTheme("akregator"), QString("Akregator"));
+    m_agregators->addItem(QIcon::fromTheme( QL1S("akregator") ), QL1S("Akregator"));
 //     m_agregators->addItem(IconManager::self()->iconForUrl(QUrl("http://google.com/reader")), i18n("Google Reader"));
 
     layout->addRow(agregator, m_agregators);
@@ -78,7 +76,7 @@ RSSWidget::RSSWidget(const QMap< QUrl, QString > &map, QWidget *parent)
     QLabel *feed = new QLabel(this);
     feed->setText(i18n("Feed:"));
 
-    m_feeds = new KComboBox(this);
+    m_feeds = new QComboBox(this);
     m_feeds->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     Q_FOREACH(const QString & title, m_map)
@@ -91,7 +89,7 @@ RSSWidget::RSSWidget(const QMap< QUrl, QString > &map, QWidget *parent)
     // Buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, Qt::Horizontal, this);
 
-    QPushButton *addFeed = new QPushButton(QIcon::fromTheme("list-add"), i18n("Add Feed"), buttonBox);
+    QPushButton *addFeed = new QPushButton(QIcon::fromTheme( QL1S("list-add") ), i18n("Add Feed"), buttonBox);
     buttonBox->addButton(addFeed, QDialogButtonBox::AcceptRole);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -113,7 +111,7 @@ void RSSWidget::showAt(const QPoint &pos)
 
 void RSSWidget::accept()
 {
-    QString url = m_map.key(m_feeds->currentText()).toMimeDataString();
+    QString url = m_map.key(m_feeds->currentText()).toString();
 
     if (m_agregators->currentIndex() == 0)
         addWithAkregator(url);
@@ -134,27 +132,27 @@ void RSSWidget::accept()
 void RSSWidget::addWithAkregator(const QString &url)
 {
     // Akregator is running
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered( QL1S("org.kde.akregator") ))
     {
-        QDBusInterface akregator("org.kde.akregator", "/Akregator", "org.kde.akregator.part");
-        QDBusReply<void> reply = akregator.call("addFeedsToGroup", QStringList(url) , i18n("Imported Feeds"));
+        QDBusInterface akregator( QL1S("org.kde.akregator"), QL1S("/Akregator"), QL1S("org.kde.akregator.part") );
+        QDBusReply<void> reply = akregator.call( QL1S("addFeedsToGroup"), QStringList(url) , i18n("Imported Feeds"));
 
         if (!reply.isValid())
         {
-            KMessageBox::error(0, QString(i18n("Could not add feed to Akregator. Please add it manually:")
-                                          + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
+            QMessageBox::critical(this, i18n("Could not add feed to Akregator. Please add it manually:")
+                                          + QL1S("<br /><br /> <a href=\"") + url +  QL1S("\">") + url + QL1S("</a>") , QString() );
         }
     }
     // Akregator is not running
     else
     {
         KProcess proc;
-        proc << "akregator" << "-g" << i18n("Imported Feeds");
-        proc << "-a" << url;
+        proc << QL1S("akregator") << QL1S("-g") << i18n("Imported Feeds");
+        proc << QL1S("-a") << url;
         if (proc.startDetached() == 0)
         {
-            KMessageBox::error(0, QString(i18n("There was an error. Please verify Akregator is installed on your system.")
-                                          + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
+            QMessageBox::critical(this, i18n("There was an error. Please verify Akregator is installed on your system.")
+                                          + QL1S("<br /><br /> <a href=\"") + url + QL1S("\">") + url + QL1S("</a>") , QString() );
         }
     }
 }

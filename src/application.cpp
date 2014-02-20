@@ -367,37 +367,24 @@ void Application::saveConfiguration() const
 // --------------------------------------------------------------------------------------------------------------------
 
 
-RekonqWindow *Application::rekonqWindow(const QString & activityID)
+RekonqWindow *Application::rekonqWindow()
 {
     RekonqWindow *active = qobject_cast<RekonqWindow*>(QApplication::activeWindow());
 
-    if (!active)
+    if (active)
+        return active;
+
+    RekonqWindowList wList = m_rekonqWindows;
+
+    if (wList.isEmpty())
+        return 0;
+
+    Q_FOREACH(const QPointer<RekonqWindow> &pointer, wList)
     {
-        RekonqWindowList wList = m_rekonqWindows;
-        
-        if (wList.isEmpty())
-            return 0;
-        
-        Q_FOREACH(const QPointer<RekonqWindow> &pointer, wList)
-        {
-            if (KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
-                return pointer.data();
-        }
-        return wList.at(0).data();
+        if (KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
+            return pointer.data();
     }
-    return active;
-}
-
-
-RekonqWindowList Application::tabsForActivity(const QString & activityID)
-{
-    return m_rekonqWindows;
-}
-
-
-bool Application::haveWindowsForActivity(const QString & activityID)
-{
-    return (!tabsForActivity(activityID).isEmpty());
+    return wList.at(0).data();
 }
 
 
@@ -541,8 +528,7 @@ void Application::loadUrl(const QUrl& url, const Rekonq::OpenType& type)
         w = newWindow(true, true);
         newType = Rekonq::CurrentTab;
     }
-    else if (newType == Rekonq::NewWindow
-             || ((newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab) && !haveWindowsForActivity()))
+    else if (newType == Rekonq::NewWindow || (newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab))
     {
         w = newWindow();
         newType = Rekonq::CurrentTab;
@@ -716,12 +702,13 @@ void Application::queryQuit()
 void Application::clearPrivateData()
 {
     QPointer<QDialog> dialog = new QDialog(rekonqWindow());
-    dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
-    dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
-    dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme(QL1S("edit-clear")));
-    dialog->button(QDialogButtonBox::Ok)->setText(i18n("Clear"));
-
+    // FIXME
+//     dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
+//     dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+// 
+//     dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme(QL1S("edit-clear")));
+//     dialog->button(QDialogButtonBox::Ok)->setText(i18n("Clear"));
+// 
     Ui::ClearDataWidget clearWidget;
     QWidget widget;
     clearWidget.setupUi(&widget);
@@ -731,8 +718,8 @@ void Application::clearPrivateData()
     clearWidget.clearCachedPages->setChecked(ReKonfig::clearCachedPages());
     clearWidget.clearWebIcons->setChecked(ReKonfig::clearWebIcons());
     clearWidget.homePageThumbs->setChecked(ReKonfig::clearHomePageThumbs());
-
-    dialog->setMainWidget(&widget);
+// 
+//     dialog->setMainWidget(&widget);
     dialog->exec();
 
     if (dialog->result() == QDialog::Accepted)
@@ -803,9 +790,10 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
     QString h = u.host();
 
     QPointer<QDialog> dialog = new QDialog(rekonqWindow());
-    dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
-    dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    dialog->button(QDialogButtonBox::Ok)->setText(i18n("Create"));
+    // FIXME
+//     dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
+//     dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+//     dialog->button(QDialogButtonBox::Ok)->setText(i18n("Create"));
     dialog->setMinimumSize(400, 50);
     dialog->setWindowIcon(QIcon(IconManager::self()->iconForUrl(u).pixmap(16)));
 
@@ -828,7 +816,7 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
     wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
 
-    dialog->setMainWidget(&widget);
+//     dialog->setMainWidget(&widget);
     dialog->exec();
 
     if (dialog->result() == QDialog::Accepted)

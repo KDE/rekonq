@@ -48,13 +48,13 @@ struct SearchEnginePrivate
 };
 
 
-K_GLOBAL_STATIC(SearchEnginePrivate, d)
+Q_GLOBAL_STATIC(SearchEnginePrivate, d)
 
 
 
 void SearchEngine::reload()
 {
-    KConfig config("kuriikwsfilterrc"); //Shared with konqueror
+    KConfig config(QL1S("kuriikwsfilterrc")); //Shared with konqueror
     KConfigGroup cg = config.group("General");
 
     d->isEnabled = cg.readEntry("EnableWebShortcuts", true);
@@ -71,7 +71,7 @@ void SearchEngine::reload()
     KService::Ptr service;
     Q_FOREACH(const QString & engine, favoriteEngines)
     {
-        service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+        service = KService::serviceByDesktopPath(QString( QL1S("searchproviders/%1.desktop") ).arg(engine));
         if (service)
         {
             favorites << service;
@@ -83,7 +83,7 @@ void SearchEngine::reload()
     QString dse;
     dse = cg.readEntry("DefaultWebShortcut");
 
-    d->defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(dse));
+    d->defaultEngine = KService::serviceByDesktopPath(QString( QL1S("searchproviders/%1.desktop") ).arg(dse));
 
     d->isLoaded = true;
 }
@@ -126,13 +126,13 @@ KService::Ptr SearchEngine::fromString(const QString &text)
 
     KService::List providers = (d->usePreferredOnly)
         ? SearchEngine::favorites()
-        : KServiceTypeTrader::self()->query("SearchProvider");
+        : KServiceTypeTrader::self()->query(QL1S("SearchProvider"));
 
     int i = 0;
     bool found = false;
     while (!found && i < providers.size())
     {
-        QStringList list = providers.at(i)->property("Keys").toStringList();
+        QStringList list = providers.at(i)->property(QL1S("Keys")).toStringList();
         Q_FOREACH(const QString & key, list)
         {
             const QString searchPrefix = key + delimiter();
@@ -155,7 +155,7 @@ QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
     if (!engine)
         return QString();
     
-    QString shortcut = engine->property("Keys").toStringList().at(0);
+    QString shortcut = engine->property(QL1S("Keys")).toStringList().at(0);
     QString query = shortcut + delimiter() + text;
 
     QStringList filters;

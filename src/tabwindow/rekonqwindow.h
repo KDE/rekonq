@@ -33,7 +33,6 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "rwindow.h"
 #include "tabwidget.h"
 
 #include "bookmarkspanel.h"
@@ -42,6 +41,7 @@
 // Qt Includes
 #include <QSplitter>
 #include <QPointer>
+#include <QWidget>
 
 // Forward Declarations
 class TabBar;
@@ -50,7 +50,7 @@ class WebPage;
 class WebWindow;
 
 
-class RekonqWindow : public RWindow
+class RekonqWindow : public QWidget
 {
     Q_OBJECT
 

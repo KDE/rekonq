@@ -41,20 +41,19 @@
 
 namespace SearchEngine
 {
-void reload();
+    void reload();
 
-QString delimiter();
+    QString delimiter();
 
-KService::Ptr defaultEngine();
+    KService::Ptr defaultEngine();
 
-KService::List favorites();
+    KService::List favorites();
 
-KService::Ptr fromString(const QString &text);
+    KService::Ptr fromString(const QString &text);
 
-QString buildQuery(KService::Ptr engine, const QString &text);
+    QString buildQuery(KService::Ptr engine, const QString &text);
 
-QString extractQuery(const QString &text);
-
+    QString extractQuery(const QString &text);
 }
 
 #endif

@@ -27,11 +27,15 @@
 #ifndef RSSWIDGET_H
 #define RSSWIDGET_H
 
+
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Qt Includes
 #include <QMenu>
 
 // Forward Declarations
-class KComboBox;
+class QComboBox;
 class QUrl;
 
 
@@ -54,8 +58,8 @@ private:
 
     QMap<QUrl, QString> m_map;
 
-    KComboBox *m_agregators;
-    KComboBox *m_feeds;
+    QComboBox *m_agregators;
+    QComboBox *m_feeds;
 };
 
 #endif // RSSWIDGET_H

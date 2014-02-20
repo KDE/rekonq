@@ -35,9 +35,9 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QHash>
-#include <QAbstractTableModel>
 #include <QAbstractProxyModel>
+#include <QAbstractTableModel>
+#include <QHash>
 #include <QSortFilterProxyModel>
 #include <QUrl>
 

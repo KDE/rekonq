@@ -40,6 +40,7 @@
 
 // KDE Includes
 #include <KBookmarkDialog>
+#include <KBookmarkManager>
 #include <KLocalizedString>
 #include <KMessageBox>
 
@@ -70,46 +71,46 @@ QAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAc
     switch (bmAction)
     {
     case OPEN:
-        return createAction(i18n("Open"), "tab-new",
+        return createAction(i18n("Open"), QL1S("tab-new"),
                             i18n("Open bookmark in current tab"), SLOT(loadBookmark(KBookmark)), bookmark);
     case OPEN_IN_TAB:
-        return createAction(i18n("Open in New Tab"), "tab-new",
+        return createAction(i18n("Open in New Tab"), QL1S("tab-new"),
                             i18n("Open bookmark in new tab"), SLOT(loadBookmarkInNewTab(KBookmark)), bookmark);
     case OPEN_IN_WINDOW:
-        return createAction(i18n("Open in New Window"), "window-new",
+        return createAction(i18n("Open in New Window"), QL1S("window-new"),
                             i18n("Open bookmark in new window"), SLOT(loadBookmarkInNewWindow(KBookmark)), bookmark);
     case OPEN_FOLDER:
-        return createAction(i18n("Open Folder in Tabs"), "tab-new",
+        return createAction(i18n("Open Folder in Tabs"), QL1S("tab-new"),
                             i18n("Open all the bookmarks in folder in tabs"), SLOT(loadBookmarkFolder(KBookmark)), bookmark);
     case BOOKMARK_PAGE:
-        return createAction(i18n("Add Bookmark"), "bookmark-new",
+        return createAction(i18n("Add Bookmark"), QL1S("bookmark-new"),
                             i18n("Bookmark current page"), SLOT(bookmarkCurrentPage(KBookmark)), bookmark);
     case NEW_FOLDER:
-        return createAction(i18n("New Folder"), "folder-new",
+        return createAction(i18n("New Folder"), QL1S("folder-new"),
                             i18n("Create a new bookmark folder"), SLOT(newBookmarkFolder(KBookmark)), bookmark);
     case NEW_SEPARATOR:
-        return createAction(i18n("New Separator"), "edit-clear",
+        return createAction(i18n("New Separator"), QL1S("edit-clear"),
                             i18n("Create a new bookmark separator"), SLOT(newSeparator(KBookmark)), bookmark);
     case COPY:
-        return createAction(i18n("Copy Link"), "edit-copy",
+        return createAction(i18n("Copy Link"), QL1S("edit-copy"),
                             i18n("Copy the bookmark's link address"), SLOT(copyLink(KBookmark)), bookmark);
     case EDIT:
-        return createAction(i18n("Edit"), "configure",
+        return createAction(i18n("Edit"), QL1S("configure"),
                             i18n("Edit the bookmark"), SLOT(editBookmark(KBookmark)), bookmark);
 #ifdef HAVE_NEPOMUK
     case FANCYBOOKMARK:
-        return createAction(i18n("Fancy Bookmark"), "nepomuk",
+        return createAction(i18n("Fancy Bookmark"), QL1S("nepomuk"),
                             i18n("Link Nepomuk resources"), SLOT(fancyBookmark(KBookmark)), bookmark);
 #endif
     case DELETE:
-        return  createAction(i18n("Delete"), "edit-delete",
+        return  createAction(i18n("Delete"), QL1S("edit-delete"),
                              i18n("Delete the bookmark"), SLOT(deleteBookmark(KBookmark)), bookmark);
     case SET_TOOLBAR_FOLDER:
-        return  createAction(i18n("Set as toolbar folder"), "bookmark-toolbar",
-                             "", SLOT(setToolBarFolder(KBookmark)), bookmark);
+        return  createAction(i18n("Set as toolbar folder"), QL1S("bookmark-toolbar"),
+                             QL1S(""), SLOT(setToolBarFolder(KBookmark)), bookmark);
     case UNSET_TOOLBAR_FOLDER:
-        return  createAction(i18n("Unset this folder as the toolbar folder"), "bookmark-toolbar",
-                             "", SLOT(unsetToolBarFolder()), bookmark);
+        return  createAction(i18n("Unset this folder as the toolbar folder"), QL1S("bookmark-toolbar"),
+                             QL1S(""), SLOT(unsetToolBarFolder()), bookmark);
     default:
         ASSERT_NOT_REACHED(unknown BookmarkAction);
         return 0;
@@ -123,25 +124,26 @@ QString BookmarkOwner::currentTitle() const
 }
 
 
-QString BookmarkOwner::currentUrl() const
+QUrl BookmarkOwner::currentUrl() const
 {
-    return rApp->rekonqWindow()->currentWebWindow()->url().url();
+    return rApp->rekonqWindow()->currentWebWindow()->url();
 }
 
 
-QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
+QList<KBookmarkOwner::FutureBookmark> BookmarkOwner::currentBookmarkList() const
 {
-    QList< QPair<QString, QString> > bkList;
+    QList<KBookmarkOwner::FutureBookmark> bkList;
     TabWidget *view = rApp->rekonqWindow()->tabWidget();
     int tabNumber = view->count();
 
-    for (int i = 0; i < tabNumber; ++i)
-    {
-        QPair<QString, QString> item;
-        item.first = view->webWindow(i)->title();
-        item.second = view->webWindow(i)->url().url();
-        bkList << item;
-    }
+    // FIXME
+//     for (int i = 0; i < tabNumber; ++i)
+//     {
+//         QPair<QString, QString> item;
+//         item.first = view->webWindow(i)->title();
+//         item.second = view->webWindow(i)->url().url();
+//         bkList << item;
+//     }
 
     return bkList;
 }
@@ -228,7 +230,7 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 #endif
     }
 
-    KBookmark newBk = parent.addBookmark(currentTitle(), QUrl(currentUrl()));
+    KBookmark newBk = parent.addBookmark(currentTitle(), QUrl(currentUrl()), QString());
     if (!bookmark.isNull())
         parent.moveBookmark(newBk, bookmark);
 
@@ -296,7 +298,7 @@ KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
         newBk = BookmarkManager::self()->rootGroup().createNewSeparator();
     }
 
-    newBk.setIcon("edit-clear");
+    newBk.setIcon( QL1S("edit-clear") );
 
     m_manager->emitChanged(newBk.parentGroup());
     return newBk;
@@ -366,7 +368,7 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
                 dialogCaption,
                 KStandardGuiItem::del(),
                 KStandardGuiItem::cancel(),
-                "bookmarkDeletition_askAgain")
+                QL1S("bookmarkDeletition_askAgain"))
             != KMessageBox::Continue
        )
         return false;
@@ -387,8 +389,8 @@ void BookmarkOwner::setToolBarFolder(KBookmark bookmark)
         return;
 
     unsetToolBarFolder();
-    bookmark.internalElement().setAttribute("toolbar", "yes");
-    bookmark.setIcon("bookmark-toolbar");
+    bookmark.internalElement().setAttribute( QL1S("toolbar"), QL1S("yes") );
+    bookmark.setIcon( QL1S("bookmark-toolbar") );
 
     m_manager->emitChanged();
 }
@@ -399,8 +401,8 @@ void BookmarkOwner::unsetToolBarFolder()
     KBookmarkGroup toolbar = m_manager->toolbar();
     if (!toolbar.isNull())
     {
-        toolbar.internalElement().setAttribute("toolbar", "no");
-        toolbar.setIcon("");
+        toolbar.internalElement().setAttribute( QL1S("toolbar"), QL1S("no") );
+        toolbar.setIcon( QL1S("") );
     }
     m_manager->emitChanged();
 }
@@ -411,7 +413,7 @@ QAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
                                      const KBookmark &bookmark)
 {
     CustomBookmarkAction *act = new CustomBookmarkAction(bookmark, QIcon::fromTheme(icon), text, this);
-    act->setHelpText(help);
+// FIXME    act->setHelpText(help);
     connect(act, SIGNAL(triggered(KBookmark)), this, slot);
     return act;
 }

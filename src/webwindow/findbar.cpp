@@ -34,25 +34,27 @@
 #include "webwindow.h"
 
 // KDE Includes
-#include <KApplication>
-#include <KLineEdit>
-#include <KLocalizedString>
-#include <KPushButton>
 #include <KColorScheme>
+#include <KLocalizedString>
+
+#include <kparts/readonlypart.h>
 
 // Qt Includes
+#include <QApplication>
 #include <QCheckBox>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QToolButton>
 #include <QWebFrame>
-#include <QIcon>
 
 
 FindBar::FindBar(QWidget *parent)
     : QWidget(parent)
-    , m_lineEdit(new KLineEdit(this))
+    , m_lineEdit(new QLineEdit(this))
     , m_matchCase(new QCheckBox(i18n("&Match case"), this))
     , m_highlightAll(new QCheckBox(i18n("&Highlight all"), this))
 {
@@ -64,7 +66,7 @@ FindBar::FindBar(QWidget *parent)
     // hide button
     QToolButton *hideButton = new QToolButton(this);
     hideButton->setAutoRaise(true);
-    hideButton->setIcon(QIcon::fromTheme("dialog-close"));
+    hideButton->setIcon(QIcon::fromTheme( QL1S("dialog-close") ));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
@@ -83,8 +85,8 @@ FindBar::FindBar(QWidget *parent)
     layout->addWidget(m_lineEdit);
 
     // buttons
-    KPushButton *findNext = new KPushButton(QIcon::fromTheme("go-down"), i18n("&Next"), this);
-    KPushButton *findPrev = new KPushButton(QIcon::fromTheme("go-up"), i18n("&Previous"), this);
+    QPushButton *findNext = new QPushButton(QIcon::fromTheme( QL1S("go-down") ), i18n("&Next"), this);
+    QPushButton *findPrev = new QPushButton(QIcon::fromTheme( QL1S("go-up") ), i18n("&Previous"), this);
     connect(findNext, SIGNAL(clicked()), this, SLOT(findNext()));
     connect(findPrev, SIGNAL(clicked()), this, SLOT(findPrevious()));
     layout->addWidget(findNext);

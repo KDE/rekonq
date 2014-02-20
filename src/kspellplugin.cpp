@@ -115,11 +115,11 @@ void KWebSpellChecker::checkSpellingOfString(const QString& word, int* misspelli
 
     QTextBoundaryFinder::BoundaryReasons boundary = finder.boundaryReasons();
     int start = finder.position(), end = finder.position();
-    bool inWord = (boundary & QTextBoundaryFinder::StartWord) != 0;
+    bool inWord = (boundary & QTextBoundaryFinder::Word) != 0;
     while (finder.toNextBoundary() > 0)
     {
         boundary = finder.boundaryReasons();
-        if ((boundary & QTextBoundaryFinder::EndWord) && inWord)
+        if ((boundary & QTextBoundaryFinder::Word) && inWord)
         {
             end = finder.position();
             QString str = finder.string().mid(start, end - start);
@@ -138,7 +138,7 @@ void KWebSpellChecker::checkSpellingOfString(const QString& word, int* misspelli
             }
             inWord = false;
         }
-        if ((boundary & QTextBoundaryFinder::StartWord))
+        if ((boundary & QTextBoundaryFinder::Word))
         {
             start = finder.position();
             inWord = true;
@@ -219,5 +219,5 @@ QObject* KWebKitPlatformPlugin::createExtension(Extension ext) const
 
 
 // ----------------------------------------------------------------------------------------------------------------
-Q_EXPORT_PLUGIN2(kwebspellchecker, KWebKitPlatformPlugin);
+// FIXME Q_EXPORT_PLUGIN2(kwebspellchecker, KWebKitPlatformPlugin);
 Q_IMPORT_PLUGIN(kwebspellchecker)

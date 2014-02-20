@@ -43,10 +43,11 @@
 #include "webkitwidget.h"
 
 // KDE Includes
-#include <KConfig>
-#include <KPageWidgetItem>
 #include <KCModuleInfo>
 #include <KCModuleProxy>
+#include <KConfig>
+#include <KLocalizedString>
+#include <KPageWidget>
 
 // Qt Includes
 #include <QWidget>
@@ -80,25 +81,25 @@ Private::Private(SettingsDialog *parent)
     generalWidg = new GeneralWidget(parent);
     generalWidg->layout()->setMargin(0);
     pageItem = parent->addPage(generalWidg, i18n("General"));
-    pageItem->setIcon(QIcon::fromTheme("rekonq"));
+    pageItem->setIcon(QIcon::fromTheme( QL1S("rekonq") ));
 
     // -- 2
     tabsWidg = new TabsWidget(parent);
     tabsWidg->layout()->setMargin(0);
     pageItem = parent->addPage(tabsWidg, i18n("Tabs"));
-    pageItem->setIcon(QIcon::fromTheme("tab-duplicate"));
+    pageItem->setIcon(QIcon::fromTheme( QL1S("tab-duplicate") ));
 
     // -- 3
     appearanceWidg = new AppearanceWidget(parent);
     appearanceWidg->layout()->setMargin(0);
     pageItem = parent->addPage(appearanceWidg, i18n("Appearance"));
-    pageItem->setIcon(QIcon::fromTheme("preferences-desktop-font"));
+    pageItem->setIcon(QIcon::fromTheme( QL1S("preferences-desktop-font") ));
 
     // -- 4
     webkitWidg = new WebKitWidget(parent);
     webkitWidg->layout()->setMargin(0);
     pageItem = parent->addPage(webkitWidg, i18n("WebKit"));
-    QString webkitIconPath = StandardDirs::locate(QStandardPaths::DataLocation, "/pics/webkit-icon.png");
+    QString webkitIconPath = QStandardPaths::locate(QStandardPaths::DataLocation, QL1S("/pics/webkit-icon.png") );
     QIcon webkitIcon = QIcon(webkitIconPath);
     pageItem->setIcon(webkitIcon);
 
@@ -106,22 +107,22 @@ Private::Private(SettingsDialog *parent)
     privacyWidg = new PrivacyWidget(parent);
     privacyWidg->layout()->setMargin(0);
     pageItem = parent->addPage(privacyWidg, i18n("Privacy"));
-    pageItem->setIcon(QIcon::fromTheme("view-media-artist"));
+    pageItem->setIcon(QIcon::fromTheme( QL1S("view-media-artist") ));
 
     // -- 6
     advancedWidg = new AdvancedWidget(parent);
     advancedWidg->layout()->setMargin(0);
     pageItem = parent->addPage(advancedWidg, i18n("Advanced"));
-    pageItem->setIcon(QIcon::fromTheme("applications-system"));
+    pageItem->setIcon(QIcon::fromTheme( QL1S("applications-system") ));
 
     // -- 7
-    KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
+    KCModuleInfo ebrowsingInfo( QL1S("ebrowsing.desktop") );
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
     pageItem = parent->addPage(ebrowsingModule, i18n("Search Engines"));
-    QIcon wsIcon = QIcon::fromTheme("edit-web-search");
+    QIcon wsIcon = QIcon::fromTheme( QL1S("edit-web-search") );
     if (wsIcon.isNull())
     {
-        wsIcon = QIcon::fromTheme("preferences-web-browser-shortcuts");
+        wsIcon = QIcon::fromTheme( QL1S("preferences-web-browser-shortcuts") );
     }
     pageItem->setIcon(wsIcon);
 
@@ -136,10 +137,10 @@ Private::Private(SettingsDialog *parent)
 
 
 SettingsDialog::SettingsDialog(QWidget *parent)
-    : KConfigDialog(parent, "rekonfig", ReKonfig::self())
+    : KConfigDialog(parent, QL1S("rekonfig"), ReKonfig::self())
     , d(new Private(this))
 {
-    showButtonSeparator(false);
+//     showButtonSeparator(false);
     setWindowTitle(i18nc("Window title of the settings dialog", "Configure – rekonq"));
 
     // update buttons
@@ -154,7 +155,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // save settings
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
-    setHelp("Config-rekonq", "rekonq");
+//     setHelp( QL1S("Config-rekonq"), QL1S("rekonq") );
 }
 
 
@@ -183,7 +184,7 @@ void SettingsDialog::saveSettings()
     SearchEngine::reload();
 
     updateButtons();
-    emit settingsChanged("ReKonfig");
+    emit settingsChanged( QL1S("ReKonfig") );
 }
 
 

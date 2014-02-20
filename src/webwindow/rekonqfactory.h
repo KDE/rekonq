@@ -30,10 +30,10 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-class KMenu;
 class KToolBar;
 
 class QDomNode;
+class QMenu;
 class QString;
 class QWidget;
 
@@ -45,7 +45,7 @@ QWidget *createWidget(const QString &name, QWidget *parent);
 void updateWidget(QWidget *widg, const QString &name);
 
 void fillToolbar(KToolBar *, QDomNode);
-void fillMenu(KMenu *, QDomNode);
+void fillMenu(QMenu *, QDomNode);
 
 };
 

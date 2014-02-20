@@ -27,6 +27,9 @@
 // version include
 #include <config-version.h>
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
 #include "application.h"
 #include "sessionmanager.h"
@@ -35,6 +38,7 @@
 
 // KDE Includes
 #include <KAboutData>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QCommandLineParser>
@@ -45,167 +49,138 @@ static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
 
 
-extern "C" int kdemain(int argc, char **argv)
+extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
 {
-    if (!Application::start())
-    {
-        qWarning() << "rekonq is already running!";
-        return 0;
-    }
-
     Application app(argc, argv);
 
     // set application data
-    QCoreApplication::setApplicationName(QLatin1String("rekonq"));
-    QCoreApplication::setApplicationVersion(REKONQ_VERSION);
-    QCoreApplication::setOrganizationDomain(QLatin1String("kde.org"));
+    QCoreApplication::setApplicationName(QL1S("rekonq"));
+    QCoreApplication::setApplicationVersion( QL1S(REKONQ_VERSION) );
+    QCoreApplication::setOrganizationDomain(QL1S("kde.org"));
 
-    KAboutData about(QLatin1String("rekonq"),
-                     0,
-                     ki18n("rekonq"),
-                     REKONQ_VERSION,
-                     ki18n(description),
+    KAboutData about(QL1S("rekonq"),
+                     QL1S("rekonq"),
+                     i18n("rekonq"),
+                     QL1S(REKONQ_VERSION),
+                     i18n(description),
                      KAboutData::License_GPL_V3,
-                     ki18n("(C) 2008-2014 Andrea Diamantini"),
-                     KLocalizedString(),
-                     QLatin1String("http://rekonq.kde.org")
+                     i18n("(C) 2008-2014 Andrea Diamantini"),
+                     QString(),
+                     QL1S("http://rekonq.kde.org")
                     );
 
 
     // --------------- about authors -----------------------------
-    about.addAuthor(ki18n("Andrea Diamantini"),
-                    ki18n("Project Lead, Developer, Maintainer"),
-                    "adjam7@gmail.com",
-                    "http://www.adjam.org");
+    about.addAuthor(i18n("Andrea Diamantini"),
+                    i18n("Project Lead, Developer, Maintainer"),
+                    QL1S("adjam7@gmail.com"),
+                    QL1S("http://www.adjam.org"));
 
-    about.addAuthor(ki18n("Johannes Tröscher"),
-                    ki18n("QGraphicsEffect expert. Tabbar highlight animation"),
-                    "fritz_van_tom@hotmail.com",
-                    "");
+    about.addAuthor(i18n("Johannes Tröscher"),
+                    i18n("QGraphicsEffect expert. Tabbar highlight animation"),
+                    QL1S("fritz_van_tom@hotmail.com"));
 
-    about.addAuthor(ki18n("Furkan Uzumcu"),
-                    ki18n("A lot of improvements, especially on usability"),
-                    "furkanuzumcu@gmail.com",
-                    "");
+    about.addAuthor(i18n("Furkan Uzumcu"),
+                    i18n("A lot of improvements, especially on usability"),
+                    QL1S("furkanuzumcu@gmail.com"));
 
-    about.addAuthor(ki18n("Yoann Laissus"),
-                    ki18n("Developer, History & Bookmarks Improvements"),
-                    "yoann.laissus@gmail.com",
-                    "");
+    about.addAuthor(i18n("Yoann Laissus"),
+                    i18n("Developer, History & Bookmarks Improvements"),
+                    QL1S("yoann.laissus@gmail.com"));
 
-    about.addAuthor(ki18n("Cédric Bellegarde"),
-                    ki18n("Patched code quite everywhere :)"),
-                    "gnumdk@adishatz.1s.fr",
-                    "");
+    about.addAuthor(i18n("Cédric Bellegarde"),
+                    i18n("Patched code quite everywhere :)"),
+                    QL1S("gnumdk@adishatz.1s.fr"));
 
-    about.addAuthor(ki18n("Jon Ander Peñalba"),
-                    ki18n("Bookmarks code peer reviewer. A fantastic help"),
-                    "jonan88@gmail.com",
-                    "http://identi.ca/jonan");
+    about.addAuthor(i18n("Jon Ander Peñalba"),
+                    i18n("Bookmarks code peer reviewer. A fantastic help"),
+                    QL1S("jonan88@gmail.com"),
+                    QL1S("http://identi.ca/jonan"));
 
-    about.addAuthor(ki18n("Pierre Rossi"),
-                    ki18n("Urlbar, tests, new tab page, bars... and more"),
-                    "pierre.rossi@gmail.com",
-                    "");
+    about.addAuthor(i18n("Pierre Rossi"),
+                    i18n("Urlbar, tests, new tab page, bars... and more"),
+                    QL1S("pierre.rossi@gmail.com"));
 
-    about.addAuthor(ki18n("Lionel Chauvin"),
-                    ki18n("Development, Ideas, Mockups, rekonq Icon"),
-                    "megabigbug@yahoo.fr",
-                    "");
+    about.addAuthor(i18n("Lionel Chauvin"),
+                    i18n("Development, Ideas, Mockups, rekonq Icon"),
+                    QL1S("megabigbug@yahoo.fr"));
 
-    about.addAuthor(ki18n("Siteshwar Vashisht"),
-                    ki18n("Code, Ideas, sync... and IRC chats!"),
-                    "siteshwar@gmail.com",
-                    "");
+    about.addAuthor(i18n("Siteshwar Vashisht"),
+                    i18n("Code, Ideas, sync... and IRC chats!"),
+                    QL1S("siteshwar@gmail.com"));
 
-    about.addAuthor(ki18n("Tirtha Chatterjee"),
-                    ki18n("A lot of nice work, here and there in the code :)"),
-                    "tirtha.p.chatterjee@gmail.com",
-                    "");
+    about.addAuthor(i18n("Tirtha Chatterjee"),
+                    i18n("A lot of nice work, here and there in the code :)"),
+                    QL1S("tirtha.p.chatterjee@gmail.com"));
 
-    about.addAuthor(ki18n("Lindsay Mathieson"),
-                    ki18n("Implemented inline spellcheck, provided hints, discovered bugs"),
-                    "lindsay.mathieson@gmail.com",
-                    "");
+    about.addAuthor(i18n("Lindsay Mathieson"),
+                    i18n("Implemented inline spellcheck, provided hints, discovered bugs"),
+                    QL1S("lindsay.mathieson@gmail.com"));
 
 
     // --------------- about credits -----------------------------
-    about.addCredit(ki18n("Dawit Alemayehu"),
-                    ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
-                    "adawit@kde.org",
-                    "");
+    about.addCredit(i18n("Dawit Alemayehu"),
+                    i18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
+                    QL1S("adawit@kde.org"));
 
-    about.addCredit(ki18n("Jekyll Wu"),
-                    ki18n("Bug triaging. Impressive job about..."),
-                    "adaptee@gmail.com",
-                    "");
+    about.addCredit(i18n("Jekyll Wu"),
+                    i18n("Bug triaging. Impressive job about..."),
+                    QL1S("adaptee@gmail.com"));
 
-    about.addCredit(ki18n("Dimitrios Christidis"),
-                    ki18n("Provides patches, fixes and good testing"),
-                    "dchristidis@ceid.upatras.gr",
-                    "");
+    about.addCredit(i18n("Dimitrios Christidis"),
+                    i18n("Provides patches, fixes and good testing"),
+                    QL1S("dchristidis@ceid.upatras.gr"));
 
-    about.addCredit(ki18n("Panagiotis Papadopoulos"),
-                    ki18n("Quite everything but code"),
-                    "pano_90@gmx.net",
-                    "");
+    about.addCredit(i18n("Panagiotis Papadopoulos"),
+                    i18n("Quite everything but code"),
+                    QL1S("pano_90@gmx.net"));
 
-    about.addCredit(ki18n("Phaneendra Hedge"),
-                    ki18n("Nepomuk fancy bookmarking"),
-                    "pnh.pes@gmail.com",
-                    "");
+    about.addCredit(i18n("Phaneendra Hedge"),
+                    i18n("Nepomuk fancy bookmarking"),
+                    QL1S("pnh.pes@gmail.com"));
 
-    about.addCredit(ki18n("Jonathan Raphael Joachim Kolberg"),
-                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages"),
-                    "bulldog98@freenet.de",
-                    "");
+    about.addCredit(i18n("Jonathan Raphael Joachim Kolberg"),
+                    i18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages"),
+                    QL1S("bulldog98@freenet.de"));
 
-    about.addCredit(ki18n("Benjamin Poulain"),
-                    ki18n("The \"QtWebKit guy\". Adblock (new) implementation. Code quality improvements"),
-                    "ikipou@gmail.com",
-                    "http://www.openyourcode.org/");
+    about.addCredit(i18n("Benjamin Poulain"),
+                    i18n("The \"QtWebKit guy\". Adblock (new) implementation. Code quality improvements"),
+                    QL1S("ikipou@gmail.com"),
+                    QL1S("http://www.openyourcode.org/"));
 
-    about.addCredit(ki18n("Rohan Garg"),
-                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages."),
-                    "rohan16garg@gmail.com",
-                    "");
+    about.addCredit(i18n("Rohan Garg"),
+                    i18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages."),
+                    QL1S("rohan16garg@gmail.com"));
 
-    about.addCredit(ki18n("Anton Kreuzkamp"),
-                    ki18n("Session Management, patches"),
-                    "akreuzkamp@web.de",
-                    "");
+    about.addCredit(i18n("Anton Kreuzkamp"),
+                    i18n("Session Management, patches"),
+                    QL1S("akreuzkamp@web.de"));
 
-    about.addCredit(ki18n("David E. Narváez"),
-                    ki18n("Implemented User Session Management and cleaned up SessionManager code"),
-                    "david.narvaez@computer.org",
-                    "");
+    about.addCredit(i18n("David E. Narváez"),
+                    i18n("Implemented User Session Management and cleaned up SessionManager code"),
+                    QL1S("david.narvaez@computer.org"));
 
-    about.addCredit(ki18n("Marc Deop"),
-                    ki18n("Access Keys Navigation"),
-                    "damnshock@gmail.com",
-                    "");
+    about.addCredit(i18n("Marc Deop"),
+                    i18n("Access Keys Navigation"),
+                    QL1S("damnshock@gmail.com"));
 
-    about.addCredit(ki18n("Yuri Chornoivan"),
-                    ki18n("Checking rekonq strings, helping with docs"),
-                    "yurchor@ukr.net",
-                    "");
+    about.addCredit(i18n("Yuri Chornoivan"),
+                    i18n("Checking rekonq strings, helping with docs"),
+                    QL1S("yurchor@ukr.net"));
 
-    about.addCredit(ki18n("Burkhard Lück"),
-                    ki18n("Checking rekonq strings, helping with docs"),
-                    "lueck@hube-lueck.de",
-                    "");
+    about.addCredit(i18n("Burkhard Lück"),
+                    i18n("Checking rekonq strings, helping with docs"),
+                    QL1S("lueck@hube-lueck.de"));
 
-    about.addCredit(ki18n("Andrius da Costa Ribas"),
-                    ki18n("Helped letting rekonq compile on Windows/MSVC and Mac OS X"),
-                    "andriusmao@gmail.com",
-                    "");
+    about.addCredit(i18n("Andrius da Costa Ribas"),
+                    i18n("Helped letting rekonq compile on Windows/MSVC and Mac OS X"),
+                    QL1S("andriusmao@gmail.com"));
 
-    about.addCredit(ki18n("Pino Toscano"),
-                    ki18n("fixuifiles ;)"),
-                    "pino@kde.org",
-                    "");
+    about.addCredit(i18n("Pino Toscano"),
+                    i18n("fixuifiles ;)"),
+                    QL1S("pino@kde.org"));
 
-    KAboutData::setAboutData(about);
+    KAboutData::setApplicationData(about);
         
 // -----------------------------------------------------------------------------------------------------------------
     
@@ -223,9 +198,9 @@ extern "C" int kdemain(int argc, char **argv)
 //     KCmdLineOptions options;
 // 
 //     // adding options
-//     options.add("incognito" , ki18n("Open in incognito mode"));
-//     options.add("webapp" , ki18n("Open URL as web app (in a simple window)"));
-//     options.add("+[URL]" , ki18n("Location to open"));
+//     options.add("incognito" , i18n("Open in incognito mode"));
+//     options.add("webapp" , i18n("Open URL as web app (in a simple window)"));
+//     options.add("+[URL]" , i18n("Location to open"));
 // 
 //     // Register the supported options
 //     KCmdLineArgs::addCmdLineOptions(options);
@@ -233,21 +208,22 @@ extern "C" int kdemain(int argc, char **argv)
 
 // #if defined(Q_WS_X11)
 //     // On X11, the raster engine gives better performance than native.
-//     QApplication::setGraphicsSystem(QLatin1String("raster"));
+//     QApplication::setGraphicsSystem(QL1S("raster"));
 // #endif
 // 
 //     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
 
 
-    if (app.isSessionRestored())
-    {
-        for (int i = 1; RekonqWindow::canBeRestored(i); i++)
-        {
-            RekonqWindow * newRekonqWindow = app.newWindow(false);
-            if (newRekonqWindow->restore(i))
-                SessionManager::self()->restoreWindow(newRekonqWindow);
-        }
-    }
+    // FIXME
+//     if (app.isSessionRestored())
+//     {
+//         for (int i = 1; RekonqWindow::canBeRestored(i); i++)
+//         {
+//             RekonqWindow * newRekonqWindow = app.newWindow(false);
+//             if (newRekonqWindow->restore(i))
+//                 SessionManager::self()->restoreWindow(newRekonqWindow);
+//         }
+//     }
     
     return app.exec();
 }

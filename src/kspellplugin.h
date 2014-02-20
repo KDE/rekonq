@@ -40,6 +40,9 @@
 class KWebSpellChecker : public QWebSpellChecker
 {
     Q_OBJECT
+    
+    Q_PLUGIN_METADATA()
+    
 public:
     Sonnet::Speller *m_speller;
 

@@ -59,7 +59,7 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
 
     setText(i18n("Please open up the webpage you want to add as favorite"));
 
-    m_insertAction = new QAction(QIcon::fromTheme("insert-image"), i18n("Set to This Page"), this);
+    m_insertAction = new QAction(QIcon::fromTheme( QL1S("insert-image") ), i18n("Set to This Page"), this);
     connect(m_insertAction, SIGNAL(triggered(bool)), this, SLOT(clicked()));
     addAction(m_insertAction);
 }
@@ -71,7 +71,7 @@ void PreviewSelectorBar::verifyUrl()
     if (tab->url().scheme() != QL1S("rekonq"))
     {
         m_insertAction->setEnabled(true);
-        m_insertAction->setToolTip("");
+        m_insertAction->setToolTip( QL1S("") );
     }
     else
     {
@@ -91,7 +91,7 @@ void PreviewSelectorBar::loadProgress()
 void PreviewSelectorBar::loadFinished()
 {
     m_insertAction->setEnabled(true);
-    m_insertAction->setToolTip("");
+    m_insertAction->setToolTip( QL1S("") );
 
     verifyUrl();
 }
@@ -108,11 +108,12 @@ void PreviewSelectorBar::clicked()
         QStringList urls = ReKonfig::previewUrls();
 
         //cleanup the previous image from the cache (useful to refresh the snapshot)
-        QFile::remove(WebSnap::imagePathFromUrl(urls.at(m_previewIndex)));
+        QUrl uToR = QUrl(urls.at(m_previewIndex));
+        QFile::remove(WebSnap::imagePathFromUrl(uToR));
         QPixmap preview = WebSnap::renderPagePreview(*tab->page());
         preview.save(WebSnap::imagePathFromUrl(url));
 
-        urls.replace(m_previewIndex, url.toMimeDataString());
+        urls.replace(m_previewIndex, url.toString());
         names.replace(m_previewIndex, tab->page()->mainFrame()->title());
 
         ReKonfig::setPreviewNames(names);
@@ -121,7 +122,7 @@ void PreviewSelectorBar::clicked()
         ReKonfig::self()->writeConfig();
 
 
-        tab->page()->mainFrame()->load(QUrl("rekonq:favorites"));
+        tab->page()->mainFrame()->load(QUrl( QL1S("rekonq:favorites") ));
     }
 
     animatedHide();

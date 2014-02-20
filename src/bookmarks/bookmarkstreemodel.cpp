@@ -88,14 +88,14 @@ QVariant BtmItem::data(int role) const
         if (!url.isEmpty())
         {
             if (!tooltip.isEmpty())
-                tooltip += '\n';
+                tooltip += QL1C('\n');
             tooltip += url;
         }
 
         if (!m_kbm.description().isEmpty())
         {
             if (!tooltip.isEmpty())
-                tooltip += '\n';
+                tooltip += QL1C('\n');
             tooltip += m_kbm.description();
         }
 
@@ -260,7 +260,7 @@ QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
         if (role == Qt::DisplayRole)
             return i18n("Bookmarks");
         if (role == Qt::DecorationRole)
-            return QIcon::fromTheme("bookmarks");
+            return QIcon::fromTheme( QL1S("bookmarks") );
     }
     else
     {
@@ -340,7 +340,7 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
         BtmItem *node = m_root;
         QModelIndex nodeIndex;
 
-        QStringList indexChain(groupAddress.split('/', QString::SkipEmptyParts));
+        QStringList indexChain(groupAddress.split( QL1C('/'), QString::SkipEmptyParts));
         bool ok;
         int i;
         Q_FOREACH(const QString & sIndex, indexChain)
