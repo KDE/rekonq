@@ -177,8 +177,8 @@ void WebWindow::setupActions()
 
     // ========================= History related actions ==============================
     a = actionCollection()->addAction(KStandardAction::Back);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-            this, SLOT(openPrevious(Qt::MouseButtons,Qt::KeyboardModifiers)));
+// FIXME    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+//            this, SLOT(openPrevious(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     m_historyBackMenu = new QMenu(this);
     a->setMenu(m_historyBackMenu);
@@ -186,8 +186,8 @@ void WebWindow::setupActions()
     connect(m_historyBackMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionUrl(QAction*)));
 
     a = actionCollection()->addAction(KStandardAction::Forward);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-            this, SLOT(openNext(Qt::MouseButtons,Qt::KeyboardModifiers)));
+// FIXME    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+//            this, SLOT(openNext(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     m_historyForwardMenu = new QMenu(this);
     a->setMenu(m_historyForwardMenu);
@@ -195,9 +195,10 @@ void WebWindow::setupActions()
     connect(m_historyForwardMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionUrl(QAction*)));
 
     // urlbar
-    a = new QAction(i18n("Location Bar"), this);
-//     a->setDefaultWidget(_bar); FIXME some way...
-    actionCollection()->addAction(QL1S("url_bar"), a);
+    QWidgetAction *locationBarWidget = new QWidgetAction(this);
+    locationBarWidget->setText(i18n("Location Bar"));
+    locationBarWidget->setDefaultWidget(_bar);
+    actionCollection()->addAction(QL1S("url_bar"), locationBarWidget);
 
     a = new QAction(QIcon::fromTheme( QL1S("edit-clear-locationbar-rtl") ), i18n("Clear Urlbar"), this);
     connect(a, SIGNAL(triggered()), _bar, SLOT(clearUrlbar()));
@@ -250,7 +251,7 @@ void WebWindow::setupActions()
 
     // Open Home page
     a = actionCollection()->addAction(KStandardAction::Home);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons,Qt::KeyboardModifiers)));
+// FIXME    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     // Open Downloads page
     a = new QAction(QIcon::fromTheme( QL1S("download") ), i18n("Downloads page"), this);

@@ -85,7 +85,7 @@ private Q_SLOTS:
     void pinTab();
     void unpinTab();
 
-    void contextMenu(int, const QPoint &);
+    void contextMenu(const QPoint &);
     void emptyAreaContextMenu(const QPoint &);
 
     void removeAnimation(int index);

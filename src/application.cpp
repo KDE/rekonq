@@ -81,8 +81,7 @@ Application::Application(int &argc, char **argv)
 
     setWindowIcon(QIcon::fromTheme(QL1S("rekonq")));
 
-    // just create History Manager...
-    HistoryManager::self();
+    newInstance();
 }
 
 
@@ -120,7 +119,7 @@ int Application::newInstance()
     // 3) Is rekonq recovering from crash?
     // so, we have 8 possible cases...
     static bool isFirstLoad = true;
-    bool areThereArguments = (args.count() > 0);
+    bool areThereArguments = (args.count() > 1);
     bool hasToBeRecoveredFromCrash = (ReKonfig::recoverOnCrash() > 0);
     // note that hasToBeRecoveredFromCrash is always true if it is not the first load
     // !isFirstLoad -> hasToBeRecoveredFromCrash

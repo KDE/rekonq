@@ -126,18 +126,18 @@ void TabWidget::init()
     setMovable(true);
 
     // connecting tabbar signals
-    connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
-    connect(tabBar, SIGNAL(mouseMiddleClick(int)),  this,   SLOT(closeTab(int)));
+    connect(tabBar, SIGNAL(tabCloseRequested(int)),     this,   SLOT(closeTab(int)));
+// FIXME What about this?   connect(tabBar, SIGNAL(mouseMiddleClick(int)),  this,   SLOT(closeTab(int)));
 
-    connect(tabBar, SIGNAL(newTabRequest()),        this,   SLOT(newTab()));
+    connect(tabBar, SIGNAL(tabBarDoubleClicked(int)),   this,   SLOT(openTab(int)));
 
-    connect(tabBar, SIGNAL(cloneTab(int)),          this,   SLOT(cloneTab(int)));
-    connect(tabBar, SIGNAL(closeTab(int)),          this,   SLOT(closeTab(int)));
-    connect(tabBar, SIGNAL(closeOtherTabs(int)),    this,   SLOT(closeOtherTabs(int)));
-    connect(tabBar, SIGNAL(reloadTab(int)),         this,   SLOT(reloadTab(int)));
-    connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
+    connect(tabBar, SIGNAL(cloneTab(int)),              this,   SLOT(cloneTab(int)));
+    connect(tabBar, SIGNAL(closeTab(int)),              this,   SLOT(closeTab(int)));
+    connect(tabBar, SIGNAL(closeOtherTabs(int)),        this,   SLOT(closeOtherTabs(int)));
+    connect(tabBar, SIGNAL(reloadTab(int)),             this,   SLOT(reloadTab(int)));
+    connect(tabBar, SIGNAL(detachTab(int)),             this,   SLOT(detachTab(int)));
 
-    connect(tabBar, SIGNAL(tabLayoutChanged()),     this,   SLOT(updateNewTabButtonPosition()));
+    connect(tabBar, SIGNAL(tabLayoutChanged()),         this,   SLOT(updateNewTabButtonPosition()));
 
     // ============================== Tab Window Actions ====================================
     _ac->addAssociatedWidget(this);
@@ -742,6 +742,17 @@ void TabWidget::detachTab(int index, RekonqWindow *toWindow)
     connect(tab, SIGNAL(pageCreated(WebPage*)), hostTabWidget, SLOT(pageCreated(WebPage*)));
 
     w->show();
+}
+
+
+void TabWidget::openTab(int index)
+{
+    if (index < 0)
+    {
+        newTab();
+    }
+
+    return;
 }
 
 

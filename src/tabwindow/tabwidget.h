@@ -123,6 +123,7 @@ private Q_SLOTS:
     void closeTab(int index = -1, bool del = true);
     void closeOtherTabs(int index = -1);
     void detachTab(int index = -1, RekonqWindow *toWindow = 0);
+    void openTab(int index = -1);
     void reloadTab(int index = -1);
 
     void bookmarkAllTabs();

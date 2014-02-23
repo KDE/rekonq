@@ -84,8 +84,7 @@ TabBar::TabBar(QWidget *parent)
     // context menu(s)
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(contextMenu(int,QPoint)), this, SLOT(contextMenu(int,QPoint)));
-    connect(this, SIGNAL(emptyAreaContextMenu(QPoint)), this, SLOT(emptyAreaContextMenu(QPoint)));
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)));
 
     // Highlight effect
     connect(m_animationMapper, SIGNAL(mapped(int)), this, SLOT(removeAnimation(int)));
@@ -186,8 +185,15 @@ void TabBar::detachTab()
 }
 
 
-void TabBar::contextMenu(int tabIndex, const QPoint &pos)
+void TabBar::contextMenu(const QPoint &pos)
 {
+    int tabIndex = tabAt(pos);
+    if (tabIndex < 0)
+    {
+        emptyAreaContextMenu(pos);
+        return;
+    }
+
     TabWidget *w = qobject_cast<TabWidget *>(parent());
 
     QAction *a;
