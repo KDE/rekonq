@@ -337,7 +337,7 @@ int Application::newInstance()
             SessionManager::self()->setSessionManagementEnabled(true);
         }
 
-        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash /* FIXME && SearchEngine::defaultEngine().isNull() */)
+        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && !SearchEngine::defaultEngine())
             QTimer::singleShot(2000, rekonqWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);

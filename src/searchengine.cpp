@@ -54,8 +54,9 @@ Q_GLOBAL_STATIC(SearchEnginePrivate, d)
 
 void SearchEngine::reload()
 {
-    KConfig config(QL1S("kuriikwsfilterrc")); //Shared with konqueror
-    KConfigGroup cg = config.group("General");
+    // FIXME Easier find path...
+    KConfig config( QL1S("/SW/TRUNK/CONFIG/share/config/kuriikwsfilterrc"), KConfig::NoGlobals );
+    KConfigGroup cg = config.group( QL1S("General") );
 
     d->isEnabled = cg.readEntry("EnableWebShortcuts", true);
     d->usePreferredOnly = cg.readEntry("UsePreferredWebShortcutsOnly", false);
