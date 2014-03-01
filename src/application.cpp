@@ -166,7 +166,7 @@ int Application::newInstance()
 
         // prepare URLS to load
         QList<QUrl> urlList;
-        for (int i = 0; i < args.count(); ++i)
+        for (int i = 1; i < args.count(); ++i)
         {
             const QUrl u = QUrl(args.at(i));
 

@@ -54,7 +54,6 @@
 #include <QIcon>
 #include <QMouseEvent>
 #include <QPixmap>
-#include <QRegularExpression>
 #include <QSizePolicy>
 #include <QStylePainter>
 #include <QVBoxLayout>
@@ -248,8 +247,8 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
     const bool wasItalic = t.startsWith(QL1S("<i>"));
     if (wasItalic)
         t.remove(QRegExp(QL1S("<[/ib]*>")));
-    t = QRegularExpression::escape(t);
-    QStringList words = QRegularExpression::escape(textToPointOut.simplified()).split(QL1C(' '));
+    t = t.toHtmlEscaped();
+    QStringList words = textToPointOut.simplified().toHtmlEscaped().split( QL1C(' ') );
     t = highlightWordsInText(t, words);
     if (wasItalic)
         t = QL1S("<i style=color:\"#555\">") + t + QL1S("</i>");
@@ -269,7 +268,7 @@ TextLabel::TextLabel(QWidget *parent)
 
 void TextLabel::setEngineText(const QString &engine, const QString &text)
 {
-    setText(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, QRegularExpression::escape(text)));
+    setText(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, text.toHtmlEscaped()));
 }
 
 

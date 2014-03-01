@@ -36,7 +36,6 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QLabel>
-#include <QRegularExpression>
 #include <QSslCertificate>
 
 
@@ -89,17 +88,17 @@ void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QStri
     c += QL1S("</ul>");
     ui.certInfoLabel->setText(c);
 
-    ui.subjectCN->setText(QRegularExpression::escape(subjectCert.subjectInfo(QSslCertificate::CommonName).at(0)));
-    ui.subjectO->setText(QRegularExpression::escape(subjectCert.subjectInfo(QSslCertificate::Organization).at(0)));
-    ui.subjectOU->setText(QRegularExpression::escape(subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName).at(0)));
-    ui.subjectSN->setText(QString::fromLatin1(subjectCert.serialNumber()));
+    ui.subjectCN->setText( subjectCert.subjectInfo(QSslCertificate::CommonName).at(0).toHtmlEscaped() );
+    ui.subjectO->setText( subjectCert.subjectInfo(QSslCertificate::Organization).at(0).toHtmlEscaped() );
+    ui.subjectOU->setText( subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName).at(0).toHtmlEscaped() );
+    ui.subjectSN->setText( QString::fromLatin1(subjectCert.serialNumber()) );
 
-    ui.issuerCN->setText(QRegularExpression::escape(subjectCert.issuerInfo(QSslCertificate::CommonName).at(0)));
-    ui.issuerO->setText(QRegularExpression::escape(subjectCert.issuerInfo(QSslCertificate::Organization).at(0)));
-    ui.issuerOU->setText(QRegularExpression::escape(subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName).at(0)));
+    ui.issuerCN->setText( subjectCert.issuerInfo(QSslCertificate::CommonName).at(0).toHtmlEscaped() );
+    ui.issuerO->setText( subjectCert.issuerInfo(QSslCertificate::Organization).at(0).toHtmlEscaped() );
+    ui.issuerOU->setText( subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName).at(0).toHtmlEscaped() );
 
-    ui.issuedOn->setText(QRegularExpression::escape(subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate).at(0)));
-    ui.expiresOn->setText(QRegularExpression::escape(subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate).at(0)));
+    ui.issuedOn->setText( subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate).toHtmlEscaped().at(0) );
+    ui.expiresOn->setText( subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate).toHtmlEscaped().at(0) );
 
     ui.md5->setText(QString::fromLatin1(subjectCert.digest(QCryptographicHash::Md5).toHex()));
     ui.sha1->setText(QString::fromLatin1(subjectCert.digest(QCryptographicHash::Sha1).toHex()));

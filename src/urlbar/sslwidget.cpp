@@ -40,7 +40,6 @@
 #include <QLabel>
 #include <QPointer>
 #include <QPushButton>
-#include <QRegularExpression>
 #include <QTextDocument>
 
 
@@ -96,7 +95,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         if (firstCertErrorList.isEmpty())
         {
             label->setText(i18n("The certificate for this site is valid and has been verified by:\n%1.",
-                                QRegularExpression::escape( cert.issuerInfo(QSslCertificate::CommonName).at(0) ) ));
+                                cert.issuerInfo(QSslCertificate::CommonName).at(0).toHtmlEscaped() ));
 
             imageLabel->setPixmap(QIcon::fromTheme( QL1S("security-high") ).pixmap(c_dim));
         }

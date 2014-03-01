@@ -706,7 +706,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
     // NOTE:
     // this, to take care about XSS (see BUG 217464)...
-    QString urlString = QRegularExpression::escape(reply->url().toString());
+    QString urlString = reply->url().toString().toHtmlEscaped();
 
     // 1. data path
     QString dataPath = QL1S("file://") + notfoundFilePath;

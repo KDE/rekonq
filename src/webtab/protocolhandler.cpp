@@ -54,7 +54,6 @@
 #include <KRun>
 
 // Qt Includes
-#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QNetworkRequest>
 #include <QUrlQuery>
@@ -363,14 +362,14 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     Q_FOREACH(const KFileItem & item, orderedList)
     {
         msg += QL1S("<tr>");
-        QString fullPath = QRegularExpression::escape(item.url().url());
+        QString fullPath = item.url().toString().toHtmlEscaped();
 
         QString iconName = item.iconName();
         QString icon = QL1S("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
 
         msg += QL1S("<td width=\"70%\">");
         msg += QL1S("<img src=\"") + icon + QL1S("\" alt=\"") + iconName + QL1S("\" /> ");
-        msg += QL1S("<a href=\"") + fullPath + QL1S("\">") + QRegularExpression::escape(item.name()) + QL1S("</a>");
+        msg += QL1S("<a href=\"") + fullPath + QL1S("\">") + item.name().toHtmlEscaped() + QL1S("</a>");
         msg += QL1S("</td>");
 
         msg += QL1S("<td align=\"right\">");

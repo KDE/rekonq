@@ -67,7 +67,6 @@
 // Qt Includes
 #include <QFileDialog>
 #include <QLabel>
-#include <QRegularExpression>
 #include <QStyle>
 #include <QTemporaryFile>
 #include <QTimer>
@@ -653,7 +652,7 @@ void WebWindow::notifyMessage(const QString &msg)
     m_hidePopupTimer->stop();
     m_hidePopupTimer->start(3000);
 
-    QString msgToShow = QRegularExpression::escape(msg);
+    QString msgToShow = msg.toHtmlEscaped();
 
     // fix crash on window close
     if (!_tab || !_tab->page())
