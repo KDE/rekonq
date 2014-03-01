@@ -64,6 +64,7 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     removeButton->setIcon(QIcon::fromTheme( QL1S("list-remove") ));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeRule()));
 
+    // FIXME it let rekonq crash...
     load();
 
 // FIXME    spinBox->setSuffix(ki18np(" day", " days"));
@@ -74,6 +75,9 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     connect(spinBox,            SIGNAL(valueChanged(int)),   this, SLOT(hasChanged()));
 
     connect(automaticFiltersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(hasChanged()));
+    
+    // always save on close
+    connect(okButton, SIGNAL(clicked()), this, SLOT(saveAndClose()));
 }
 
 
@@ -191,7 +195,7 @@ void AdBlockSettingWidget::load()
 }
 
 
-void AdBlockSettingWidget::save()
+void AdBlockSettingWidget::saveAndClose()
 {
     if (!_changed)
         return;
@@ -238,6 +242,11 @@ void AdBlockSettingWidget::save()
     // -------------------------------------------------------------------------------
     _changed = false;
     emit changed(false);
+    
+    emit okClicked();
+    
+    // bye bye
+    deleteLater();
 }
 
 

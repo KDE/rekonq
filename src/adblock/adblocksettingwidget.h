@@ -52,11 +52,10 @@ public:
 
 Q_SIGNALS:
     void changed(bool);
-
-public Q_SLOTS:
-    void save();
-
+    void okClicked();
+    
 private Q_SLOTS:
+    void saveAndClose();
     void hasChanged();
 
     void slotInfoLinkActivated(const QString &);
