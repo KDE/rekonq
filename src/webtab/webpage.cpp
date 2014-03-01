@@ -592,14 +592,15 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadStarted()
 {
-    // set zoom factor
-    KSharedConfig::Ptr config; // FIXME = KGlobal::config();
-    KConfigGroup group(config, QL1S("Zoom") );
-    QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
-
-    int value = stringValue.toInt();
-    // qDebug() << "ZOOM VALUE: " << value;
-    mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
+    // FIXME port me!
+//     // set zoom factor
+//     KSharedConfig::Ptr config; // FIXME = KGlobal::config();
+//     KConfigGroup group(config, QL1S("Zoom") );
+//     QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
+// 
+//     int value = stringValue.toInt();
+//     // qDebug() << "ZOOM VALUE: " << value;
+//     mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
 }
 
 
