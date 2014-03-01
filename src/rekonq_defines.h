@@ -30,24 +30,6 @@
 
 
 // ----------------------------------------------------------------------------------------------------
-// UNIT TESTS NEED
-
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-// FIXME is this needed yet?
-// #include <kdemacros.h>
-
-/* Classes from the rekonq application, which are exported only for unit tests */
-// Does this exist yet?
-//#ifndef REKONQ_TESTS_EXPORT
-/* We are building this library */
-//#define REKONQ_TESTS_EXPORT KDE_EXPORT
-//#else
-/* We are using this library */
-//#define REKONQ_TESTS_EXPORT KDE_IMPORT
-//#endif
-
-
-// ----------------------------------------------------------------------------------------------------
 // DEFINES
 
 #define QL1S(x)  QLatin1String(x)
