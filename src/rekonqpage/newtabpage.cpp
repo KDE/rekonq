@@ -284,7 +284,9 @@ void NewTabPage::loadPageForUrl(const QUrl &url, const QString & filter)
         return;
     }
 
-    parentFrame->setHtml(m_html);
+    // FIXME
+    // This let everything crash :(
+//     parentFrame->setHtml(m_html);
 
     m_root = parentFrame->documentElement().findFirst(QL1S("#content"));
 
@@ -298,7 +300,9 @@ void NewTabPage::loadPageForUrl(const QUrl &url, const QString & filter)
 //         updateWindowIcon();
         title = i18n("Favorites");
         m_root.document().findFirst(QL1S("title")).setPlainText(title);
-        initJS();
+    // FIXME
+    // This let everything crash :(
+//         initJS();
         return;
     }
     else if (encodedUrl == QByteArray("rekonq:history"))
