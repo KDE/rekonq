@@ -28,7 +28,7 @@
 #include "useragentwidget.h"
 
 // KDE Includes
-#include <KConfig>
+#include <KSharedConfig>
 #include <KConfigGroup>
 #include <KProtocolManager>
 
@@ -41,15 +41,15 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteUserAgent()));
     connect(deleteAllButton, SIGNAL(clicked()), this, SLOT(deleteAll()));
 
-    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kio_httprc"), KConfig::NoGlobals);
 
-    QStringList hosts = config.groupList();
+    QStringList hosts = config->groupList();
     Q_FOREACH(const QString & host, hosts)
     {
         QStringList tmp;
         tmp << host;
 
-        KConfigGroup hostGroup(&config, host);
+        KConfigGroup hostGroup(config, host);
         tmp <<  hostGroup.readEntry(QL1S("UserAgent"), QString());
 
         QTreeWidgetItem *item = new QTreeWidgetItem(sitePolicyTreeWidget, tmp);
@@ -68,8 +68,8 @@ void UserAgentWidget::deleteUserAgent()
 
     QString host = item->text(0);
 
-    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
-    KConfigGroup group(&config, host);
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kio_httprc"), KConfig::NoGlobals);
+    KConfigGroup group(config, host);
     if (group.exists())
     {
         group.deleteGroup();
@@ -82,15 +82,15 @@ void UserAgentWidget::deleteAll()
 {
     sitePolicyTreeWidget->clear();
 
-    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kio_httprc"), KConfig::NoGlobals);
 
-    QStringList list = config.groupList();
+    QStringList list = config->groupList();
     Q_FOREACH(const QString & groupName, list)
     {
-        KConfigGroup group(&config, groupName);
+        KConfigGroup group(config, groupName);
         group.deleteGroup();
     }
-    KConfigGroup group(&config, QString());
+    KConfigGroup group(config, QString());
     group.deleteGroup();
 
     KProtocolManager::reparseConfiguration();

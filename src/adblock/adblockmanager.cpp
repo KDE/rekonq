@@ -100,7 +100,7 @@ bool AdBlockManager::isHidingElements()
 void AdBlockManager::loadSettings()
 {
     // first, check this...
-    const QString adblockFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("adblockrc");
+    const QString adblockFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/adblockrc");
     if (!QFile::exists(adblockFilePath))
     {
         const QString generalAdblockFilePath = QStandardPaths::locate(QStandardPaths::DataLocation, QL1S("adblockrc"));

@@ -33,7 +33,7 @@
 #include <sys/utsname.h>
 
 // KDE Includes
-#include <KConfig>
+#include <KSharedConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KProtocolManager>
@@ -152,10 +152,10 @@ QStringList UserAgentInfo::availableUserAgents()
 
 bool UserAgentInfo::setUserAgentForHost(int uaIndex, const QString &host)
 {
-    KConfig config( QL1S("kio_httprc"), KConfig::NoGlobals);
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kio_httprc"), KConfig::NoGlobals);
 
-    QStringList modifiedHosts = config.groupList();
-    KConfigGroup hostGroup(&config, host);
+    QStringList modifiedHosts = config->groupList();
+    KConfigGroup hostGroup(config, host);
 
     if (uaIndex == -1)
     {

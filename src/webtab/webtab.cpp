@@ -49,6 +49,7 @@
 // KDE Includes
 #include <KActionMenu>
 #include <KLocalizedString>
+#include <KSharedConfig>
 #include <KStandardShortcut>
 
 #include <KParts/BrowserExtension>
@@ -453,10 +454,9 @@ void WebTab::setZoom(int zoomFactor)
 {
     // This is needed because of the WebView zoomChanged signal...
     m_zoomFactor = zoomFactor;
-    // qDebug() << "NEW ZOOM FACTOR: " << zoomFactor;
     
     // set zoom factor
-    KSharedConfig::Ptr config; // FIXME = KGlobal::config();
+    KSharedConfig::Ptr config = KSharedConfig::openConfig();
     KConfigGroup group(config, "Zoom");
     group.writeEntry(url().host(), m_zoomFactor);
 

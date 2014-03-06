@@ -29,7 +29,7 @@
 #include "knetworkaccessmanager.h"
 
 // KDE Includes
-#include <KConfig>
+#include <KSharedConfig>
 #include <KConfigGroup>
 
 // Qt Includes
@@ -42,9 +42,9 @@ KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
     // Proxy
     QNetworkProxy proxy;
     
-    KConfig config( QL1S("kioslaverc"), KConfig::NoGlobals);
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kioslaverc"), KConfig::NoGlobals);
     
-    KConfigGroup proxyGroup(&config, QL1S("Proxy Settings"));
+    KConfigGroup proxyGroup(config, QL1S("Proxy Settings"));
     
     int proxyType = proxyGroup.readEntry( QL1S("ProxyType"), 0);
     qDebug() << "PROXY TYPE: " << proxyType;

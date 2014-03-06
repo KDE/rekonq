@@ -58,10 +58,11 @@
 #include <KMimeTypeTrader>
 #include <KMessageBox>
 #include <KService>
-#include <KWebWallet>
+#include <KSharedConfig>
 #include <KProtocolInfo>
 #include <KRun>
 #include <KProtocolManager>
+#include <KWebWallet>
 
 #include <KIO/Job>
 #include <KIO/JobUiDelegate>
@@ -515,7 +516,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     // read askEmbedOrSave preferences. If we don't have to show dialog and rekonq settings are
     // to automatically choose download dir, we won't show local dir choose dialog
-    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig( QL1S("filetypesrc") , KConfig::NoGlobals), QL1S("Notification Messages"));
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("filetypesrc"), KConfig::NoGlobals);
+    KConfigGroup cg = KConfigGroup(config, QL1S("Notification Messages"));
     bool hideDialog = cg.readEntry(QL1S("askEmbedOrSave") + _mimeType, false);
 
     qDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
@@ -592,15 +594,14 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadStarted()
 {
-    // FIXME port me!
-//     // set zoom factor
-//     KSharedConfig::Ptr config; // FIXME = KGlobal::config();
-//     KConfigGroup group(config, QL1S("Zoom") );
-//     QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
-// 
-//     int value = stringValue.toInt();
-//     // qDebug() << "ZOOM VALUE: " << value;
-//     mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
+    // set zoom factor
+    KSharedConfig::Ptr config = KSharedConfig::openConfig();
+    KConfigGroup group(config, QL1S("Zoom") );
+    QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
+
+    int value = stringValue.toInt();
+    // qDebug() << "ZOOM VALUE: " << value;
+    mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
 }
 
 

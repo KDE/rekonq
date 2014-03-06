@@ -46,8 +46,6 @@
 
 // KDE Includes
 #include <KBookmark>
-#include <KConfig>
-#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KToggleFullScreenAction>
 #include <KWindowInfo>

@@ -28,11 +28,13 @@
 // local includes
 #include "searchengine.h"
 
-//KDE includes
+// KDE includes
 #include <KConfigGroup>
 #include <KServiceTypeTrader>
+#include <KSharedConfig>
 #include <KUriFilter>
 
+// Qt Includes
 #include <QStringList>
 
 
@@ -55,8 +57,8 @@ Q_GLOBAL_STATIC(SearchEnginePrivate, d)
 void SearchEngine::reload()
 {
     // FIXME Easier find path...
-    KConfig config( QL1S("/SW/TRUNK/CONFIG/share/config/kuriikwsfilterrc"), KConfig::NoGlobals );
-    KConfigGroup cg = config.group( QL1S("General") );
+    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kuriikwsfilterrc"), KConfig::NoGlobals );
+    KConfigGroup cg = config->group( QL1S("General") );
 
     d->isEnabled = cg.readEntry("EnableWebShortcuts", true);
     d->usePreferredOnly = cg.readEntry("UsePreferredWebShortcutsOnly", false);
