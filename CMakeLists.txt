@@ -48,9 +48,11 @@ ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 # ==================================================================================
 # optional nepomuk requirements
 
-FIND_PACKAGE(Soprano)
+if(WITH_NEPOMUK)
+  FIND_PACKAGE(Soprano)
 
-FIND_PACKAGE(NepomukCore 0.1.0)
+  FIND_PACKAGE(NepomukCore 0.1.0)
+endif()
 
 IF(SOPRANO_FOUND AND NepomukCore_FOUND)
     ADD_DEFINITIONS(-DHAVE_NEPOMUK)
