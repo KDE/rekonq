@@ -321,7 +321,7 @@ void HistoryManager::load()
 {
     loadSettings();
 
-    QString historyFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("history");
+    QString historyFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/history");
     QFile historyFile(historyFilePath);
     if (!historyFile.exists())
         return;
@@ -430,7 +430,7 @@ void HistoryManager::save()
     if (first == m_history.count() - 1)
         saveAll = true;
     
-    QString historyFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1C('/') + QL1S("history");
+    QString historyFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/history");
     QFile historyFile(historyFilePath);
 
     // When saving everything use a temporary file to prevent possible data loss.
