@@ -44,7 +44,6 @@ INCLUDE (KDEInstallDirs)
 INCLUDE (KDECMakeSettings)
 INCLUDE (KDECompilerSettings)
 INCLUDE (KDEFrameworkCompilerSettings)
->>>>>>> KF5 rekonq, first commit!!!!!!!
 
 
 # ==================================================================================
