@@ -98,7 +98,7 @@ QIcon IconManager::iconForUrl(const QUrl &url)
     // TODO: return other mimetype icons
     if (url.isLocalFile())
     {
-        KFileItem item(KFileItem::Unknown, KFileItem::Unknown, url);
+        KFileItem item(url);
         QString iconName = item.iconName();
         return QIcon::fromTheme(iconName);
     }
@@ -201,7 +201,7 @@ QString IconManager::iconPathForUrl(const QUrl &url)
 
     if (url.isLocalFile())
     {
-        KFileItem item(KFileItem::Unknown, KFileItem::Unknown, url);
+        KFileItem item(url);
         QString iconName = item.iconName();
         QString icon = QL1S("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
         return icon;
