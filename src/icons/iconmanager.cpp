@@ -64,9 +64,9 @@ IconManager *IconManager::self()
 IconManager::IconManager(QObject *parent)
     : QObject(parent)
 {
-    _faviconsDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1S("/favicons/");
-    _tempIconsDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + QL1S("/favicons/");
-    
+    _faviconsDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+    _tempIconsDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+
     // Use webkit icon database path
     QWebSettings::setIconDatabasePath(_faviconsDir);
 }
@@ -145,53 +145,67 @@ QString IconManager::iconPathForUrl(const QUrl &url)
 {
     // FIXME needs porting
     
-//     // first things first.. avoid infinite loop at startup
-//     if (url.isEmpty() || rApp->rekonqWindowList().isEmpty())
-//     {
-//         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
-//         return icon;
-//     }
-// 
-//     QByteArray encodedUrl = url.toEncoded();
-//     // rekonq icons..
-//     if (encodedUrl == QByteArray("rekonq:home"))
-//     {
-//         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/go-home.png");
-//         return icon;
-//     }
-//     if (encodedUrl == QByteArray("rekonq:closedtabs"))
-//     {
-//         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/tab-close.png");
-//         return icon;
-//     }
-//     if (encodedUrl == QByteArray("rekonq:history"))
-//     {
-//         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/view-history.png");
-//         return icon;
-//     }
-//     if (encodedUrl == QByteArray("rekonq:bookmarks"))
-//     {
-//         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/places/bookmarks.png");
-//         return icon;
-//     }
-//     if (encodedUrl == QByteArray("rekonq:favorites"))
-//     {
-//         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/emblems/emblem-favorite.png");
-//         return icon;
-//     }
-//     if (encodedUrl == QByteArray("rekonq:downloads"))
-//     {
-//         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/download.png");
-//         return icon;
-//     }
-// 
-//     if (url.isLocalFile())
-//     {
-//         KFileItem item(KFileItem::Unknown, KFileItem::Unknown, url);
-//         QString iconName = item.iconName();
-//         QString icon = QString("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);    
-//         return icon;
-//     }
+    // first things first.. avoid infinite loop at startup
+    if (url.isEmpty() || rApp->rekonqWindowList().isEmpty())
+    {
+        QString icon = QL1S("file://")
+                    + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+                    + QL1S("/oxygen/16x16/mimetypes/text-html.png");
+        return icon;
+    }
+
+    QByteArray encodedUrl = url.toEncoded();
+    // rekonq icons..
+    if (encodedUrl == QByteArray("rekonq:home"))
+    {
+        QString icon = QL1S("file://")
+            + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+            + QL1S("/oxygen/16x16/actions/go-home.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("rekonq:closedtabs"))
+    {
+        QString icon = QL1S("file://")
+            + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+            + QL1S("/oxygen/16x16/actions/tab-close.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("rekonq:history"))
+    {
+        QString icon = QL1S("file://")
+                    + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+                    + QL1S("/oxygen/16x16/actions/view-history.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("rekonq:bookmarks"))
+    {
+        QString icon = QL1S("file://")
+                    + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+                    + QL1S("/oxygen/16x16/places/bookmarks.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("rekonq:favorites"))
+    {
+        QString icon = QL1S("file://")
+                    + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+                    + QL1S("/oxygen/16x16/emblems/emblem-favorite.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("rekonq:downloads"))
+    {
+        QString icon = QL1S("file://")
+                    + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+                    + QL1S("/oxygen/16x16/actions/download.png");
+        return icon;
+    }
+
+    if (url.isLocalFile())
+    {
+        KFileItem item(KFileItem::Unknown, KFileItem::Unknown, url);
+        QString iconName = item.iconName();
+        QString icon = QL1S("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
+        return icon;
+    }
 
     QIcon ic = QWebSettings::iconForUrl(url);
     if (!ic.isNull())
@@ -203,10 +217,12 @@ QString IconManager::iconPathForUrl(const QUrl &url)
             return QL1S("file://") + tempIconPath;
     }
 
-//     // Not found icon. Return default one.
-//     QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
-//     return icon;
-    return QString(); //FIXME REMOVE ME
+    // Not found icon. Return default one.
+    QString icon = QL1S("file://")
+            + QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).at(0)
+            + QL1S("/oxygen/16x16/mimetypes/text-html.png");
+
+    return icon;
 }
 
 

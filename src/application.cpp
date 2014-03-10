@@ -78,9 +78,16 @@ Application::Application(int &argc, char **argv)
 {
     // NOTE
     // This is needed to ensure rekonq directory path has been created...
-    QString rekonqDataDir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     QDir d;
+
+    QString rekonqDataDir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     d.mkpath(rekonqDataDir);
+
+    QString rekonqCacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+    d.mkpath(rekonqCacheDir);
+
+    QString rekonqTempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+    d.mkpath(rekonqTempDir);
     // ------------------------------------------------------------------
 
     // updating rekonq configuration
