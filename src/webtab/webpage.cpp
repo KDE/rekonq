@@ -117,13 +117,12 @@ static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
     if (!reply->hasRawHeader(QByteArray("Content-Type")))
         return;
 
-    // FIXME
-//     const QString value(QL1S(reply->rawHeader(QL1S("Content-Type")).simplified().constData()));
-//     const int index = value.indexOf(QL1C(';'));
-//     if (index == -1)
-//         mimeType = value;
-//     else
-//         mimeType = value.left(index);
+    const QString value = QL1S(reply->rawHeader("Content-Type"));
+    const int index = value.indexOf(QL1C(';'));
+    if (index == -1)
+        mimeType = value;
+    else
+        mimeType = value.left(index);
 }
 
 
@@ -245,7 +244,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = view->parentTab();
         _isOnRekonqPage = false;
-//         tab->setPart(0, QUrl());     // re-enable the view page
+        tab->setPart(0, QUrl());     // re-enable the view page
     }
 
     const bool isMainFrameRequest = (frame == mainFrame());
@@ -574,7 +573,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = view->parentTab();
-//         tab->setPart(pa, replyUrl);
+        tab->setPart(pa, replyUrl);
 
         // WARNING: Is this enough?
     }
