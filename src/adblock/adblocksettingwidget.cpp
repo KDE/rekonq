@@ -50,10 +50,17 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
 {
     setupUi(this);
 
+    // icon buttons
+    okButton->setIcon( QIcon::fromTheme( QL1S("dialog-ok") ));
+    cancelButton->setIcon( QIcon::fromTheme( QL1S("dialog-cancel") ));
+
     hintLabel->setText(i18n("<qt>Filter expression (e.g. <tt>http://www.example.com/ad/*</tt>, <a href=\"filterhelp\">more information</a>):"));
     connect(hintLabel, SIGNAL(linkActivated(QString)), this, SLOT(slotInfoLinkActivated(QString)));
 
     manualFiltersListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
+
+    tabWidget->setTabText(0, i18n("Automatic Filters"));
+    tabWidget->setTabText(1, i18n("Manual Filters"));
 
     // FIXME
 //     searchLine->setListWidget(manualFiltersListWidget);
@@ -64,10 +71,9 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     removeButton->setIcon(QIcon::fromTheme( QL1S("list-remove") ));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeRule()));
 
-    // FIXME it let rekonq crash...
     load();
 
-// FIXME    spinBox->setSuffix(ki18np(" day", " days"));
+    spinBox->setSuffix(QL1S(" ") + i18n("days"));
 
     // emit changed signal
     connect(checkEnableAdblock, SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
@@ -78,6 +84,7 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     
     // always save on close
     connect(okButton, SIGNAL(clicked()), this, SLOT(saveAndClose()));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 
@@ -198,7 +205,10 @@ void AdBlockSettingWidget::load()
 void AdBlockSettingWidget::saveAndClose()
 {
     if (!_changed)
+    {
+        close();
         return;
+    }
 
     // General settings
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
