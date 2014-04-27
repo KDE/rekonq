@@ -34,6 +34,7 @@
 #include "ui_webappcreation.h"
 
 // Local Includes
+#include "cleardatadialog.h"
 #include "searchengine.h"
 
 #include "tabbar.h"
@@ -52,20 +53,14 @@
 #include "iconmanager.h"
 #include "sessionmanager.h"
 
-// Ui Includes
-#include "ui_cleardata.h"
-
 // KDE Includes
 #include <KMessageBox>
-#include <KProcess>
 #include <KStartupInfo>
 #include <KWindowInfo>
 #include <KWindowSystem>
 
 // Qt Includes
 #include <QAction>
-#include <QDBusInterface>
-#include <QDBusReply>
 #include <QDialog>
 #include <QDir>
 #include <QIcon>
@@ -714,76 +709,8 @@ void Application::queryQuit()
 
 void Application::clearPrivateData()
 {
-    QPointer<QDialog> dialog = new QDialog(rekonqWindow());
-    // FIXME
-//     dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
-//     dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-// 
-//     dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme(QL1S("edit-clear")));
-//     dialog->button(QDialogButtonBox::Ok)->setText(i18n("Clear"));
-// 
-    Ui::ClearDataWidget clearWidget;
-    QWidget widget;
-    clearWidget.setupUi(&widget);
-    clearWidget.clearHistory->setChecked(ReKonfig::clearHistory());
-    clearWidget.clearDownloads->setChecked(ReKonfig::clearDownloads());
-    clearWidget.clearCookies->setChecked(ReKonfig::clearCookies());
-    clearWidget.clearCachedPages->setChecked(ReKonfig::clearCachedPages());
-    clearWidget.clearWebIcons->setChecked(ReKonfig::clearWebIcons());
-    clearWidget.homePageThumbs->setChecked(ReKonfig::clearHomePageThumbs());
-// 
-//     dialog->setMainWidget(&widget);
+    QPointer<ClearDataDialog> dialog = new ClearDataDialog(rekonqWindow());
     dialog->exec();
-
-    if (dialog->result() == QDialog::Accepted)
-    {
-        //Save current state
-        ReKonfig::setClearHistory(clearWidget.clearHistory->isChecked());
-        ReKonfig::setClearDownloads(clearWidget.clearDownloads->isChecked());
-        ReKonfig::setClearCookies(clearWidget.clearDownloads->isChecked());
-        ReKonfig::setClearCachedPages(clearWidget.clearCachedPages->isChecked());
-        ReKonfig::setClearWebIcons(clearWidget.clearWebIcons->isChecked());
-        ReKonfig::setClearHomePageThumbs(clearWidget.homePageThumbs->isChecked());
-
-        if (clearWidget.clearHistory->isChecked())
-        {
-            HistoryManager::self()->clear();
-        }
-
-        if (clearWidget.clearDownloads->isChecked())
-        {
-            DownloadManager::self()->clearDownloadsHistory();
-        }
-
-        if (clearWidget.clearCookies->isChecked())
-        {
-            QDBusInterface kcookiejar(QL1S("org.kde.kded"), QL1S("/modules/kcookiejar"), QL1S("org.kde.KCookieServer"));
-            QDBusReply<void> reply = kcookiejar.call(QL1S("deleteAllCookies"));
-        }
-
-        if (clearWidget.clearCachedPages->isChecked())
-        {
-            KProcess::startDetached(QStandardPaths::findExecutable(QL1S("kio_http_cache_cleaner")),
-                                     QStringList(QL1S("--clear-all")));
-        }
-
-        if (clearWidget.clearWebIcons->isChecked())
-        {
-            IconManager::self()->clearIconCache();
-        }
-
-        if (clearWidget.homePageThumbs->isChecked())
-        {
-            QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1S("/thumbs/");
-            QDir cacheDir(path);
-            QStringList fileList = cacheDir.entryList();
-            Q_FOREACH(const QString & str, fileList)
-            {
-                QFile file(path + str);
-                file.remove();
-            }
-        }
-    }
 
     dialog->deleteLater();
 }

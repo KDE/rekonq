@@ -12,6 +12,7 @@ SET (rekonq_KDEINIT_SRCS
     #----------------------------------------
     application.cpp
     autosaver.cpp
+    cleardatadialog.cpp
     searchengine.cpp
     sessionmanager.cpp
     sessionwidget.cpp
