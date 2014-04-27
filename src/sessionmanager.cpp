@@ -31,7 +31,7 @@
 
 // Local Includes
 #include "application.h"
-#include "sessionwidget.h"
+#include "sessiondialog.h"
 
 #include "rekonqwindow.h"
 #include "tabbar.h"
@@ -43,7 +43,6 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QDialog>
 #include <QDomDocument>
 #include <QFile>
 #include <QPointer>
@@ -478,19 +477,10 @@ bool SessionManager::restoreYourSession(int index)
 
 void SessionManager::manageSessions()
 {
-    qDebug() << "OK ,manage session..";
+    qDebug() << "OK, manage session..";
     
-    QPointer<QDialog> dialog = new QDialog();
-    // FIXME
-//     dialog->setCaption(i18nc("@title:window", "Manage Session"));
-//     dialog->setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Close);
-
-//     dialog->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme("system-run"));
-//     dialog->button(QDialogButtonBox::Ok)->setText(i18n("Load"));
-
-    SessionWidget widg;
-//     dialog->setMainWidget(&widg);
-    
-    connect(dialog, SIGNAL(okClicked()), &widg, SLOT(loadSession()));
+    QPointer<SessionDialog> dialog = new SessionDialog();
     dialog->exec();
+    
+    dialog->deleteLater();
 }

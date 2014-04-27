@@ -24,8 +24,8 @@
 * ============================================================ */
 
 
-#ifndef SESSION_WIDGET_H
-#define SESSION_WIDGET_H
+#ifndef SESSION_DIALOG_H
+#define SESSION_DIALOG_H
 
 
 // Rekonq Includes
@@ -35,17 +35,17 @@
 #include "ui_session.h"
 
 // Qt Includes
-#include <QWidget>
+#include <QDialog>
+#include <QDialogButtonBox>
 
-// Forward Includes
 
 
-class SessionWidget : public QWidget , private Ui::Session
+class SessionDialog : public QDialog
 {
     Q_OBJECT
     
 public:
-    SessionWidget(QWidget *parent = 0);
+    SessionDialog(QWidget *parent = 0);
     
 private Q_SLOTS:
     void save();
@@ -55,6 +55,10 @@ private Q_SLOTS:
     void deleteSession();
     
     void updateButtons(int);
+    
+private:
+    Ui::Session sessionWidget;
+    QDialogButtonBox *buttonBox;
 };
 
 

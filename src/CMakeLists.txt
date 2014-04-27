@@ -15,7 +15,7 @@ SET (rekonq_KDEINIT_SRCS
     cleardatadialog.cpp
     searchengine.cpp
     sessionmanager.cpp
-    sessionwidget.cpp
+    sessiondialog.cpp
     urlresolver.cpp
     websnap.cpp
     #----------------------------------------
