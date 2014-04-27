@@ -913,7 +913,7 @@ void NewTabPage::removePreview(int index)
 
     loadPageForUrl(QUrl( QL1S("rekonq:favorites") ));
 
-    ReKonfig::self()->writeConfig();
+    ReKonfig::self()->save();
 }
 
 

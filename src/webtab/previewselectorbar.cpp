@@ -119,7 +119,7 @@ void PreviewSelectorBar::clicked()
         ReKonfig::setPreviewNames(names);
         ReKonfig::setPreviewUrls(urls);
 
-        ReKonfig::self()->writeConfig();
+        ReKonfig::self()->save();
 
 
         tab->page()->mainFrame()->load(QUrl( QL1S("rekonq:favorites") ));

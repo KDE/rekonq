@@ -169,7 +169,7 @@ SettingsDialog::~SettingsDialog()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
-    ReKonfig::self()->writeConfig();
+    ReKonfig::self()->save();
 
     d->generalWidg->save();
     d->tabsWidg->save();

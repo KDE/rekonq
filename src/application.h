@@ -77,7 +77,7 @@ public Q_SLOTS:
     /**
      * Save application's configuration
      *
-     * @see ReKonfig::self()->writeConfig();
+     * @see ReKonfig::self()->save();
      */
     void saveConfiguration() const;
 

@@ -60,7 +60,6 @@ extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
 
     KAboutData about(QL1S("rekonq"),
                      QL1S("rekonq"),
-                     i18n("rekonq"),
                      QL1S(REKONQ_VERSION),
                      i18n(description),
                      KAboutData::License_GPL_V3,

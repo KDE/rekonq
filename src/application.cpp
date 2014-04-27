@@ -373,7 +373,7 @@ Application *Application::instance()
 
 void Application::saveConfiguration() const
 {
-    ReKonfig::self()->writeConfig();
+    ReKonfig::self()->save();
 }
 
 
