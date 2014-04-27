@@ -259,7 +259,6 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             KF5::JobWidgets
                             KF5::KCMUtils
                             KF5::Notifications
-                            KF5::Solid
                             KF5::SonnetCore
                             KF5::TextWidgets
                             KF5::Wallet

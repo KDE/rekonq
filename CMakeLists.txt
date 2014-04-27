@@ -74,7 +74,6 @@ FIND_PACKAGE (KF5 CONFIG REQUIRED
     JobWidgets
     KCMUtils
     Notifications
-    Solid
     Sonnet
     TextWidgets
     Wallet

@@ -52,6 +52,7 @@
 #include "searchengine.h"
 #include "webwindow.h"
 
+
 // KDE Includes
 #include <KIconLoader>
 #include <KLocalizedString>
@@ -68,8 +69,6 @@
 #include <KIO/JobUiDelegate>
 
 #include <kparts/browseropenorsavequestion.h>
-
-#include <solid/networking.h>
 
 // Qt Includes
 #include <QStandardPaths>
@@ -719,7 +718,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     QString msg;
 
     // test to see if networking is enabled on the system
-    if (Solid::Networking::status() != Solid::Networking::Connected)
+    if (false) // TODO Solid is NOT ready for this yet in KF5. Or I probably just need to understand its changes :)
     {
         msg += QL1S("<h2>") + i18n("Network is not available") + QL1S("</h2>");
 
