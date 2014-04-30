@@ -29,7 +29,7 @@
 
 // Local Includes
 #include "useragentinfo.h"
-#include "useragentwidget.h"
+#include "useragentdialog.h"
 
 #include "webwindow.h"
 #include "webpage.h"
@@ -39,8 +39,6 @@
 
 // Qt Includes
 #include <QAction>
-#include <QDialog>
-#include <QDialogButtonBox>
 #include <QMenu>
 
 
@@ -71,13 +69,7 @@ UserAgentManager::UserAgentManager(QObject *parent)
 
 void UserAgentManager::showSettings()
 {
-    QPointer<QDialog> dialog = new QDialog(m_uaTab.data());
-//     dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
-//     dialog->setStandardButtons(QDialogButtonBox::Ok);
-
-    // FIXME
-//     UserAgentWidget widget;
-//     dialog->setMainWidget(&widget);
+    QPointer<UserAgentDialog> dialog = new UserAgentDialog(m_uaTab.data());
     dialog->exec();
 
     dialog->deleteLater();

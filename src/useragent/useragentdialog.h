@@ -24,30 +24,37 @@
 * ============================================================ */
 
 
-#ifndef USER_AGENT_WIDGET_H
-#define USER_AGENT_WIDGET_H
+#ifndef USER_AGENT_DIALOG_H
+#define USER_AGENT_DIALOG_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QWidget>
+#include <QDialog>
+#include <QDialogButtonBox>
 
 // Ui Includes
 #include "ui_useragentsettings.h"
 
 
-class UserAgentWidget : public QWidget, private Ui::UserAgent
+class UserAgentDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit UserAgentWidget(QWidget *parent = 0);
+    explicit UserAgentDialog(QWidget *parent = 0);
 
 private Q_SLOTS:
     void deleteUserAgent();
     void deleteAll();
+    
+private:
+    Ui::UserAgent _userAgent;
+    QDialogButtonBox *_buttonBox;
 };
 
-#endif
+
+#endif // USER_AGENT_DIALOG_H
+

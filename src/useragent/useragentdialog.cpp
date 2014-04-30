@@ -25,21 +25,37 @@
 
 
 // Self Includes
-#include "useragentwidget.h"
+#include "useragentdialog.h"
 
 // KDE Includes
 #include <KSharedConfig>
 #include <KConfigGroup>
+#include <KLocalizedString>
 #include <KProtocolManager>
 
 
-UserAgentWidget::UserAgentWidget(QWidget *parent)
-    : QWidget(parent)
+UserAgentDialog::UserAgentDialog(QWidget *parent)
+    : QDialog(parent)
 {
-    setupUi(this);
+    setWindowTitle(i18nc("@title:window", "User Agent Settings"));
 
-    connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteUserAgent()));
-    connect(deleteAllButton, SIGNAL(clicked()), this, SLOT(deleteAll()));
+    // the button box
+    _buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);    
+    connect(_buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+
+    // the user agent widget
+    QWidget *widget = new QWidget(this);
+    _userAgent.setupUi(widget);
+    
+    // insert everything inside the dialog...
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(widget);
+    mainLayout->addWidget(_buttonBox);
+    setLayout(mainLayout);
+
+    // ------------------
+    connect(_userAgent.deleteButton, SIGNAL(clicked()), this, SLOT(deleteUserAgent()));
+    connect(_userAgent.deleteAllButton, SIGNAL(clicked()), this, SLOT(deleteAll()));
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kio_httprc"), KConfig::NoGlobals);
 
@@ -52,19 +68,19 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
         KConfigGroup hostGroup(config, host);
         tmp <<  hostGroup.readEntry(QL1S("UserAgent"), QString());
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(sitePolicyTreeWidget, tmp);
-        sitePolicyTreeWidget->addTopLevelItem(item);
+        QTreeWidgetItem *item = new QTreeWidgetItem(_userAgent.sitePolicyTreeWidget, tmp);
+        _userAgent.sitePolicyTreeWidget->addTopLevelItem(item);
     }
 }
 
 
-void UserAgentWidget::deleteUserAgent()
+void UserAgentDialog::deleteUserAgent()
 {
-    QTreeWidgetItem *item = sitePolicyTreeWidget->currentItem();
+    QTreeWidgetItem *item = _userAgent.sitePolicyTreeWidget->currentItem();
     if (!item)
         return;
 
-    sitePolicyTreeWidget->takeTopLevelItem(sitePolicyTreeWidget->indexOfTopLevelItem(item));
+    _userAgent.sitePolicyTreeWidget->takeTopLevelItem(_userAgent.sitePolicyTreeWidget->indexOfTopLevelItem(item));
 
     QString host = item->text(0);
 
@@ -78,9 +94,9 @@ void UserAgentWidget::deleteUserAgent()
 }
 
 
-void UserAgentWidget::deleteAll()
+void UserAgentDialog::deleteAll()
 {
-    sitePolicyTreeWidget->clear();
+    _userAgent.sitePolicyTreeWidget->clear();
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kio_httprc"), KConfig::NoGlobals);
 

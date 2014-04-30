@@ -94,9 +94,9 @@ SET (rekonq_KDEINIT_SRCS
     urlbar/sslwidget.cpp
     urlbar/urlsuggester.cpp
     #----------------------------------------
+    useragent/useragentdialog.cpp
     useragent/useragentinfo.cpp
     useragent/useragentmanager.cpp
-    useragent/useragentwidget.cpp
     #----------------------------------------
     webtab/clicktoflash.cpp
     webtab/crashmessagebar.cpp
