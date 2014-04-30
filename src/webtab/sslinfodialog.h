@@ -39,6 +39,7 @@
 
 // Qt Includes
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QString>
 
 // Forward Declarations
@@ -68,10 +69,11 @@ private Q_SLOTS:
 private:
     void showCertificateInfo(QSslCertificate, const QStringList &certErrors);
 
-    QString m_host;
-    WebSslInfo m_info;
+    QString _host;
+    WebSslInfo _info;
 
-    Ui::SslInfo ui;
+    Ui::SslInfo _ui;
+    QDialogButtonBox *_buttonBox;
 };
 
 #endif // SSL_INFO_DIALOG_H

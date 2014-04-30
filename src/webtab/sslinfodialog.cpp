@@ -36,41 +36,51 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QLabel>
+#include <QPushButton>
 #include <QSslCertificate>
 
 
 SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent)
     : QDialog(parent)
-    , m_host(host)
-    , m_info(info)
+    , _host(host)
+    , _info(info)
 {
-// FIXME    setCaption(i18n("Rekonq SSL Information"));
+    setWindowTitle(i18n("Rekonq SSL Information"));
     setAttribute(Qt::WA_DeleteOnClose);
 
     setMinimumWidth(300);
 
-    // FIXME User1 && Close buttons 
-//     setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Close); 
+    _buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Close); 
     
-//     setButtonGuiItem(User1, KGuiItem(i18n("Export"), QL1S("view-certificate-export")));
-    connect(this, SIGNAL(user1Clicked()), this, SLOT(exportCert()));
+    _buttonBox->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme(QL1S("view-certificate-export")));
+    _buttonBox->button(QDialogButtonBox::Ok)->setText(i18n("Export"));
 
-//     ui.setupUi(mainWidget());
+    connect(_buttonBox, SIGNAL(accepted()), this, SLOT(exportCert()));
+    connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
+    // the session widget
+    QWidget *widget = new QWidget(this);
+    _ui.setupUi(widget);
+    
+    // insert everything inside the dialog...
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(widget);
+    mainLayout->addWidget(_buttonBox);
+    setLayout(mainLayout);
+    
     // ------------------------------------------------
-    QList<QSslCertificate> caList = m_info.certificateChain();
+    QList<QSslCertificate> caList = _info.certificateChain();
 
     Q_FOREACH(const QSslCertificate & cert, caList)
     {
-        // FIXME
-//         QString name = cert.subjectInfo(QSslCertificate::CommonName);
-//         if (name.isEmpty())
-//             name = cert.subjectInfo(QSslCertificate::Organization);
-//         if (name.isEmpty())
-//             name = cert.serialNumber();
-//         ui.comboBox->addItem(name);
+        QString name = cert.subjectInfo(QSslCertificate::CommonName).at(0);
+        if (name.isEmpty())
+            name = cert.subjectInfo(QSslCertificate::Organization).at(0);
+        if (name.isEmpty())
+            name = QL1S(cert.serialNumber());
+        _ui.comboBox->addItem(name);
     }
-    connect(ui.comboBox, SIGNAL(activated(int)), this, SLOT(displayFromChain(int)));
+    connect(_ui.comboBox, SIGNAL(activated(int)), this, SLOT(displayFromChain(int)));
 
     displayFromChain(0);
 }
@@ -86,31 +96,31 @@ void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QStri
         c += QL1S("<li>") + s + QL1S("</li>");
     }
     c += QL1S("</ul>");
-    ui.certInfoLabel->setText(c);
+    _ui.certInfoLabel->setText(c);
 
-    ui.subjectCN->setText( subjectCert.subjectInfo(QSslCertificate::CommonName).at(0).toHtmlEscaped() );
-    ui.subjectO->setText( subjectCert.subjectInfo(QSslCertificate::Organization).at(0).toHtmlEscaped() );
-    ui.subjectOU->setText( subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName).at(0).toHtmlEscaped() );
-    ui.subjectSN->setText( QString::fromLatin1(subjectCert.serialNumber()) );
+    _ui.subjectCN->setText( subjectCert.subjectInfo(QSslCertificate::CommonName).at(0).toHtmlEscaped() );
+    _ui.subjectO->setText( subjectCert.subjectInfo(QSslCertificate::Organization).at(0).toHtmlEscaped() );
+    _ui.subjectOU->setText( subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName).at(0).toHtmlEscaped() );
+    _ui.subjectSN->setText( QString::fromLatin1(subjectCert.serialNumber()) );
 
-    ui.issuerCN->setText( subjectCert.issuerInfo(QSslCertificate::CommonName).at(0).toHtmlEscaped() );
-    ui.issuerO->setText( subjectCert.issuerInfo(QSslCertificate::Organization).at(0).toHtmlEscaped() );
-    ui.issuerOU->setText( subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName).at(0).toHtmlEscaped() );
+    _ui.issuerCN->setText( subjectCert.issuerInfo(QSslCertificate::CommonName).at(0).toHtmlEscaped() );
+    _ui.issuerO->setText( subjectCert.issuerInfo(QSslCertificate::Organization).at(0).toHtmlEscaped() );
+    _ui.issuerOU->setText( subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName).at(0).toHtmlEscaped() );
 
-    ui.issuedOn->setText( subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate).toHtmlEscaped().at(0) );
-    ui.expiresOn->setText( subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate).toHtmlEscaped().at(0) );
+    _ui.issuedOn->setText( subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate).toHtmlEscaped().at(0) );
+    _ui.expiresOn->setText( subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate).toHtmlEscaped().at(0) );
 
-    ui.md5->setText(QString::fromLatin1(subjectCert.digest(QCryptographicHash::Md5).toHex()));
-    ui.sha1->setText(QString::fromLatin1(subjectCert.digest(QCryptographicHash::Sha1).toHex()));
+    _ui.md5->setText(QString::fromLatin1(subjectCert.digest(QCryptographicHash::Md5).toHex()));
+    _ui.sha1->setText(QString::fromLatin1(subjectCert.digest(QCryptographicHash::Sha1).toHex()));
 }
 
 
 void SslInfoDialog::displayFromChain(int i)
 {
-    QList<QSslCertificate> caList = m_info.certificateChain();
+    QList<QSslCertificate> caList = _info.certificateChain();
     QSslCertificate cert = caList.at(i);
 
-    QStringList errors = SslInfoDialog::errorsFromString(m_info.certificateErrors()).at(i);
+    QStringList errors = SslInfoDialog::errorsFromString(_info.certificateErrors()).at(i);
 
     if (errors.isEmpty())
     {
@@ -128,12 +138,12 @@ void SslInfoDialog::displayFromChain(int i)
 
 void SslInfoDialog::exportCert()
 {
-    QSslCertificate cert = m_info.certificateChain().at(ui.comboBox->currentIndex());
+    QSslCertificate cert = _info.certificateChain().at(_ui.comboBox->currentIndex());
 
     if (cert.isNull())
         return;
 
-    QString name = m_host + QL1S(".pem");
+    QString name = _host + QL1S(".pem");
 
     QString certPath = QFileDialog::getSaveFileName(this, name, QString());
  
