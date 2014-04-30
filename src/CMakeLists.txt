@@ -17,6 +17,7 @@ SET (rekonq_KDEINIT_SRCS
     sessionmanager.cpp
     sessiondialog.cpp
     urlresolver.cpp
+    webappshortcutdialog.cpp
     websnap.cpp
     #----------------------------------------
     adblock/adblockelementhiding.cpp

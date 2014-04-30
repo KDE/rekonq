@@ -30,12 +30,10 @@
 // Auto Includes
 #include "rekonq.h"
 
-// Ui Includes
-#include "ui_webappcreation.h"
-
 // Local Includes
 #include "cleardatadialog.h"
 #include "searchengine.h"
+#include "webappshortcutdialog.h"
 
 #include "tabbar.h"
 #include "rekonqwindow.h"
@@ -718,112 +716,8 @@ void Application::clearPrivateData()
 
 void Application::createWebAppShortcut(const QString & urlString, const QString & titleString)
 {
-    QUrl u;
-    if (urlString.isEmpty())
-    {
-        u = rekonqWindow()->currentWebWindow()->url();
-    }
-    else
-    {
-        u = QUrl(urlString);
-    }
-    QString h = u.host();
-
-    QPointer<QDialog> dialog = new QDialog(rekonqWindow());
-    // FIXME
-//     dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
-//     dialog->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-//     dialog->button(QDialogButtonBox::Ok)->setText(i18n("Create"));
-    dialog->setMinimumSize(400, 50);
-    dialog->setWindowIcon(QIcon(IconManager::self()->iconForUrl(u).pixmap(16)));
-
-    Ui::webAppCreation wAppWidget;
-    QWidget widget;
-    wAppWidget.setupUi(&widget);
-
-    QString webAppTitle;
-    if (titleString.isEmpty())
-    {
-        webAppTitle = rekonqWindow()->currentWebWindow()->title();
-    }
-    else
-    {
-        webAppTitle = titleString;
-    }
-    webAppTitle = webAppTitle.remove(QL1C('&'));
-    
-    wAppWidget.nameLineEdit->setText(webAppTitle);
-    wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
-    wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
-
-//     dialog->setMainWidget(&widget);
+    QPointer<WebAppShortcutDialog> dialog = new WebAppShortcutDialog(urlString, titleString, rekonqWindow());
     dialog->exec();
-
-    if (dialog->result() == QDialog::Accepted)
-    {
-        ReKonfig::setCreateDesktopAppShortcut(wAppWidget.kcfg_createDesktopAppShortcut->isChecked());
-        ReKonfig::setCreateMenuAppShortcut(wAppWidget.kcfg_createMenuAppShortcut->isChecked());
-
-        IconManager::self()->saveDesktopIconForUrl(u);
-        QString iconPath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QL1S("/favicons/") + h + QL1S("_WEBAPPICON.png");
-
-        if (!wAppWidget.nameLineEdit->text().isEmpty())
-            webAppTitle = wAppWidget.nameLineEdit->text();
-
-        QString webAppDescription;
-        if (!wAppWidget.descriptionLineEdit->text().isEmpty())
-            webAppDescription = wAppWidget.descriptionLineEdit->text();
-
-        QString shortcutString = QL1S("#!/usr/bin/env xdg-open\n")
-                                 + QL1S("[Desktop Entry]\n")
-                                 + QL1S("Name=") + webAppTitle
-                                 + QL1S("\n")
-                                 + QL1S("GenericName=") + webAppDescription
-                                 + QL1S("\n")
-                                 + QL1S("Icon=") + iconPath + QL1S("\n")
-                                 + QL1S("Exec=rekonq --webapp ") + u.url() + QL1S("\n")
-                                 + QL1S("Type=Application\n")
-                                 + QL1S("Categories=Application;Network\n")
-                                 ;
-
-        if (ReKonfig::createDesktopAppShortcut())
-        {
-            QString desktop = QStandardPaths::displayName(QStandardPaths::DesktopLocation);
-            QFile wAppFile(desktop + QL1C('/') + webAppTitle);
-
-            if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                qDebug() << "Unable to open file: " << wAppFile.errorString();
-                return;
-            }
-
-            QTextStream out(&wAppFile);
-            out.setCodec("UTF-8");
-            out << shortcutString;
-
-            wAppFile.setPermissions(QFile::ReadUser | QFile::WriteUser | QFile::ExeUser | QFile::ReadGroup | QFile::ReadOther);
-            wAppFile.close();
-        }
-
-        if (ReKonfig::createMenuAppShortcut())
-        {
-            QString appMenuDir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
-            QFile wAppFile(appMenuDir + QL1C('/') + webAppTitle + QL1S(".desktop"));
-
-            if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                qDebug() << "Unable to open file: " << wAppFile.errorString();
-                return;
-            }
-
-            QTextStream out(&wAppFile);
-            out.setCodec("UTF-8");
-            out << shortcutString;
-
-            wAppFile.close();
-        }
-
-    }
 
     dialog->deleteLater();
 }
