@@ -326,7 +326,7 @@ void BookmarkManager::emitChanged()
 KActionMenu* BookmarkManager::bookmarkActionMenu(QWidget *parent)
 {
     QMenu *menu = new QMenu(parent);
-    KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
+    KActionMenu *bookmarkActionMenu = new KActionMenu(parent);
     bookmarkActionMenu->setMenu(menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
     BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
