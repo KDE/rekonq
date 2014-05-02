@@ -73,12 +73,10 @@ BookmarkMenu::~BookmarkMenu()
 
 QMenu * BookmarkMenu::contextMenu(QAction *act)
 {
-    // FIXME
-//     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
-//     if (!action)
-//         return 0;
-//     return new BookmarksContextMenu(action->bookmark(), manager(), static_cast<BookmarkOwner*>(owner()));
+    KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
+    if (!action)
         return 0;
+    return new BookmarksContextMenu(action->bookmark(), manager(), static_cast<BookmarkOwner*>(owner()));
 }
 
 

@@ -136,14 +136,11 @@ QList<KBookmarkOwner::FutureBookmark> BookmarkOwner::currentBookmarkList() const
     TabWidget *view = rApp->rekonqWindow()->tabWidget();
     int tabNumber = view->count();
 
-    // FIXME
-//     for (int i = 0; i < tabNumber; ++i)
-//     {
-//         QPair<QString, QString> item;
-//         item.first = view->webWindow(i)->title();
-//         item.second = view->webWindow(i)->url().url();
-//         bkList << item;
-//     }
+    for (int i = 0; i < tabNumber; ++i)
+    {
+        KBookmarkOwner::FutureBookmark item(view->webWindow(i)->title(), view->webWindow(i)->url(), QString()); 
+        bkList << item;
+    }
 
     return bkList;
 }
@@ -413,7 +410,7 @@ QAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
                                      const KBookmark &bookmark)
 {
     CustomBookmarkAction *act = new CustomBookmarkAction(bookmark, QIcon::fromTheme(icon), text, this);
-// FIXME    act->setHelpText(help);
+    act->setWhatsThis(help);
     connect(act, SIGNAL(triggered(KBookmark)), this, slot);
     return act;
 }

@@ -311,26 +311,24 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             // DROP is URL
             QUrl url = dropEvent->mimeData()->urls().at(0);
             WebWindow *w = qobject_cast<WebWindow *>(parent());
-            // FIXME
-            QString title = w->title();
-//             QString title = url.contains(w->url().url())
-//                             ? w->title()
-//                             : url;
+
+            QString urlString = url.toString();
+            QString title = urlString.contains(w->url().url())
+                            ? w->title()
+                            : urlString;
             bookmark = root.addBookmark(title, url, QString() );
         }
         else if (dropEvent->mimeData()->hasFormat( QL1S("text/plain") ))
         {
             // DROP is TEXT
-            QString url = dropEvent->mimeData()->text();
-            QUrl u(url);
+            QString urlString = dropEvent->mimeData()->text();
+            QUrl u(urlString);
             if (u.isValid())
             {
                 WebWindow *w = qobject_cast<WebWindow *>(parent());
-                // FIXME
-                QString title = w->title();
-//                 QString title = url.contains(w->url().url())
-//                                 ? w->title()
-//                                 : url;
+                QString title = urlString.contains(w->url().url())
+                                ? w->title()
+                                : urlString;
                 bookmark = root.addBookmark(title, u, QString());
             }
         }
