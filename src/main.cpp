@@ -62,7 +62,7 @@ extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
                      QL1S("rekonq"),
                      QL1S(REKONQ_VERSION),
                      i18n(description),
-                     KAboutData::License_GPL_V3,
+                     KAboutLicense::GPL_V3,
                      i18n("(C) 2008-2014 Andrea Diamantini"),
                      QString(),
                      QL1S("http://rekonq.kde.org")
