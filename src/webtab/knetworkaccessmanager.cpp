@@ -32,6 +32,8 @@
 #include <KSharedConfig>
 #include <KConfigGroup>
 
+#include <KProtocolManager>
+
 // Qt Includes
 #include <QNetworkProxy>
 
@@ -39,58 +41,27 @@
 KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
     : QNetworkAccessManager(parent)
 {
-    // Proxy
-    QNetworkProxy proxy;
-    
-    KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kioslaverc"), KConfig::NoGlobals);
-    
-    KConfigGroup proxyGroup(config, QL1S("Proxy Settings"));
-    
-    int proxyType = proxyGroup.readEntry( QL1S("ProxyType"), 0);
-    qDebug() << "PROXY TYPE: " << proxyType;
+    const QString &proxyUrl = KProtocolManager::proxyFor( QL1S("http") );
+    if (proxyUrl.isEmpty() || proxyUrl == QL1S("DIRECT"))
+         return;
 
-    if (proxyType == 0)
-        return;
-
-    QStringList httpProxy = proxyGroup.readEntry( QL1S("httpProxy"), QString(QL1S("")) ).split(QL1C(' '));
-    QStringList socksProxy = proxyGroup.readEntry( QL1S("socksProxy"), QString(QL1S("")) ).split(QL1C(' '));
-    
-    QStringList proxyInfoList;
-
-    if (!httpProxy.isEmpty()) 
+    const QUrl url(proxyUrl);
+    QNetworkProxy::ProxyType proxyType;
+    if (url.scheme() == QL1S("http"))
     {
-        proxy.setType(QNetworkProxy::HttpProxy);
-        proxyInfoList = httpProxy;
-    } 
+        proxyType = QNetworkProxy::HttpProxy;
+    }
     else 
     {
-        if (!socksProxy.isEmpty()) 
+        if (url.scheme() == QL1S("socks"))
         {
-            proxy.setType(QNetworkProxy::Socks5Proxy);
-            proxyInfoList = socksProxy;
+            proxyType = QNetworkProxy::Socks5Proxy;
+        }
+        else
+        {
+            return;
         }
     }
     
-    if (proxyInfoList.isEmpty())
-        return;
-    
-    // else
-    proxyInfoList.first().remove( QL1S("http://") );
-
-    // set host
-    QString proxyHost = proxyInfoList.at(0);
-    qDebug() << "PROXY HOST: " << proxyHost;
-    proxy.setHostName(proxyHost);
-    
-    // set port
-    if (proxyInfoList.count() == 2)
-    {
-        int proxyPort = proxyInfoList.at(1).toInt();
-        qDebug() << "PROXY PORT: " << proxyPort;
-        proxy.setPort(proxyPort);
-    }
-//     proxy.setUser("username");
-//     proxy.setPassword("password");
-//     
-    setProxy(proxy);
+    setProxy(QNetworkProxy(proxyType, url.host(), url.port(), url.userName(), url.password()));
 }
