@@ -41,7 +41,7 @@
 KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
     : QNetworkAccessManager(parent)
 {
-    const QString &proxyUrl = KProtocolManager::proxyFor( QL1S("http") );
+    const QString &proxyUrl = KProtocolManager::proxyFor( QL1S("http:") );
     if (proxyUrl.isEmpty() || proxyUrl == QL1S("DIRECT"))
          return;
 
