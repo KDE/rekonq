@@ -39,6 +39,7 @@
 // KDE Includes
 #include <KAboutData>
 #include <KLocalizedString>
+#include <KDBusService>
 
 // Qt Includes
 #include <QCommandLineParser>
@@ -180,7 +181,8 @@ extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
                     QL1S("pino@kde.org"));
 
     KAboutData::setApplicationData(about);
-        
+    KDBusService* service = new KDBusService(KDBusService::Unique, &app);
+
 // -----------------------------------------------------------------------------------------------------------------
     
 
