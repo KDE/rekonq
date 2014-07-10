@@ -363,43 +363,42 @@ void WebTab::showSearchEngineBar()
 
 void WebTab::printFrame()
 {
-    // FIXME
-//     if (page()->isOnRekonqPage())
-//     {
-//         // trigger print part action instead of ours..
-//         KParts::ReadOnlyPart *p = part();
-//         if (p)
-//         {
-//             KParts::BrowserExtension *ext = p->browserExtension();
-//             if (ext)
-//             {
+    if (page()->isOnRekonqPage())
+    {
+        // trigger print part action instead of ours..
+        KParts::ReadOnlyPart *p = part();
+        if (p)
+        {
+            KParts::BrowserExtension *ext = p->browserExtension();
+            if (ext)
+            {
+                // FIXME : let the part print...
 //                 KParts::BrowserExtension::ActionSlotMap *actionSlotMap = KParts::BrowserExtension::actionSlotMapPtr();
-// 
 //                 connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print"));
 //                 emit triggerPartPrint();
-// 
-//                 return;
-//             }
-//         }
-//     }
-// 
-//     QWebFrame *printFrame = page()->currentFrame();
-//     if (printFrame == 0)
-//     {
-//         printFrame = page()->mainFrame();
-//     }
-// 
-//     QPrinter printer;
-//     printer.setDocName(printFrame->title());
-//     QPrintDialog *printDialog = KdePrint::createPrintDialog(&printer, this);
-// 
-//     if (printDialog) //check if the Dialog was created
-//     {
-//         if (printDialog->exec())
-//             printFrame->print(&printer);
-// 
-//         delete printDialog;
-//     }
+
+                return;
+            }
+        }
+    }
+
+    QWebFrame *printFrame = page()->currentFrame();
+    if (printFrame == 0)
+    {
+        printFrame = page()->mainFrame();
+    }
+
+    QPrinter printer;
+    printer.setDocName(printFrame->title());
+    QPrintDialog *printDialog = new QPrintDialog(&printer, this);
+
+    if (printDialog) //check if the Dialog was created
+    {
+        if (printDialog->exec())
+            printFrame->print(&printer);
+
+        delete printDialog;
+    }
 }
 
 
