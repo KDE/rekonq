@@ -236,8 +236,9 @@ bool DownloadManager::downloadResource(const QUrl &srcUrl, const KIO::MetaData &
 
     job->addMetaData(QL1S("MaxCacheSize"), QL1S("0"));      // Don't store in http cache.
     job->addMetaData(QL1S("cache"), QL1S("cache"));         // Use entry from cache if available.
-// FIXME    job->ui()->setWindow((parent ? parent->window() : 0));
-    job->ui()->setAutoErrorHandlingEnabled(true);
+    KIO::JobUiDelegate *delegate = qobject_cast<KIO::JobUiDelegate *>(job->ui());
+    delegate->setWindow((parent ? parent->window() : 0));
+    delegate->setAutoErrorHandlingEnabled(true);
 
     if (registerDownload)
         addDownload(job);
