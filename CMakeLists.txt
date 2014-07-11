@@ -24,7 +24,7 @@ SET (REKONQ_SITE "http://rekonq.kde.org")
 # ==================================================================================
 # Extra CMake Modules
 
-FIND_PACKAGE (ECM 0.0.9 REQUIRED NO_MODULE)
+FIND_PACKAGE (ECM 1.0.0 REQUIRED NO_MODULE)
 
 SET (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
@@ -49,15 +49,16 @@ INCLUDE (KDEFrameworkCompilerSettings)
 # ==================================================================================
 # Qt 5
     
-SET (QT_MIN_VERSION "5.2.0")
+SET (QT_MIN_VERSION "5.3.0")
 
 FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Gui Widgets Network Script WebKitWidgets Concurrent)
 
 # ==================================================================================
 # KDE Frameworks
 
-SET (KF5_MIN_VERSION "4.96.0")
+SET (KF5_MIN_VERSION "5.0.0")
 
+# FIXME: Min version check
 FIND_PACKAGE (KF5 CONFIG REQUIRED
     Auth
     Bookmarks
@@ -86,10 +87,6 @@ FIND_PACKAGE (KF5 CONFIG REQUIRED
     Service
     WebKit
 )
-
-SET(KF5_VERSION_STRING
-    "${KF5_VERSION_MAJOR}.${KF5_VERSION_MINOR}.${KF5_VERSION_PATCH}"
-   )
 
 
 # ==================================================================================
@@ -150,7 +147,7 @@ MESSAGE(STATUS "")
 
 IF(KF5_FOUND)
     MESSAGE(STATUS " KDE Desktop Environment............... YES")
-    MESSAGE(STATUS " KDE version ${KF5_VERSION_STRING} found! ")
+    MESSAGE(STATUS " KDE version ${KF5_VERSION} found! ")
 ELSE(KF5_FOUND)
     MESSAGE(STATUS " KDE Desktop Environment............... NO")
     MESSAGE(STATUS "")
