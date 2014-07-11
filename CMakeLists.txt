@@ -72,6 +72,7 @@ FIND_PACKAGE (KF5 CONFIG REQUIRED
     I18n
     IconThemes
     Init
+    ItemViews
     JobWidgets
     KCMUtils
     Notifications

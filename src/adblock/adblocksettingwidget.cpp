@@ -62,8 +62,7 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     tabWidget->setTabText(0, i18n("Automatic Filters"));
     tabWidget->setTabText(1, i18n("Manual Filters"));
 
-    // FIXME
-//     searchLine->setListWidget(manualFiltersListWidget);
+    searchLine->setListWidget(manualFiltersListWidget);
 
     insertButton->setIcon(QIcon::fromTheme( QL1S("list-add") ));
     connect(insertButton, SIGNAL(clicked()), this, SLOT(insertRule()));

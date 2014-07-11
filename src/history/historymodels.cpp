@@ -572,7 +572,7 @@ QModelIndex HistoryTreeModel::parent(const QModelIndex &index) const
     int offset = index.internalId();
     if (offset == 0 || !index.isValid())
         return QModelIndex();
-    return createIndex(offset - 1, 0);  // FIXME added a ZERO
+    return createIndex(offset - 1, 0);  // NOTE: added a ZERO (the column) in the porting
 }
 
 

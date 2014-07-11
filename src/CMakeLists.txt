@@ -258,6 +258,7 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             KF5::GuiAddons
                             KF5::I18n
                             KF5::IconThemes
+                            KF5::ItemViews
                             KF5::JobWidgets
                             KF5::KCMUtils
                             KF5::Notifications

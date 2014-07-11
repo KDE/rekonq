@@ -143,8 +143,6 @@ void IconManager::saveDesktopIconForUrl(const QUrl &u)
 // with an important difference: this one returns paths while the other one returns QIcons
 QString IconManager::iconPathForUrl(const QUrl &url)
 {
-    // FIXME needs porting
-    
     // first things first.. avoid infinite loop at startup
     if (url.isEmpty() || rApp->rekonqWindowList().isEmpty())
     {

@@ -105,7 +105,6 @@ void AdBlockManager::loadSettings()
     {
         const QString generalAdblockFilePath = QStandardPaths::locate(QStandardPaths::DataLocation, QL1S("adblockrc"));
         QFile adblockFile(generalAdblockFilePath);
-        // FIXME problem with non extant directory
         const bool copied = adblockFile.copy(adblockFilePath);
         if (!copied)
         {
