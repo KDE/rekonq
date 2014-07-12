@@ -63,8 +63,10 @@ public:
     Application(int &argc, char **argv);
     ~Application();
 
-    int newInstance();
     static Application *instance();
+
+    int webAppInstance(const QStringList &);
+    int windowInstance(const QStringList &, bool);
 
     RekonqWindow *rekonqWindow();
     RekonqWindowList rekonqWindowList();

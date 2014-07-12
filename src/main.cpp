@@ -43,6 +43,8 @@
 
 // Qt Includes
 #include <QCommandLineParser>
+#include <QCommandLineOption>
+
 #include <QUrl>
 
 
@@ -181,7 +183,12 @@ extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
                     QL1S("pino@kde.org"));
 
     KAboutData::setApplicationData(about);
-    KDBusService* service = new KDBusService(KDBusService::Unique, &app);
+
+
+// -----------------------------------------------------------------------------------------------------------------
+
+    // register the app to dbus and set it as a singleton
+    KDBusService service(KDBusService::Unique);
 
 // -----------------------------------------------------------------------------------------------------------------
     
@@ -191,29 +198,36 @@ extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
     parser.setApplicationDescription(about.shortDescription());
     parser.addHelpOption();
     parser.addVersionOption();
-    
-//     // Initialize command line args
-//     KCmdLineArgs::init(argc, argv, &about);
-// 
-//     // Define the command line options using KCmdLineOptions
-//     KCmdLineOptions options;
-// 
-//     // adding options
-//     options.add("incognito" , i18n("Open in incognito mode"));
-//     options.add("webapp" , i18n("Open URL as web app (in a simple window)"));
-//     options.add("+[URL]" , i18n("Location to open"));
-// 
-//     // Register the supported options
-//     KCmdLineArgs::addCmdLineOptions(options);
+
+    parser.addPositionalArgument(QL1S("URL"), i18n("Location to open"));
+
+    QCommandLineOption incognitoOption(QL1S("incognito"), i18n("Open in incognito mode"));
+    parser.addOption(incognitoOption);
+
+    QCommandLineOption webappOption(QL1S("webapp"), i18n("Open URL as web app (in a simple window)"));
+    parser.addOption(webappOption);
 
 
-// #if defined(Q_WS_X11)
-//     // On X11, the raster engine gives better performance than native.
-//     QApplication::setGraphicsSystem(QL1S("raster"));
-// #endif
-// 
-//     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
+    parser.process(app);
 
+    bool incognito = parser.isSet(incognitoOption);
+    qDebug() << "INCOGNITO: " << incognito;
+
+    bool webapp = parser.isSet(webappOption);
+    qDebug() << "WEBAPP: " << webapp;
+
+    const QStringList args = parser.positionalArguments();
+    qDebug() << "URLS: " << args;
+
+
+    if (webapp)
+    {
+        app.webAppInstance(args);
+    }
+    else
+    {
+        app.windowInstance(args, incognito);
+    }
 
     // FIXME
 //     if (app.isSessionRestored())

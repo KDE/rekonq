@@ -87,8 +87,6 @@ Application::Application(int &argc, char **argv)
     updateConfiguration();
 
     setWindowIcon(QIcon::fromTheme(QL1S("rekonq")));
-
-    newInstance();
 }
 
 
@@ -115,57 +113,44 @@ Application::~Application()
 }
 
 
-int Application::newInstance()
+int Application::webAppInstance(const QStringList &args)
 {
-    QStringList args = arguments();
+    qDebug() << "WEBAPP MODE...";
 
-    // not that easy, indeed
-    // We have to consider 3 variables here:
-    // 1) Is first load?
-    // 2) Are there arguments?
-    // 3) Is rekonq recovering from crash?
-    // so, we have 8 possible cases...
-    static bool isFirstLoad = true;
-    bool areThereArguments = (args.count() > 1);
-    bool hasToBeRecoveredFromCrash = (ReKonfig::recoverOnCrash() > 0);
-    // note that hasToBeRecoveredFromCrash is always true if it is not the first load
-    // !isFirstLoad -> hasToBeRecoveredFromCrash
-
-    qDebug() << "is first load? " << isFirstLoad;
-    qDebug() << "are there arguments? " << areThereArguments;
-    qDebug() << "is rekonq crashed? " << hasToBeRecoveredFromCrash;
-
-    bool incognito = false; // FIXMEargs->isSet("incognito");
-    bool webapp = false; // FIXME args->isSet("webapp");
-
-    if (webapp)
+    if (args.count() == 0)
     {
-        qDebug() << "WEBAPP MODE...";
-        if (!areThereArguments)
-        {
-            KMessageBox::error(0, i18n("Error"), i18n("Cannot launch webapp mode without an URL to load"));
-            return 1;
-        }
-
-        if (args.count() > 1)
-        {
-            KMessageBox::error(0, i18n("Error"), i18n("Cannot load more than one URL in webapp mode"));
-            return 1;
-        }
-
-        QUrl u = QUrl(args.at(0));
-        if (!u.isLocalFile() || !QFile::exists(u.toLocalFile()))
-        {
-            u = UrlResolver::urlFromTextTyped(args.at(0));
-        }
-        qDebug() << "URL: " << u;
-
-        loadUrl(u, Rekonq::WebApp);
-
-        KStartupInfo::appStarted();
-        isFirstLoad = false;
-        return 0;
+        KMessageBox::error(0, i18n("Cannot launch webapp mode without an URL to load"), i18n("Error") );
+        return 1;
     }
+
+    if (args.count() > 1)
+    {
+        KMessageBox::error(0, i18n("Cannot load more than one URL in webapp mode"), i18n("Error") );
+        return 1;
+    }
+
+    QUrl u = QUrl(args.at(0));
+    if (!u.isLocalFile() || !QFile::exists(u.toLocalFile()))
+    {
+        u = UrlResolver::urlFromTextTyped(args.at(0));
+    }
+    qDebug() << "URL: " << u;
+
+    loadUrl(u, Rekonq::WebApp);
+
+//     KStartupInfo::appStarted();
+//     isFirstLoad = false;
+    return 0;
+}
+
+
+int Application::windowInstance(const QStringList &args, bool incognito)
+{
+    // FIXME: what about this? How can we know this is the first load or not?
+    bool isFirstLoad = true;
+
+    bool areThereArguments = (args.count() > 0);
+    bool hasToBeRecoveredFromCrash = (ReKonfig::recoverOnCrash() > 0);
 
     if (areThereArguments)
     {
@@ -173,7 +158,7 @@ int Application::newInstance()
 
         // prepare URLS to load
         QList<QUrl> urlList;
-        for (int i = 1; i < args.count(); ++i)
+        for (int i = 0; i < args.count(); ++i)
         {
             const QUrl u = QUrl(args.at(i));
 
@@ -351,8 +336,8 @@ int Application::newInstance()
         saveConfiguration();
     }
 
-    KStartupInfo::appStarted();
-    isFirstLoad = false;
+//     KStartupInfo::appStarted();
+//     isFirstLoad = false;
 
     return 0;
 }
@@ -533,23 +518,28 @@ void Application::loadUrl(const QUrl& url, const Rekonq::OpenType& type)
     {
         w = newWindow(true, true);
         newType = Rekonq::CurrentTab;
+        w->loadUrl(url, newType);
+        return;
     }
-    else if (newType == Rekonq::NewWindow || (newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab))
+
+
+    if (newType == Rekonq::NewWindow)
+    {
+        w = newWindow();
+        newType = Rekonq::CurrentTab;
+        w->loadUrl(url, newType);
+        return;
+    }
+
+    w = rekonqWindow();
+    if (!w)
     {
         w = newWindow();
         newType = Rekonq::CurrentTab;
     }
-    else
-    {
-        w = rekonqWindow();
-        if (!w)
-        {
-            w = newWindow();
-            newType = Rekonq::CurrentTab;
-        }
-    }
 
     w->loadUrl(url, newType);
+    return;
 }
 
 
