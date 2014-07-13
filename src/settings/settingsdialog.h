@@ -53,6 +53,8 @@ public:
 protected:
     virtual bool isDefault();
 
+    virtual void updateSettings();
+
 private:
     Private* const d;
 

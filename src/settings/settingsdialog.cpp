@@ -140,7 +140,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     : KConfigDialog(parent, QL1S("rekonfig"), ReKonfig::self())
     , d(new Private(this))
 {
-//     showButtonSeparator(false);
     setWindowTitle(i18nc("Window title of the settings dialog", "Configure – rekonq"));
 
     // update buttons
@@ -152,10 +151,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->advancedWidg,    SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->privacyWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
 
-    // save settings
-    connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
-    connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
-//     setHelp( QL1S("Config-rekonq"), QL1S("rekonq") );
+    setHelp( QL1S("Config-rekonq"), QL1S("rekonq") );
 }
 
 
@@ -166,11 +162,16 @@ SettingsDialog::~SettingsDialog()
 }
 
 
+void SettingsDialog::updateSettings()
+{
+    saveSettings();
+    updateButtons();
+}
+
+
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
-    ReKonfig::self()->save();
-
     d->generalWidg->save();
     d->tabsWidg->save();
     d->appearanceWidg->save();
@@ -179,12 +180,11 @@ void SettingsDialog::saveSettings()
     d->privacyWidg->save();
     d->ebrowsingModule->save();
 
+    ReKonfig::self()->save();
+
     d->privacyWidg->reload();
 
     SearchEngine::reload();
-
-    updateButtons();
-    emit settingsChanged( QL1S("ReKonfig") );
 }
 
 
