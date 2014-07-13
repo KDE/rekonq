@@ -41,8 +41,6 @@ class KWebSpellChecker : public QWebSpellChecker
 {
     Q_OBJECT
     
-    Q_PLUGIN_METADATA()
-    
 public:
     Sonnet::Speller *m_speller;
 
@@ -70,6 +68,8 @@ class KWebKitPlatformPlugin : public QObject, public QWebKitPlatformPlugin
 {
     Q_OBJECT
     Q_INTERFACES(QWebKitPlatformPlugin)
+
+    Q_PLUGIN_METADATA(IID "org.kde.rekonq.webkitplatformplugin")
 
 public:
     KWebKitPlatformPlugin();

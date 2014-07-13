@@ -219,5 +219,4 @@ QObject* KWebKitPlatformPlugin::createExtension(Extension ext) const
 
 
 // ----------------------------------------------------------------------------------------------------------------
-// FIXME Q_EXPORT_PLUGIN2(kwebspellchecker, KWebKitPlatformPlugin);
 Q_IMPORT_PLUGIN(kwebspellchecker)

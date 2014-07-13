@@ -5,7 +5,7 @@ ADD_SUBDIRECTORY (data)
 
 ### ------- SETTING REKONQ FILES...
 #ADD_DEFINITIONS (-DQT_STATICPLUGIN)
-# QT4_WRAP_CPP(wk_HEADERS_MOC qwebkitplatformplugin.h)
+#QT5_WRAP_CPP(wk_HEADERS_MOC qwebkitplatformplugin.h)
 
 # src files
 SET (rekonq_KDEINIT_SRCS
@@ -214,10 +214,10 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
 # ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
 
-### -------------- ADDING DEFINITIONS...
+### -------------- THIS SHOULD BE NEEDED FOR THE kwebspellchecker PLUGIN...
 
-#ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
-
+#ADD_LIBRARY(kwebspellchecker STATIC kspellplugin.h kspellplugin.cpp ${wk_HEADERS_MOC})
+#TARGET_LINK_LIBRARIES(kwebspellchecker Qt5::Core Qt5::Gui Qt5::WebKitWidgets)
 
 ### -------------- ADDING APPLICATION ICON...
 
