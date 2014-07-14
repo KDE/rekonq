@@ -56,7 +56,6 @@ Q_GLOBAL_STATIC(SearchEnginePrivate, d)
 
 void SearchEngine::reload()
 {
-    // FIXME Easier find path...
     KSharedConfig::Ptr config = KSharedConfig::openConfig( QL1S("kuriikwsfilterrc"), KConfig::NoGlobals );
     KConfigGroup cg = config->group( QL1S("General") );
 

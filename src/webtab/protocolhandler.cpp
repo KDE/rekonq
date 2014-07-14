@@ -343,13 +343,11 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     QString msg = i18nc("%1=an URL", "<h2>Index of %1</h2>", _url.url());
 
 
-    if (true) // FIXME rootUrl.cd(".."))
-    {
-        QString path = rootUrl.url();
-        QString uparrow = KIconLoader::global()->iconPath( QL1S("arrow-up"), KIconLoader::Small);
-        msg += QL1S("<img src=\"file://") + uparrow +  QL1S("\" alt=\"up-arrow\" />");
-        msg += QL1S("<a href=\"") + path +  QL1S("\">") + i18n("Up to higher level directory") +  QL1S("</a><br /><br />");
-    }
+    QString path = rootUrl.resolved(QUrl(QL1S(".."))).toString();
+    QString uparrow = KIconLoader::global()->iconPath( QL1S("arrow-up"), KIconLoader::Small);
+    msg += QL1S("<img src=\"file://") + uparrow +  QL1S("\" alt=\"up-arrow\" />");
+    msg += QL1S("<a href=\"") + path +  QL1S("\">") + i18n("Up to higher level directory") +  QL1S("</a><br /><br />");
+
 
     msg += QL1S("<table width=\"95%\" align=\"center\">");
     msg += QL1S("<tr>");

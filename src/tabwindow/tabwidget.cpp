@@ -125,7 +125,6 @@ void TabWidget::init()
 
     // connecting tabbar signals
     connect(tabBar, SIGNAL(tabCloseRequested(int)),     this,   SLOT(closeTab(int)));
-// FIXME What about this?   connect(tabBar, SIGNAL(mouseMiddleClick(int)),  this,   SLOT(closeTab(int)));
 
     connect(tabBar, SIGNAL(tabBarDoubleClicked(int)),   this,   SLOT(openTab(int)));
 
