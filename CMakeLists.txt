@@ -51,7 +51,7 @@ INCLUDE (KDEFrameworkCompilerSettings)
     
 SET (QT_MIN_VERSION "5.3.0")
 
-FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core Gui Widgets Network Script WebKitWidgets Concurrent)
+FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} REQUIRED Core Gui Widgets Network Script WebKitWidgets Concurrent PrintSupport)
 
 # ==================================================================================
 # KDE Frameworks
