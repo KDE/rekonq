@@ -246,6 +246,7 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             Qt5::Script
                             Qt5::WebKitWidgets
                             Qt5::Concurrent
+                            Qt5::PrintSupport
                             # ---------------------------------------
                             KF5::Auth
                             KF5::Bookmarks
