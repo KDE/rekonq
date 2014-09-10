@@ -315,7 +315,7 @@ QModelIndex HistoryFilterModel::mapFromSource(const QModelIndex &sourceIndex) co
     if (realRow == -1)
         return QModelIndex();
 
-    return createIndex(realRow, sourceIndex.column());
+    return createIndex(realRow, sourceIndex.column(), sourceModel()->rowCount() - sourceIndex.row());
 }
 
 
@@ -326,7 +326,7 @@ QModelIndex HistoryFilterModel::index(int row, int column, const QModelIndex &pa
             || column < 0 || column >= columnCount(parent))
         return QModelIndex();
 
-    return createIndex(row, column);
+    return createIndex(row, column, m_sourceRow[row]);
 }
 
 
@@ -562,8 +562,8 @@ QModelIndex HistoryTreeModel::index(int row, int column, const QModelIndex &pare
         return QModelIndex();
 
     if (!parent.isValid())
-        return createIndex(row, column);
-    return createIndex(row, column);
+        return createIndex(row, column, reinterpret_cast<void *>(0));
+    return createIndex(row, column, parent.row() + 1);
 }
 
 
@@ -572,7 +572,7 @@ QModelIndex HistoryTreeModel::parent(const QModelIndex &index) const
     int offset = index.internalId();
     if (offset == 0 || !index.isValid())
         return QModelIndex();
-    return createIndex(offset - 1, 0);  // NOTE: added a ZERO (the column) in the porting
+    return createIndex(offset - 1, 0, reinterpret_cast<void *>(0));  // NOTE: added a ZERO (the column) in the porting
 }
 
 
@@ -696,7 +696,7 @@ QModelIndex HistoryTreeModel::mapFromSource(const QModelIndex &sourceIndex) cons
 
     int dateRow = qMax(0, it - m_sourceRowCache.begin());
     int row = sourceIndex.row() - m_sourceRowCache.at(dateRow);
-    return createIndex(row, sourceIndex.column());
+    return createIndex(row, sourceIndex.column(), dateRow + 1);
 }
 
 
