@@ -134,6 +134,12 @@ void NewTabPage::generate(const QUrl &url)
     // rekonq:preview links
     if (QUrl( QL1S("rekonq:preview") ).isParentOf(url))
     {
+        qDebug() << "----------------------------------------------------------------";
+        qDebug() << "OK!!!!!!!!!!!!!!";
+        qDebug() << "URL: " << url;
+        qDebug() << "PATH: " << url.path();
+        qDebug() << "FILENAME: " << url.fileName();
+        qDebug() << "----------------------------------------------------------------";
         if (url.fileName() == QL1S("add"))
         {
             QStringList names = ReKonfig::previewNames();
@@ -153,22 +159,25 @@ void NewTabPage::generate(const QUrl &url)
             return;
         }
 
-        if (url.path() == QL1S("preview/remove"))
+        if (url.path().contains(QL1S("remove")))
         {
+            qDebug() << "remove";
             int index = url.fileName().toInt();
             removePreview(index);
             return;
         }
 
-        if (url.path() == QL1S("preview/modify"))
+        if (url.path().contains(QL1S("modify")))
         {
+            qDebug() << "modify";
             int index = url.fileName().toInt();
             tab->createPreviewSelectorBar(index);
             return;
         }
 
-        if (url.path() == QL1S("preview/reload"))
+        if (url.path().contains(QL1S("reload")))
         {
+            qDebug() << "reload";
             int index = url.fileName().toInt();
             reloadPreview(index);
             return;
