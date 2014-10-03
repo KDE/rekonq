@@ -78,6 +78,7 @@ Application::Application(int &argc, char **argv)
 
     QString rekonqCacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     d.mkpath(rekonqCacheDir);
+    d.mkpath(rekonqCacheDir + QL1S("/thumbs/") );
 
     QString rekonqTempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
     d.mkpath(rekonqTempDir);
