@@ -41,6 +41,9 @@
 #include <QWidget>
 
 
+// NOTE
+// Can we remove from UI the KListWidgetSearchLine class
+// to remove KItemViews dep??
 class AdBlockSettingWidget : public QWidget, private Ui::adblock
 {
     Q_OBJECT

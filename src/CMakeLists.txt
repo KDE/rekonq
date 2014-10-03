@@ -248,25 +248,16 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             Qt5::Concurrent
                             Qt5::PrintSupport
                             # ---------------------------------------
-                            KF5::Auth
                             KF5::Bookmarks
-                            KF5::Codecs
-                            KF5::ConfigCore
-                            KF5::ConfigWidgets
-                            KF5::CoreAddons
                             KF5::DBusAddons
                             KF5::GlobalAccel
-                            KF5::GuiAddons
                             KF5::I18n
                             KF5::IconThemes
                             KF5::ItemViews
-                            KF5::JobWidgets
                             KF5::KCMUtils
                             KF5::Notifications
                             KF5::SonnetCore
-                            KF5::TextWidgets
                             KF5::Wallet
-                            KF5::WidgetsAddons
                             KF5::WindowSystem
                             KF5::XmlGui
                             # ---------------------------------------

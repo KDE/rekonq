@@ -41,6 +41,9 @@ class QPixmap;
 class QString;
 
 
+// NOTE:
+// Can we substitute this with a QLabel (or something different)
+// to remove KNotifications deps?
 class TabPreviewPopup : public KPassivePopup
 {
     Q_OBJECT

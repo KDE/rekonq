@@ -42,6 +42,7 @@
 
 // Qt includes
 #include <QLocale>
+#include <QStringBuilder>
 
 
 UserAgentInfo::UserAgentInfo()
