@@ -49,11 +49,11 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KProcess>
-#include <KToolInvocation>
 #include <KProtocolInfo>
 #include <KRun>
 
 // Qt Includes
+#include <QDesktopServices>
 #include <QStandardPaths>
 #include <QNetworkRequest>
 #include <QUrlQuery>
@@ -202,7 +202,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // and in postHandling (mail links clicked)
     if (_url.scheme() == QL1S("mailto"))
     {
-        KToolInvocation::invokeMailer(_url);
+        QDesktopServices::openUrl(_url);
         return true;
     }
 
@@ -239,7 +239,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // and in prehandling (mail url launched)
     if (_url.scheme() == QL1S("mailto"))
     {
-        KToolInvocation::invokeMailer(_url);
+        QDesktopServices::openUrl(_url);
         return true;
     }
 
