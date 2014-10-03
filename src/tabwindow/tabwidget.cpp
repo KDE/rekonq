@@ -410,9 +410,9 @@ void TabWidget::currentChanged(int newIndex)
 
     QString t = tab->title();
 
-    (t.isEmpty() || t == QL1S("rekonq"))
+    (t.isEmpty())
     ? emit windowTitleChanged(QL1S("rekonq"))
-    : emit windowTitleChanged(t + QL1S(" - rekonq"));
+    : emit windowTitleChanged(t);
 
     tab->checkFocus();
     
@@ -473,7 +473,7 @@ void TabWidget::tabTitleChanged(const QString &title)
     }
     else
     {
-        emit windowTitleChanged(tabTitle + QL1S(" - rekonq"));
+        emit windowTitleChanged(tabTitle);
     }
     
     if (ReKonfig::hoveringTabOption() == 1)

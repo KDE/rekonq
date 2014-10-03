@@ -140,7 +140,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     : KConfigDialog(parent, QL1S("rekonfig"), ReKonfig::self())
     , d(new Private(this))
 {
-    setWindowTitle(i18nc("Window title of the settings dialog", "Configure – rekonq"));
+    setWindowTitle(i18nc("Window title of the settings dialog", "Configure"));
 
     // update buttons
     connect(d->generalWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
