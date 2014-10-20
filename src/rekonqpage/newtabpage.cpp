@@ -552,20 +552,9 @@ void NewTabPage::bookmarksPage()
 
     KBookmark bookmark = bookGroup.first();
 
-    m_root.appendInside(markup(QL1S(".bookmarkfolder")));
-    QWebElement rootFolder = m_root.lastChild();
-    rootFolder.appendInside(markup(QL1S("a")));
-    rootFolder.lastChild().setAttribute(QL1S("href"), QL1S("javascript: toggleChildren(\'Unsorted\')"));
-    QWebElement titleElement = rootFolder.lastChild();
-    titleElement.appendInside(markup(QL1S("h4")));    
-    titleElement.lastChild().setPlainText(i18n("Unsorted"));
-
-    rootFolder.appendInside(markup(QL1S("div")));
-    rootFolder.lastChild().setAttribute(QL1S("id"), QL1S("Unsorted"));
-
     while (!bookmark.isNull())
     {
-        createBookmarkItem(bookmark, rootFolder.lastChild());
+        createBookmarkItem(bookmark, m_root);
         bookmark = bookGroup.next(bookmark);
     }
 }
@@ -958,6 +947,12 @@ void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement paren
     }
     else
     {
+        if (parent == m_root)
+        {
+            addToUnsortedBookmarks(bookmark);
+            return;
+        }
+
         QString b = bookmark.icon();
         if (b.contains(QL1S("favicons")))
             icon = cacheDir + bookmark.icon() + QL1S(".png");
@@ -976,6 +971,32 @@ void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement paren
         bookmarkElement.appendInside(QL1S(" "));
         bookmarkElement.appendInside(checkTitle(bookmark.fullText(), 40));
     }
+}
+
+
+void NewTabPage::addToUnsortedBookmarks(const KBookmark &bookmark)
+{
+    static bool unsortedFolderExists = false;
+
+    QWebElement rootFolder = m_root.findFirst( QL1S("#Unsorted") );
+    if (!unsortedFolderExists)
+    {
+        m_root.appendInside(markup(QL1S(".bookmarkfolder")));
+        rootFolder = m_root.lastChild();
+        rootFolder.appendInside(markup(QL1S("a")));
+        rootFolder.lastChild().setAttribute(QL1S("href"), QL1S("javascript: toggleChildren(\'Unsorted\')"));
+        QWebElement titleElement = rootFolder.lastChild();
+        titleElement.appendInside(markup(QL1S("h4")));
+        titleElement.lastChild().setPlainText(i18n("Unsorted"));
+
+        rootFolder.appendInside(markup(QL1S("div")));
+        rootFolder.lastChild().setAttribute(QL1S("id"), QL1S("Unsorted"));
+
+        unsortedFolderExists = true;
+        qDebug() << "b u: " << bookmark.url();
+    }
+
+    createBookmarkItem(bookmark, rootFolder);
 }
 
 

@@ -89,6 +89,7 @@ private:
 
     void createBookmarkItem(const KBookmark &bookmark, QWebElement parent);
     void createBookmarkGroup(const KBookmark &bookmark, QWebElement parent);
+    void addToUnsortedBookmarks(const KBookmark &bookmark);
 
     QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
     QWebElement createFormItem(const QString &title, const QString &urlString) const;
