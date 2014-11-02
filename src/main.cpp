@@ -44,7 +44,7 @@
 // Qt Includes
 #include <QCommandLineParser>
 #include <QCommandLineOption>
-
+#include <QDir>
 #include <QUrl>
 
 
@@ -184,50 +184,32 @@ extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
 
     KAboutData::setApplicationData(about);
 
+    // Command Line Parser
+    QCommandLineParser parser;
+    QCommandLineOption incognitoOption(QL1S("incognito"), i18n("Open in incognito mode"));
+    QCommandLineOption webappOption(QL1S("webapp"), i18n("Open URL as web app (in a simple window)"));
+
+    parser.addPositionalArgument(QL1S("URL"), i18n("Location to open"));
+    parser.addOption(incognitoOption);
+    parser.addOption(webappOption);
+
+    about.setupCommandLine(&parser);
+    parser.setApplicationDescription(about.shortDescription());
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.process(app);
 
 // -----------------------------------------------------------------------------------------------------------------
 
     // register the app to dbus and set it as a singleton
     KDBusService service(KDBusService::Unique);
 
+    QObject::connect(&service, SIGNAL(activateRequested(const QStringList &, const QString &)), &app, SLOT(activateRequested(const QStringList &, const QString &)));
+
 // -----------------------------------------------------------------------------------------------------------------
-    
 
-    QCommandLineParser parser;
-    about.setupCommandLine(&parser);
-    parser.setApplicationDescription(about.shortDescription());
-    parser.addHelpOption();
-    parser.addVersionOption();
-
-    parser.addPositionalArgument(QL1S("URL"), i18n("Location to open"));
-
-    QCommandLineOption incognitoOption(QL1S("incognito"), i18n("Open in incognito mode"));
-    parser.addOption(incognitoOption);
-
-    QCommandLineOption webappOption(QL1S("webapp"), i18n("Open URL as web app (in a simple window)"));
-    parser.addOption(webappOption);
-
-
-    parser.process(app);
-
-    bool incognito = parser.isSet(incognitoOption);
-    qDebug() << "INCOGNITO: " << incognito;
-
-    bool webapp = parser.isSet(webappOption);
-    qDebug() << "WEBAPP: " << webapp;
-
-    const QStringList args = parser.positionalArguments();
-    qDebug() << "URLS: " << args;
-
-
-    if (webapp)
-    {
-        app.webAppInstance(args);
-    }
-    else
-    {
-        app.windowInstance(args, incognito);
-    }
+    app.setCmdLineParser(&parser);
+    app.handleCmdLine(QDir::currentPath());
 
     // FIXME
 //     if (app.isSessionRestored())

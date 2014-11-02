@@ -33,15 +33,16 @@
 
 // Qt Includes
 #include <QApplication>
-
+#include <QStringList>
 #include <QUrl>
 #include <QPointer>
 
 // Forward Declarations
 class RekonqWindow;
-
 class WebTab;
 class WebPage;
+
+class QCommandLineParser;
 
 typedef QList< QPointer<RekonqWindow> > RekonqWindowList;
 typedef QList<WebTab *> WebAppList;
@@ -75,6 +76,10 @@ public:
     
     void bookmarksToolbarToggled(bool);
 
+    void setCmdLineParser(QCommandLineParser * parser);
+
+    void handleCmdLine(const QString & cwd = QString());
+
 public Q_SLOTS:
     /**
      * Save application's configuration
@@ -99,6 +104,8 @@ public Q_SLOTS:
     WebTab *newWebApp();
 
     void createWebAppShortcut(const QString & urlString = QString(), const QString & titleString = QString());
+
+    void activateRequested(const QStringList &  arguments, const QString & cwd);
 
 protected:
     // This is used to track which window was activated most recently
@@ -125,6 +132,7 @@ private Q_SLOTS:
 private:
     RekonqWindowList m_rekonqWindows;
     WebAppList m_webApps;
+    QCommandLineParser * parser;
 };
 
 #endif // APPLICATION_H

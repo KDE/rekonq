@@ -65,9 +65,8 @@
 #include <QStandardPaths>
 #include <QTimer>
 
-
 Application::Application(int &argc, char **argv)
-    : QApplication(argc, argv)
+    : QApplication(argc, argv), parser(nullptr)
 {
     // NOTE
     // This is needed to ensure rekonq directory path has been created...
@@ -720,6 +719,28 @@ void Application::bookmarksToolbarToggled(bool b)
 }
 
 
+void Application::setCmdLineParser(QCommandLineParser * p)
+{
+    parser = p;
+}
+
+
+void Application::handleCmdLine(const QString & cwd)
+{
+    //TODO Resolve positional arguments using cwd
+    Q_UNUSED(cwd);
+    bool incognito = parser->isSet(QL1S("incognito"));
+    bool webapp = parser->isSet(QL1S("webapp"));
+    const QStringList urls = parser->positionalArguments();
+
+    if (webapp) {
+        webAppInstance(urls);
+    } else {
+        windowInstance(urls, incognito);
+    }
+}
+
+
 void Application::newPrivateBrowsingWindow()
 {
     // NOTE: what about a "rekonq:incognito" page?
@@ -741,3 +762,14 @@ void Application::pageCreated(WebPage *pg)
     tw->activateWindow();
     tw->raise();
 }
+
+void Application::activateRequested(const QStringList & arguments, const QString & cwd)
+{
+    if (!arguments.isEmpty()) {
+        parser->parse(arguments);
+        handleCmdLine(cwd);
+    } else {
+        windowInstance ( QStringList(), false );
+    }
+}
+
