@@ -129,6 +129,9 @@ private Q_SLOTS:
 
     void pageCreated(WebPage *);
 
+    void setCrashRecoverNeed(bool);
+    bool isCrashRecoverNeeded() const;
+
 private:
     RekonqWindowList m_rekonqWindows;
     WebAppList m_webApps;

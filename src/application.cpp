@@ -93,8 +93,7 @@ Application::Application(int &argc, char **argv)
 Application::~Application()
 {
     // ok, we are closing well: don't recover on next load..
-    ReKonfig::setRecoverOnCrash(0);
-    saveConfiguration();
+    setCrashRecoverNeed(false);
 
     // Destroy all windows...
     Q_FOREACH(QPointer<RekonqWindow> pointer, m_rekonqWindows)
@@ -150,7 +149,7 @@ int Application::windowInstance(const QStringList &args, bool incognito)
     bool isFirstLoad = true;
 
     bool areThereArguments = (args.count() > 0);
-    bool hasToBeRecoveredFromCrash = (ReKonfig::recoverOnCrash() > 0);
+    bool hasToBeRecoveredFromCrash = isCrashRecoverNeeded();
 
     if (areThereArguments)
     {
@@ -332,8 +331,7 @@ int Application::windowInstance(const QStringList &args, bool incognito)
         if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && !SearchEngine::defaultEngine())
             QTimer::singleShot(2000, rekonqWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
 
-        ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
-        saveConfiguration();
+        setCrashRecoverNeed(true);
     }
 
 //     KStartupInfo::appStarted();
@@ -773,3 +771,34 @@ void Application::activateRequested(const QStringList & arguments, const QString
     }
 }
 
+
+void Application::setCrashRecoverNeed(bool b)
+{
+    QString crashFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/crash");
+    QFile crashFile(crashFilePath);
+
+    if (!b)
+    {
+        qDebug() << "File removed: " << crashFile.remove();
+        return;
+    }
+
+    if (crashFile.open(QFile::WriteOnly))
+    {
+        QTextStream out(&crashFile);
+        out << "oops";  // :)
+        crashFile.close();
+        return;
+    }
+
+    qDebug() << "problems creating crash file";
+}
+
+
+bool Application::isCrashRecoverNeeded() const
+{
+    QString crashFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QL1S("/crash");
+    QFile crashFile(crashFilePath);
+
+    return crashFile.exists();
+}
