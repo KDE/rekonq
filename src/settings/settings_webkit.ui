@@ -194,7 +194,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Offline web application quota</string>
+           <string>Offline web application quota:</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
