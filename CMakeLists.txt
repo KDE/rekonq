@@ -1,6 +1,11 @@
 # Andrea Diamantini - adjam7 at gmail dot com
 # rekonq project
 
+# ==================================================================================
+# minimum cmake required (must be first)
+
+cmake_minimum_required(VERSION 2.8.9)
+
 PROJECT( rekonq )
 
 # ==================================================================================
@@ -13,10 +18,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-version.h.cmake ${CMAKE_CURREN
 
 SET(REKONQ_SITE "http://rekonq.kde.org")
 
-# ==================================================================================
-# minimum cmake required
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9 FATAL_ERROR)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
