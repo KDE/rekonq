@@ -96,17 +96,19 @@ Application::~Application()
     setCrashRecoverNeed(false);
 
     // Destroy all windows...
-    Q_FOREACH(QPointer<RekonqWindow> pointer, m_rekonqWindows)
+    foreach (auto pointer, m_rekonqWindows)
     {
         delete pointer.data();
         pointer.clear();
     }
+    m_rekonqWindows.clear();
 
     // Destroy all web apps
-    Q_FOREACH(WebTab *tab, m_webApps)
+    foreach (auto tab, m_webApps)
     {
         delete tab;
     }
+    m_webApps.clear();
 
     qDebug() << "Bye bye (k)baby...";
 }
@@ -328,8 +330,11 @@ int Application::windowInstance(const QStringList &args, bool incognito)
             SessionManager::self()->setSessionManagementEnabled(true);
         }
 
-        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && !SearchEngine::defaultEngine())
+        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && !SearchEngine::defaultEngine()
+                && rekonqWindow() && rekonqWindow()->currentWebWindow())
+        {
             QTimer::singleShot(2000, rekonqWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
+        }
 
         setCrashRecoverNeed(true);
     }
@@ -368,7 +373,7 @@ RekonqWindow *Application::rekonqWindow()
     if (wList.isEmpty())
         return 0;
 
-    Q_FOREACH(const QPointer<RekonqWindow> &pointer, wList)
+    foreach (const auto &pointer, wList)
     {
         if (KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
             return pointer.data();
@@ -607,7 +612,7 @@ void Application::updateConfiguration()
     
     // ============== Tabs ==================
     bool b = ReKonfig::closeTabSelectPrevious();
-    Q_FOREACH(const QPointer<RekonqWindow> &w, m_rekonqWindows)
+    foreach (const auto &w, m_rekonqWindows)
     {
         if (b)
             w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
