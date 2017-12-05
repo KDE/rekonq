@@ -105,7 +105,6 @@ BookmarkManager::BookmarkManager(QObject *parent)
 
 BookmarkManager::~BookmarkManager()
 {
-    delete m_manager;
 }
 
 
