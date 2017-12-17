@@ -480,7 +480,13 @@ void SessionManager::manageSessions()
     qDebug() << "OK, manage session..";
     
     QPointer<SessionDialog> dialog = new SessionDialog();
-    dialog->exec();
+    auto result = dialog->exec();
     
     dialog->deleteLater();
+
+    if (result == QDialog::Rejected && rApp->rekonqWindowList().isEmpty()) {
+        qDebug() << "session dialog rejected without any windows open: quitting";
+        setSessionManagementEnabled(false);
+        rApp->quit();
+    }
 }
