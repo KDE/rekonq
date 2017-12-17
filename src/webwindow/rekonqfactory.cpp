@@ -100,7 +100,7 @@ QAction *actionByName(const QString &name)
 QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 {
     QDomDocument document( QL1S("rekonqui.rc") );
-    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("/rekonq/rekonqui.rc") );
+    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("/kxmlgui5/rekonq/rekonqui.rc") );
 
     if (!readDocument(document, xmlFilePath))
         return 0;
@@ -231,7 +231,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 void RekonqFactory::updateWidget(QWidget *widg, const QString &name)
 {
     QDomDocument document( QL1S("rekonqui.rc") );
-    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("/rekonq/rekonqui.rc") );
+    QString xmlFilePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("/kxmlgui5/rekonq/rekonqui.rc") );
 
     if (!readDocument(document, xmlFilePath))
         return;

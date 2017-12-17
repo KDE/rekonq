@@ -1046,7 +1046,7 @@ void WebWindow::setupMainToolBar()
 void WebWindow::showToolbarEditor()
 {
     QPointer<KEditToolBar> ed = new KEditToolBar(actionCollection(), this);
-    ed->setResourceFile( QL1S("rekonqui.rc") );
+    ed->setResourceFile( QStandardPaths::locate(QStandardPaths::GenericDataLocation, QL1S("/kxmlgui5/rekonq/rekonqui.rc")) );
     connect(ed, SIGNAL(newToolBarConfig()),this, SLOT(setupMainToolBar()));
 
     ed->exec();
